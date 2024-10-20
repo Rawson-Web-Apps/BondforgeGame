@@ -22,54 +22,9 @@ import {
   Staff,
   Shield,
   Instrument,
-} from "./Equipment";
-
-export abstract class CharacterClass {
-  abstract allowedWeapons: (
-    | typeof OneHandedSword
-    | typeof TwoHandedSword
-    | typeof Dagger
-    | typeof Bow
-    | typeof Staff
-    | typeof Instrument
-  )[];
-  abstract allowedArmor: (
-    | typeof ClothHelmet
-    | typeof LeatherHelmet
-    | typeof ChainmailHelmet
-    | typeof PlateHelmet
-    | typeof ClothChestplate
-    | typeof LeatherChestplate
-    | typeof ChainmailChestplate
-    | typeof PlateChestplate
-    | typeof ClothLeggings
-    | typeof LeatherLeggings
-    | typeof ChainmailLeggings
-    | typeof PlateLeggings
-    | typeof ClothBoots
-    | typeof LeatherBoots
-    | typeof ChainmailBoots
-    | typeof PlateBoots
-    | typeof Shield
-  )[];
-  abstract skills: string[];
-  abstract statBonuses: {
-    strength: number;
-    dexterity: number;
-    constitution: number;
-    intelligence: number;
-    wisdom: number;
-    charisma: number;
-  };
-
-  calculateHealth(baseConstitution: number): number {
-    return baseConstitution * 10 + this.statBonuses.constitution * 2;
-  }
-
-  calculateAttack(baseStrength: number): number {
-    return baseStrength * 2 + this.statBonuses.strength;
-  }
-}
+} from "../Equipment";
+import { CharacterClass } from "./CharacterClass";
+import { ElementType } from "../skill/Skill";
 
 // Tier 1 Classes
 export class Warrior extends CharacterClass {
@@ -99,6 +54,10 @@ export class Warrior extends CharacterClass {
     charisma: 1,
   };
 
+  // Define strengths and weaknesses
+  strengths = [ElementType.Physical];
+  weaknesses = [ElementType.Fire];
+
   constructor() {
     super();
   }
@@ -116,6 +75,10 @@ export class Mage extends CharacterClass {
     wisdom: 2,
     charisma: 0,
   };
+
+  // Define strengths and weaknesses
+  strengths = [ElementType.Fire];
+  weaknesses = [ElementType.Physical];
 
   constructor() {
     super();
@@ -139,6 +102,10 @@ export class Rogue extends CharacterClass {
     wisdom: 0,
     charisma: 1,
   };
+
+  // Define strengths and weaknesses
+  strengths = [ElementType.Physical];
+  weaknesses = [ElementType.Light];
 
   constructor() {
     super();

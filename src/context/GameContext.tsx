@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from "react";
-import { Character } from "../models/Character";
-import { Warrior, Rogue, Cleric } from "../models/CharacterClass";
+import Character from "../models/Character";
+import { Warrior, Rogue, Cleric } from "../models/class/HeroClasses";
 import {
   OneHandedSword,
   Dagger,
@@ -35,7 +35,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameState, setGameState] = useState<GameState>({
     playerName: "",
     party: [
-      {
+      new Character({
         name: "Warrior",
         level: 1,
         experience: 0,
@@ -47,7 +47,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         intelligence: 8,
         wisdom: 8,
         charisma: 10,
-        health: 120,
         attack: 15,
         equipment: {
           mainHand: new OneHandedSword("Basic Sword", 10),
@@ -57,8 +56,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           legs: new LeatherLeggings("Leather Leggings", 3),
           boots: new LeatherBoots("Leather Boots", 2),
         },
-      },
-      {
+      }),
+      new Character({
         name: "Rogue",
         level: 1,
         experience: 0,
@@ -70,7 +69,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         intelligence: 10,
         wisdom: 8,
         charisma: 12,
-        health: 100,
         attack: 20,
         equipment: {
           mainHand: new Dagger("Basic Dagger", 8),
@@ -79,8 +77,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           legs: new LeatherLeggings("Leather Pants", 2),
           boots: new LeatherBoots("Leather Shoes", 1),
         },
-      },
-      {
+      }),
+      new Character({
         name: "Cleric",
         level: 1,
         experience: 0,
@@ -92,7 +90,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         intelligence: 10,
         wisdom: 15,
         charisma: 10,
-        health: 110,
         attack: 10,
         equipment: {
           mainHand: new Staff("Basic Staff", 5),
@@ -101,7 +98,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           legs: new ClothLeggings("Cloth Pants", 2),
           boots: new ClothBoots("Cloth Shoes", 1),
         },
-      },
+      }),
     ],
     location: "mainMenu",
   });

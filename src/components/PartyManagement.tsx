@@ -11,7 +11,7 @@ import {
   Champion,
   GrandSorcerer,
   CharacterClass,
-} from "../models/CharacterClass";
+} from "../models/class/CharacterClass";
 
 const PartyManagement = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
@@ -26,7 +26,7 @@ const PartyManagement = () => {
     }));
   };
 
-  const getAvailableClasses = (level: number): typeof CharacterClass[] => {
+  const getAvailableClasses = (level: number): (typeof CharacterClass)[] => {
     let classes = [Warrior, Mage];
     if (level >= 20) {
       classes.push(Knight, Sorcerer);
