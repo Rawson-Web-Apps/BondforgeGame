@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { GameProvider } from "./context/GameContext";
 import App from "./App";
 import MainMenu from "./components/MainMenu";
@@ -10,7 +10,7 @@ import Battle from "./components/Battle";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <GameProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<MainMenu />} />
@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             {/* Add other routes here for locations, battle, etc. */}
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </GameProvider>
   </React.StrictMode>
 );
