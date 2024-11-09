@@ -2,6 +2,7 @@
   "name": "bondforgegame",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://tarawson.com/",
   "type": "module",
   "scripts": {
     "dev": "vite",
