@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { GameContext } from "../context/GameContext";
-import { useNavigate } from "react-router-dom";
 import SkillManager from "../managers/SkillManager";
 import { skills } from "../models/skill/Skills";
 import Character from "../models/Character";
@@ -15,7 +14,6 @@ import {
 
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
-  const navigate = useNavigate();
 
   const [enemy, setEnemy] = useState<Character>(
     new Character({

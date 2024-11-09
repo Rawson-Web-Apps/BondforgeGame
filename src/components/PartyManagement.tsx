@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { GameContext } from "../context/GameContext";
-import { Character } from "../models/Character";
 import {
   Warrior,
   Mage,
@@ -10,8 +9,8 @@ import {
   Archmage,
   Champion,
   GrandSorcerer,
-  CharacterClass,
-} from "../models/class/CharacterClass";
+} from "../models/class/HeroClasses";
+import { CharacterClass } from "../models/class/CharacterClass";
 
 const PartyManagement = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
@@ -52,7 +51,7 @@ const PartyManagement = () => {
           <label>Change Class:</label>
           <select
             value={member.classType.constructor.name}
-            onChange={(e) => changeClass(index, Warrior)} // Update this to handle multiple classes
+            onChange={() => changeClass(index, Warrior)} // Update this to handle multiple classes
           >
             {getAvailableClasses(member.level).map((ClassType) => (
               <option key={ClassType.name} value={ClassType.name}>

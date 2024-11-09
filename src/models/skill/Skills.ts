@@ -44,7 +44,7 @@ export const skills = {
     SkillType.Support,
     ElementType.Physical,
     (target: Character, user: Character) => {
-      console.log(`${user.name} uses Shield Block!`);
+      console.log(`${user.name} uses Shield Block on ${target.name}!`);
       // Implement shield block logic
     },
     2 // Mana cost
@@ -67,7 +67,7 @@ export const skills = {
     SkillType.Buff,
     ElementType.Physical,
     (target: Character, user: Character) => {
-      console.log(`${user.name} enters stealth mode!`);
+      console.log(`${user.name} enters stealth mode on ${target.name}!`);
       // Implement stealth logic
     }
     // No mana cost

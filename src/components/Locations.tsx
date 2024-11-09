@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { GameContext } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
 
 const Locations = () => {
-  const { gameState, setGameState } = useContext(GameContext)!;
+  const { setGameState } = useContext(GameContext)!;
   const navigate = useNavigate();
 
   const goToLocation = (location: string) => {
