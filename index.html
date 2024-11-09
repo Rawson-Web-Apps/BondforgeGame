@@ -9,9 +9,84 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Bondforge Game</title>
+    <style>
+      .welcome-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .feature-list {
+        text-align: left;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+
+      .feature-list li {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      .feature-list li::before {
+        content: "►";
+        position: absolute;
+        left: 0;
+        color: #646cff;
+      }
+
+      .coming-soon {
+        font-style: italic;
+        color: #888;
+        margin-top: 2rem;
+      }
+
+      .highlight {
+        color: #646cff;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
+    <div class="welcome-container">
+      <h1>Welcome to Bondforge Game</h1>
+      <p>
+        Embark on an epic journey in this retro-inspired RPG where your choices
+        forge unbreakable bonds between characters.
+      </p>
+
+      <div class="feature-list">
+        <h2>Game Features</h2>
+        <ul>
+          <li>
+            <span class="highlight">Strategic Combat:</span> Turn-based battles
+            with unique character abilities and team combinations
+          </li>
+          <li>
+            <span class="highlight">Character Classes:</span> Choose from
+            Warriors, Rogues, Clerics, and more to build your perfect team
+          </li>
+          <li>
+            <span class="highlight">Equipment System:</span> Customize your
+            characters with various weapons and armor sets
+          </li>
+          <li>
+            <span class="highlight">Skill Development:</span> Unlock and master
+            powerful abilities as your characters grow stronger
+          </li>
+        </ul>
+      </div>
+
+      <p class="coming-soon">
+        Currently in development - Click "New Game" below to try the demo!
+      </p>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
