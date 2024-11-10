@@ -1,3 +1,12 @@
+:root {
+  --background-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --link-color: #58a6ff;
+  --border-color: #444c56;
+  --button-bg-color: #4a90e2;
+  --button-text-color: #ffffff;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -34,9 +43,82 @@
 }
 
 .card {
-  padding: 2em;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header,
+.footer {
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 0;
+}
+
+.main-content {
+  padding: 20px;
+  background-color: #2d2d2d;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #357ab8;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #24292e;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
 }

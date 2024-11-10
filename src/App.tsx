@@ -1,11 +1,19 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
+import "./App.css";
 
 const App = () => {
   return (
     <div className="app">
-      {/* You could add a header or navigation bar here if needed */}
-      <Outlet />{" "}
-      {/* This renders the child route components like MainMenu, Locations, etc. */}
+      <header className="header">
+        <Link to="/" className="header-link">
+          <h1>Bondforge Game</h1>
+        </Link>
+        {/* Add navigation links or other header content here */}
+      </header>
+      <main className="main-content">
+        <Outlet />{" "}
+        {/* This renders the child route components like MainMenu, Locations, etc. */}
+      </main>
     </div>
   );
 };

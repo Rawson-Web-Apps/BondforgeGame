@@ -6,6 +6,7 @@ import App from "./App";
 import MainMenu from "./components/MainMenu";
 import Locations from "./components/Locations";
 import Battle from "./components/Battle";
+import "./App.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
