@@ -109,6 +109,17 @@ const MainMenu = () => {
   return (
     <div className="main-menu">
       <h1>Retro RPG</h1>
+      <section className="introduction">
+        <h2>Welcome to Bondforge Game</h2>
+        <p>
+          In a world on the brink of chaos, four heroes rise to the challenge.
+          Meet the Warrior, Rogue, and Cleric, each with unique skills and
+          strengths. Your mission is to guide them through perilous quests,
+          level up their abilities, and prepare for the ultimate battle against
+          the dark forces threatening the realm. Forge bonds, gather resources,
+          and become the hero the world needs.
+        </p>
+      </section>
       <button onClick={startNewGame}>New Game</button>
       {/* <button onClick={loadGame}>Load Game</button>
       <button onClick={importSave}>Import Save</button> */}
