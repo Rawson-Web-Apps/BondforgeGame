@@ -1,0 +1,39 @@
+.locations-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.locations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+}
+
+.location-card {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.location-card:hover {
+  transform: scale(1.05);
+}
+
+.location-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.location-text {
+  margin-top: 10px;
+  color: var(--text-color);
+  font-size: 1.2em;
+}

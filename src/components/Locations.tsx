@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { GameContext } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
+import arenaImage from "/public/arena.png";
+import "./Locations.css";
 
 const Locations = () => {
   const { setGameState } = useContext(GameContext)!;
@@ -20,11 +22,13 @@ const Locations = () => {
   return (
     <div className="locations-menu">
       <h1>Select Your Destination</h1>
-      <ul>
-        <li onClick={() => goToLocation("arena")}>Arena</li>
-        <li onClick={() => goToLocation("inn")}>Inn</li>
-        {/* Add more locations like Items, Skills, etc. */}
-      </ul>
+      <div className="locations-grid">
+        <div className="location-card" onClick={() => goToLocation("arena")}>
+          <img src={arenaImage} alt="Arena" className="location-image" />
+          <p className="location-text">Arena</p>
+        </div>
+        {/* Add more location cards as needed */}
+      </div>
     </div>
   );
 };

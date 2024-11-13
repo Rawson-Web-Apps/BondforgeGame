@@ -22,12 +22,14 @@ const Battle = () => {
       experience: 0,
       classType: new GoblinClass(),
       skills: ["Sneak Attack"],
-      strength: 8,
-      dexterity: 12,
-      constitution: 10,
-      intelligence: 6,
-      wisdom: 6,
-      charisma: 5,
+      stats: {
+        strength: 8,
+        dexterity: 12,
+        constitution: 10,
+        intelligence: 6,
+        wisdom: 6,
+        charisma: 5,
+      },
       attack: 10,
       equipment: {
         mainHand: new Dagger("Goblin Dagger", 5),
@@ -50,10 +52,10 @@ const Battle = () => {
       ...gameState.party.map((member, index) => ({
         type: "party",
         index,
-        dexterity: member.dexterity,
+        dexterity: member.stats.dexterity,
         name: member.name,
       })),
-      { type: "enemy", dexterity: enemy.dexterity, name: enemy.name },
+      { type: "enemy", dexterity: enemy.stats.dexterity, name: enemy.name },
     ];
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
