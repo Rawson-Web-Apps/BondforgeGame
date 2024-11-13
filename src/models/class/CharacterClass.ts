@@ -26,6 +26,7 @@ import {
 import { ElementType } from "../skill/Skill";
 
 export abstract class CharacterClass {
+  abstract name: string;
   abstract allowedWeapons: (
     | typeof OneHandedSword
     | typeof TwoHandedSword

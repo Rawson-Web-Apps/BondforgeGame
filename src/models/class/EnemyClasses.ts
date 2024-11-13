@@ -25,8 +25,8 @@ import {
 } from "../Equipment";
 import { CharacterClass } from "./CharacterClass";
 
-// Define the GoblinClass
 export class GoblinClass extends CharacterClass {
+  name = "Goblin";
   allowedWeapons = [Dagger];
   allowedArmor = [
     LeatherHelmet,

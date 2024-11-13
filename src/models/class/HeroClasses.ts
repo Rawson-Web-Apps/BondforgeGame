@@ -28,6 +28,7 @@ import { ElementType } from "../skill/Skill";
 
 // Tier 1 Classes
 export class Warrior extends CharacterClass {
+  name = "Warrior";
   allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
   allowedArmor = [
     LeatherHelmet,
@@ -64,6 +65,7 @@ export class Warrior extends CharacterClass {
 }
 
 export class Mage extends CharacterClass {
+  name = "Mage";
   allowedWeapons = [Staff];
   allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
   skills = ["Fireball", "Teleport"];
@@ -86,6 +88,7 @@ export class Mage extends CharacterClass {
 }
 
 export class Rogue extends CharacterClass {
+  name = "Rogue";
   allowedWeapons = [Dagger, OneHandedSword, Bow];
   allowedArmor = [
     LeatherHelmet,
@@ -113,6 +116,7 @@ export class Rogue extends CharacterClass {
 }
 
 export class Cleric extends CharacterClass {
+  name = "Cleric";
   allowedWeapons = [Staff, OneHandedSword];
   allowedArmor = [
     ClothHelmet,
@@ -140,6 +144,7 @@ export class Cleric extends CharacterClass {
 }
 
 export class Ranger extends CharacterClass {
+  name = "Ranger";
   allowedWeapons = [Bow, OneHandedSword, Dagger];
   allowedArmor = [
     LeatherHelmet,
@@ -167,6 +172,7 @@ export class Ranger extends CharacterClass {
 }
 
 export class Bard extends CharacterClass {
+  name = "Bard";
   allowedWeapons = [Instrument, OneHandedSword, Dagger];
   allowedArmor = [
     ClothHelmet,
@@ -195,6 +201,7 @@ export class Bard extends CharacterClass {
 
 // Tier 2 Classes
 export class Knight extends CharacterClass {
+  name = "Knight";
   allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
   allowedArmor = [
     LeatherHelmet,
@@ -227,6 +234,7 @@ export class Knight extends CharacterClass {
 }
 
 export class Sorcerer extends CharacterClass {
+  name = "Sorcerer";
   allowedWeapons = [Staff];
   allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
   skills = ["Spell Blast", "Mana Shield"];
@@ -246,6 +254,7 @@ export class Sorcerer extends CharacterClass {
 
 // Tier 3 Classes
 export class Paladin extends CharacterClass {
+  name = "Paladin";
   allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
   allowedArmor = [
     LeatherHelmet,
@@ -278,6 +287,7 @@ export class Paladin extends CharacterClass {
 }
 
 export class Archmage extends CharacterClass {
+  name = "Archmage";
   allowedWeapons = [Staff];
   allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
   skills = ["Spell Blast", "Mana Shield"];
@@ -297,6 +307,7 @@ export class Archmage extends CharacterClass {
 
 // Tier 4 Classes
 export class Champion extends CharacterClass {
+  name = "Champion";
   allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
   allowedArmor = [
     LeatherHelmet,
@@ -329,6 +340,7 @@ export class Champion extends CharacterClass {
 }
 
 export class GrandSorcerer extends CharacterClass {
+  name = "Grand Sorcerer";
   allowedWeapons = [Staff];
   allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
   skills = ["Spell Blast", "Mana Shield"];

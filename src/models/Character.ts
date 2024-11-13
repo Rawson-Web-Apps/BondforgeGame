@@ -19,7 +19,7 @@ import {
   PlateBoots,
   Shield,
 } from "./Equipment";
-import { Stats, createDefaultStats } from './Stats';
+import { Stats, createDefaultStats } from "./Stats";
 
 export class Character {
   name: string;
@@ -56,7 +56,7 @@ export class Character {
     equipment,
   }: {
     name: string;
-    level: number;
+    level?: number;
     experience: number;
     classType: CharacterClass;
     skills: string[];
@@ -80,8 +80,8 @@ export class Character {
     };
   }) {
     this.name = name;
-    this.level = level;
     this.experience = experience;
+    this.level = this.calculateLevel();
     this.classType = classType;
     this.skills = skills;
     this.stats = stats;
@@ -90,6 +90,20 @@ export class Character {
     this.maxHp = this.calculateHp();
     this.currentHp = this.maxHp; // Initialize currentHp to maxHp
     this.mp = this.calculateMp();
+  }
+
+  public calculateLevel(): number {
+    const maxLevel = 99;
+    const baseExp = 0; // Base experience required for level 1
+    const growthFactor = 1.1; // Growth factor for experience required per level
+
+    for (let level = 1; level <= maxLevel; level++) {
+      const expForNextLevel = baseExp + Math.pow(growthFactor, level - 1) * 100;
+      if (this.experience < expForNextLevel) {
+        return level;
+      }
+    }
+    return maxLevel; // Return max level if experience exceeds all thresholds
   }
 
   private calculateHp(): number {
@@ -130,8 +144,6 @@ export class Character {
 
     return totalDefense;
   }
-
-  // Additional methods for character logic can be added here
 }
 
 export default Character;

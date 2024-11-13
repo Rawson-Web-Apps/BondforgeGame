@@ -17,7 +17,7 @@ import {
   Shield,
 } from "../models/Equipment";
 import Character from "../models/Character";
-import './MainMenu.css';
+import "./MainMenu.css";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ const MainMenu = () => {
   const party = [
     new Character({
       name: "Warrior",
-      level: 1,
       experience: 0,
       classType: new Warrior(),
       skills: ["Slash", "Shield Block"],
@@ -50,7 +49,6 @@ const MainMenu = () => {
     }),
     new Character({
       name: "Rogue",
-      level: 1,
       experience: 0,
       classType: new Rogue(),
       skills: ["Backstab", "Stealth"],
@@ -73,7 +71,6 @@ const MainMenu = () => {
     }),
     new Character({
       name: "Cleric",
-      level: 1,
       experience: 0,
       classType: new Cleric(),
       skills: ["Heal", "Smite"],
@@ -122,7 +119,7 @@ const MainMenu = () => {
         {party.map((character, index) => (
           <div key={index} className="character-card">
             <h2>{character.name}</h2>
-            <p>Class: {character.classType.constructor.name}</p>
+            <p>Class: {character.classType.name}</p>
             <p>Level: {character.level}</p>
             <p>Experience: {character.experience}</p>
             <h3>Stats</h3>
