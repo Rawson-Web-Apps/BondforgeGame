@@ -26,7 +26,7 @@ const PartyManagement = () => {
   };
 
   const getAvailableClasses = (level: number): (typeof CharacterClass)[] => {
-    let classes = [Warrior, Mage];
+    const classes = [Warrior, Mage];
     if (level >= 20) {
       classes.push(Knight, Sorcerer);
     }

@@ -1,3 +1,5 @@
+import Character from "../Character";
+
 // Define the types of skills
 export enum SkillType {
   Attack,
@@ -21,14 +23,14 @@ export class Skill {
   name: string;
   type: SkillType;
   element: ElementType;
-  effect: (target: any, user: any) => void;
+  effect: (target: Character, user: Character) => void;
   cost?: number; // Optional: cost to use the skill (e.g., mana)
 
   constructor(
     name: string,
     type: SkillType,
     element: ElementType,
-    effect: (target: any, user: any) => void,
+    effect: (target: Character, user: Character) => void,
     cost?: number
   ) {
     this.name = name;

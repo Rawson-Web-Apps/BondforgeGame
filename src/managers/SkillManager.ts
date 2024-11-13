@@ -14,11 +14,12 @@ class SkillManager {
       let resultMessage = `${user.name} used ${skill.name} on ${target.name}`;
 
       switch (skill.type) {
-        case SkillType.Attack:
+        case SkillType.Attack: {
           const damage = targetInitialHp - target.currentHp;
           resultMessage += ` for ${damage} damage!`;
           break;
-        case SkillType.Support:
+        }
+        case SkillType.Support: {
           if (skill.name.toLowerCase().includes("heal")) {
             const healing = target.currentHp - targetInitialHp;
             resultMessage += ` and healed for ${healing} HP!`;
@@ -26,11 +27,14 @@ class SkillManager {
             resultMessage += ` and applied a support effect!`;
           }
           break;
-        case SkillType.Buff:
+        }
+        case SkillType.Buff: {
           resultMessage += ` and applied a buff effect!`;
           break;
-        default:
+        }
+        default: {
           resultMessage += `!`;
+        }
       }
 
       return resultMessage;

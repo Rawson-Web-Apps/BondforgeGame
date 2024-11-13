@@ -47,7 +47,6 @@ export class Character {
 
   constructor({
     name,
-    level,
     experience,
     classType,
     skills,

@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { GameContext } from "../context/GameContext";
 import SkillManager from "../managers/SkillManager";
 import { skills } from "../models/skill/Skills";
@@ -57,7 +57,7 @@ const Battle = () => {
   const [selectingSkill, setSelectingSkill] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
 
-  const determineMoveOrder = () => {
+  const determineMoveOrder = useCallback(() => {
     const participants = [
       ...gameState.party.map((member, index) => {
         const { faceImage } = getImagePaths(
@@ -81,9 +81,9 @@ const Battle = () => {
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
     return participants;
-  };
+  }, [gameState, enemy]);
 
-  const moveOrder = determineMoveOrder();
+  const moveOrder = useMemo(() => determineMoveOrder(), [determineMoveOrder]);
 
   const handleAttack = () => {
     setSelectedSkill(null); // Ensure no skill is selected
@@ -182,14 +182,7 @@ const Battle = () => {
     );
   };
 
-  useEffect(() => {
-    const currentParticipant = moveOrder[activeParticipantIndex];
-    if (currentParticipant.type === "enemy") {
-      handleEnemyTurn();
-    }
-  }, [activeParticipantIndex]);
-
-  const handleEnemyTurn = () => {
+  const handleEnemyTurn = useCallback(() => {
     const targetIndex = gameState.party.reduce(
       (lowestHpIndex, member, index) => {
         return member.currentHp < gameState.party[lowestHpIndex].currentHp
@@ -233,7 +226,14 @@ const Battle = () => {
     setActiveParticipantIndex(
       (prevIndex) => (prevIndex + 1) % moveOrder.length
     );
-  };
+  }, [gameState, enemy, moveOrder, setGameState]);
+
+  useEffect(() => {
+    const currentParticipant = moveOrder[activeParticipantIndex];
+    if (currentParticipant.type === "enemy") {
+      handleEnemyTurn();
+    }
+  }, [activeParticipantIndex, handleEnemyTurn, moveOrder]);
 
   return (
     <div className="battle">
