@@ -142,97 +142,111 @@ const Battle = () => {
     } else if (action === "skill") {
       handleSkillButton();
     }
-    setSelectedActionIndex(null); // Reset action selection
+    setSelectedActionIndex(0); // Reset action selection
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (selectingTarget) {
-      const partyLength = gameState.party.length;
-      let newIndex = selectedTargetIndex ?? 0;
-
-      switch (event.key) {
-        case "w":
-          if (newIndex < partyLength) {
-            newIndex = (newIndex - 1 + partyLength) % partyLength;
-          }
-          break;
-        case "s":
-          if (newIndex < partyLength) {
-            newIndex = (newIndex + 1) % partyLength;
-          }
-          break;
-        case "a":
-          if (newIndex >= partyLength) {
-            newIndex = 0; // Switch to the first party member
-          }
-          break;
-        case "d":
-          if (newIndex < partyLength) {
-            newIndex = partyLength; // Switch to the enemy
-          }
-          break;
-        case "Enter":
-          if (newIndex === partyLength) {
-            handleTargetSelection(enemy);
-          } else {
-            handleTargetSelection(gameState.party[newIndex]);
-          }
-          break;
-        default:
-          return;
-      }
-
-      setSelectedTargetIndex(newIndex);
-    } else if (selectingSkill) {
-      const currentParticipant = moveOrder[activeParticipantIndex];
-      if (isPartyMember(currentParticipant)) {
-        const skills = gameState.party[currentParticipant.index]?.skills || [];
-        const maxSkillIndex = skills.length - 1;
-        let newSkillIndex = selectedSkillIndex ?? 0;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (selectingTarget) {
+        const partyLength = gameState.party.length;
+        let newIndex = selectedTargetIndex ?? 0;
 
         switch (event.key) {
+          case "w":
+            if (newIndex < partyLength) {
+              newIndex = (newIndex - 1 + partyLength) % partyLength;
+            }
+            break;
+          case "s":
+            if (newIndex < partyLength) {
+              newIndex = (newIndex + 1) % partyLength;
+            }
+            break;
           case "a":
-            newSkillIndex =
-              (newSkillIndex - 1 + maxSkillIndex + 1) % (maxSkillIndex + 1);
+            if (newIndex >= partyLength) {
+              newIndex = 0; // Switch to the first party member
+            }
             break;
           case "d":
-            newSkillIndex = (newSkillIndex + 1) % (maxSkillIndex + 1);
+            if (newIndex < partyLength) {
+              newIndex = partyLength; // Switch to the enemy
+            }
             break;
           case "Enter":
-            handleSkillSelection(skills[newSkillIndex]);
+            if (newIndex === partyLength) {
+              handleTargetSelection(enemy);
+            } else {
+              handleTargetSelection(gameState.party[newIndex]);
+            }
             break;
           default:
             return;
         }
 
-        setSelectedSkillIndex(newSkillIndex);
-      }
-    } else {
-      const maxActionIndex = 1; // Assuming two actions: Attack and Skill
-      let newActionIndex = selectedActionIndex ?? 0;
+        setSelectedTargetIndex(newIndex);
+      } else if (selectingSkill) {
+        const currentParticipant = moveOrder[activeParticipantIndex];
+        if (isPartyMember(currentParticipant)) {
+          const skills =
+            gameState.party[currentParticipant.index]?.skills || [];
+          const maxSkillIndex = skills.length - 1;
+          let newSkillIndex = selectedSkillIndex ?? 0;
 
-      switch (event.key) {
-        case "a":
-          newActionIndex =
-            (newActionIndex - 1 + maxActionIndex + 1) % (maxActionIndex + 1);
-          break;
-        case "d":
-          newActionIndex = (newActionIndex + 1) % (maxActionIndex + 1);
-          break;
-        case "Enter":
-          if (newActionIndex === 0) {
-            handleActionSelection("attack");
-          } else if (newActionIndex === 1) {
-            handleActionSelection("skill");
+          switch (event.key) {
+            case "a":
+              newSkillIndex =
+                (newSkillIndex - 1 + maxSkillIndex + 1) % (maxSkillIndex + 1);
+              break;
+            case "d":
+              newSkillIndex = (newSkillIndex + 1) % (maxSkillIndex + 1);
+              break;
+            case "Enter":
+              handleSkillSelection(skills[newSkillIndex]);
+              break;
+            default:
+              return;
           }
-          break;
-        default:
-          return;
-      }
 
-      setSelectedActionIndex(newActionIndex);
-    }
-  };
+          setSelectedSkillIndex(newSkillIndex);
+        }
+      } else {
+        const maxActionIndex = 1; // Assuming two actions: Attack and Skill
+        let newActionIndex = selectedActionIndex ?? 0;
+
+        switch (event.key) {
+          case "a":
+            newActionIndex =
+              (newActionIndex - 1 + maxActionIndex + 1) % (maxActionIndex + 1);
+            break;
+          case "d":
+            newActionIndex = (newActionIndex + 1) % (maxActionIndex + 1);
+            break;
+          case "Enter":
+            if (newActionIndex === 0) {
+              handleActionSelection("attack");
+            } else if (newActionIndex === 1) {
+              handleActionSelection("skill");
+            }
+            break;
+          default:
+            return;
+        }
+
+        setSelectedActionIndex(newActionIndex);
+      }
+    },
+    [
+      selectingTarget,
+      selectedTargetIndex,
+      selectingSkill,
+      selectedSkillIndex,
+      selectedActionIndex,
+      gameState,
+      moveOrder,
+      activeParticipantIndex,
+      enemy,
+    ]
+  );
 
   const handleAttackExecution = (target: Character) => {
     const currentParticipant = moveOrder[activeParticipantIndex];
@@ -366,12 +380,7 @@ const Battle = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [
-    selectedTargetIndex,
-    selectingTarget,
-    selectedActionIndex,
-    selectedSkillIndex,
-  ]);
+  }, [handleKeyDown]);
 
   return (
     <div className="battle">
