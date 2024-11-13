@@ -123,27 +123,107 @@ const Battle = () => {
     setSelectedSkillIndex(null); // Reset skill selection
   };
 
-  const handleTargetSelection = (target: Character) => {
-    if (selectedSkill) {
-      handleSkillExecution(target);
-    } else {
-      handleAttackExecution(target);
+  const handleAttackExecution = (target: Character) => {
+    const currentParticipant = moveOrder[activeParticipantIndex];
+
+    if (currentParticipant.type === "party" && "index" in currentParticipant) {
+      const attacker = gameState.party[currentParticipant.index];
+      const damage = Math.max(
+        attacker.calculateDamage() - target.calculateDefense(),
+        1
+      );
+
+      if (target === enemy) {
+        setEnemy((prevEnemy) => {
+          const updatedEnemy = new Character(prevEnemy);
+          updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
+          return updatedEnemy;
+        });
+      } else {
+        const updatedParty = gameState.party.map((member) => {
+          if (member === target) {
+            member.updateCurrentHp(member.currentHp - damage);
+          }
+          return member;
+        });
+        setGameState((prevState) => ({
+          ...prevState,
+          party: updatedParty,
+        }));
+      }
+
+      setCombatLog((prevLog) => [
+        ...prevLog,
+        `${attacker.name} attacks ${target.name} for ${damage} damage!`,
+      ]);
+
+      if (target.currentHp <= 0) {
+        setCombatLog((prevLog) => [
+          ...prevLog,
+          `${target.name} has been defeated!`,
+        ]);
+      }
     }
-    setSelectedTargetIndex(null); // Reset target selection
+
+    setSelectingTarget(false);
+    setActiveParticipantIndex(
+      (prevIndex) => (prevIndex + 1) % moveOrder.length
+    );
   };
+
+  const handleSkillExecution = (target: Character) => {
+    if (!selectedSkill) return;
+
+    const moveOrder = determineMoveOrder();
+    const participant = moveOrder[activeParticipantIndex];
+
+    if (participant.type === "party" && "index" in participant) {
+      const member = gameState.party[participant.index];
+      const skill = skills[selectedSkill.toLowerCase() as keyof typeof skills];
+
+      if (!skill) {
+        console.error(`Skill not found: ${selectedSkill}`);
+        return;
+      }
+
+      const logMessage = SkillManager.executeSkill(skill, member, target);
+      setCombatLog((prevLog) => [...prevLog, logMessage]);
+    }
+
+    setSelectedSkill(null);
+    setSelectingTarget(false);
+    setActiveParticipantIndex(
+      (prevIndex) => (prevIndex + 1) % moveOrder.length
+    );
+  };
+
+  const handleTargetSelection = useCallback(
+    (target: Character) => {
+      if (selectedSkill) {
+        handleSkillExecution(target);
+      } else {
+        handleAttackExecution(target);
+      }
+      setSelectedTargetIndex(null); // Reset target selection
+    },
+    [selectedSkill, handleSkillExecution, handleAttackExecution]
+  );
 
   const handleTargetHover = (index: number) => {
     setSelectedTargetIndex(index);
   };
 
-  const handleActionSelection = (action: string) => {
-    if (action === "attack") {
-      handleAttack();
-    } else if (action === "skill") {
-      handleSkillButton();
-    }
-    setSelectedActionIndex(0); // Reset action selection
-  };
+  const handleActionSelection = useCallback(
+    (action: string) => {
+      if (action === "attack") {
+        handleAttack();
+      } else if (action === "skill") {
+        handleSkillButton();
+      }
+      setSelectedActionIndex(0); // Reset action selection
+    },
+    [handleAttack, handleSkillButton]
+  );
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -245,82 +325,10 @@ const Battle = () => {
       moveOrder,
       activeParticipantIndex,
       enemy,
+      handleTargetSelection,
+      handleActionSelection,
     ]
   );
-
-  const handleAttackExecution = (target: Character) => {
-    const currentParticipant = moveOrder[activeParticipantIndex];
-
-    if (currentParticipant.type === "party" && "index" in currentParticipant) {
-      const attacker = gameState.party[currentParticipant.index];
-      const damage = Math.max(
-        attacker.calculateDamage() - target.calculateDefense(),
-        1
-      );
-
-      if (target === enemy) {
-        setEnemy((prevEnemy) => {
-          const updatedEnemy = new Character(prevEnemy);
-          updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
-          return updatedEnemy;
-        });
-      } else {
-        const updatedParty = gameState.party.map((member) => {
-          if (member === target) {
-            member.updateCurrentHp(member.currentHp - damage);
-          }
-          return member;
-        });
-        setGameState((prevState) => ({
-          ...prevState,
-          party: updatedParty,
-        }));
-      }
-
-      setCombatLog((prevLog) => [
-        ...prevLog,
-        `${attacker.name} attacks ${target.name} for ${damage} damage!`,
-      ]);
-
-      if (target.currentHp <= 0) {
-        setCombatLog((prevLog) => [
-          ...prevLog,
-          `${target.name} has been defeated!`,
-        ]);
-      }
-    }
-
-    setSelectingTarget(false);
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
-  };
-
-  const handleSkillExecution = (target: Character) => {
-    if (!selectedSkill) return;
-
-    const moveOrder = determineMoveOrder();
-    const participant = moveOrder[activeParticipantIndex];
-
-    if (participant.type === "party" && "index" in participant) {
-      const member = gameState.party[participant.index];
-      const skill = skills[selectedSkill.toLowerCase() as keyof typeof skills];
-
-      if (!skill) {
-        console.error(`Skill not found: ${selectedSkill}`);
-        return;
-      }
-
-      const logMessage = SkillManager.executeSkill(skill, member, target);
-      setCombatLog((prevLog) => [...prevLog, logMessage]);
-    }
-
-    setSelectedSkill(null);
-    setSelectingTarget(false);
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
-  };
 
   const handleEnemyTurn = useCallback(() => {
     const targetIndex = gameState.party.reduce(
