@@ -19,6 +19,7 @@ import {
   PlateBoots,
   Shield,
 } from "./Equipment";
+import { Stats, createDefaultStats } from './Stats';
 
 export class Character {
   name: string;
@@ -26,12 +27,7 @@ export class Character {
   experience: number;
   classType: CharacterClass;
   skills: string[];
-  strength: number;
-  dexterity: number;
-  constitution: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
+  stats: Stats;
   maxHp: number;
   currentHp: number;
   mp: number;
@@ -55,12 +51,7 @@ export class Character {
     experience,
     classType,
     skills,
-    strength,
-    dexterity,
-    constitution,
-    intelligence,
-    wisdom,
-    charisma,
+    stats = createDefaultStats(),
     attack,
     equipment,
   }: {
@@ -69,12 +60,7 @@ export class Character {
     experience: number;
     classType: CharacterClass;
     skills: string[];
-    strength: number;
-    dexterity: number;
-    constitution: number;
-    intelligence: number;
-    wisdom: number;
-    charisma: number;
+    stats?: Stats;
     attack: number;
     equipment: {
       mainHand?: Weapon;
@@ -98,12 +84,7 @@ export class Character {
     this.experience = experience;
     this.classType = classType;
     this.skills = skills;
-    this.strength = strength;
-    this.dexterity = dexterity;
-    this.constitution = constitution;
-    this.intelligence = intelligence;
-    this.wisdom = wisdom;
-    this.charisma = charisma;
+    this.stats = stats;
     this.attack = attack;
     this.equipment = equipment;
     this.maxHp = this.calculateHp();
@@ -112,11 +93,11 @@ export class Character {
   }
 
   private calculateHp(): number {
-    return this.constitution * 10; // Example: 10 HP per point of constitution
+    return this.stats.constitution * 10; // Example: 10 HP per point of constitution
   }
 
   private calculateMp(): number {
-    return this.wisdom * 5; // Example: 5 MP per point of wisdom
+    return this.stats.wisdom * 5; // Example: 5 MP per point of wisdom
   }
 
   // Method to update current hp if needed
@@ -133,7 +114,7 @@ export class Character {
     if (this.equipment.offHand && this.equipment.offHand instanceof Weapon) {
       weaponDamage += this.equipment.offHand.damage;
     }
-    return this.strength + weaponDamage;
+    return this.stats.strength + weaponDamage;
   }
 
   // Method to calculate total defense

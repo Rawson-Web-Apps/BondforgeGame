@@ -1,0 +1,23 @@
+.character-overview {
+  display: flex;
+  justify-content: space-around; /* Distribute space evenly */
+  flex-wrap: wrap; /* Allow wrapping if needed */
+  margin: 20px 0;
+}
+
+.character-card {
+  flex: 1 1 30%; /* Allow cards to grow and shrink, set base width */
+  margin: 10px;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--background-color); /* Use theme background color */
+  color: var(--text-color); /* Use theme text color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.character-card ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+} 
