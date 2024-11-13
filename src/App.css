@@ -2,6 +2,7 @@
   --background-color: #1e1e1e;
   --text-color: #e0e0e0;
   --link-color: #58a6ff;
+  --link-hover-color: #82cfff;
   --border-color: #444c56;
   --button-bg-color: #4a90e2;
   --button-text-color: #ffffff;
@@ -73,6 +74,40 @@ body {
   background-color: var(--background-color);
   border-bottom: 1px solid var(--border-color);
   padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-link {
+  color: var(--link-color);
+  font-size: 1.5em;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.header-link:hover {
+  text-decoration: underline;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  margin-right: 20px;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1em;
+  padding: 10px 15px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--link-hover-color);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .main-content {

@@ -11,7 +11,12 @@ const App = () => {
         <Link to="/" className="header-link">
           <h1>Bondforge Game</h1>
         </Link>
-        {/* Add navigation links or other header content here */}
+        <nav className="nav">
+          <Link to="/about" className="nav-link">About</Link>
+          <Link to="/updates" className="nav-link">Updates</Link>
+          <Link to="/guide" className="nav-link">Game Guide</Link>
+          {/* Add more links as needed */}
+        </nav>
       </header>
       <main className="main-content" style={{ flex: 1 }}>
         <Outlet />{" "}
