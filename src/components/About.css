@@ -1,0 +1,88 @@
+.about-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.about-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--link-color);
+}
+
+.about-page h2 {
+  margin-top: 30px;
+  color: var(--link-color);
+}
+
+.about-page p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.gameplay-systems {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.gameplay-systems li {
+  margin-bottom: 10px;
+}
+
+.gameplay-systems ul {
+  list-style-type: circle;
+  margin-left: 20px;
+}
+
+.gameplay-systems strong {
+  color: var(--link-color);
+}
+
+/* Developer Links Styling */
+.developer-links {
+  list-style-type: none;
+  padding: 0;
+}
+
+.developer-links li {
+  margin-bottom: 10px;
+}
+
+.developer-links a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.developer-links a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 10px;
+  }
+
+  .about-page h1 {
+    font-size: 1.8em;
+  }
+
+  .about-page h2 {
+    font-size: 1.4em;
+  }
+
+  .gameplay-systems {
+    margin-left: 10px;
+  }
+
+  .gameplay-systems ul {
+    margin-left: 15px;
+  }
+
+  .developer-links li {
+    margin-bottom: 8px;
+  }
+} 

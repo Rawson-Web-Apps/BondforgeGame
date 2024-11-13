@@ -98,19 +98,10 @@ const MainMenu = () => {
     navigate("/locations");
   };
 
-  // const loadGame = () => {
-  //   // Logic for loading the game from localStorage (to be added)
-  // };
-
-  // const importSave = () => {
-  //   // Logic for importing save files (to be added)
-  // };
-
   return (
     <div className="main-menu">
-      <h1>Retro RPG</h1>
+      <h1>Bondforge RPG</h1>
       <section className="introduction">
-        <h2>Welcome to Bondforge Game</h2>
         <p>
           In a world on the brink of chaos, four heroes rise to the challenge.
           Meet the Warrior, Rogue, and Cleric, each with unique skills and
@@ -121,8 +112,6 @@ const MainMenu = () => {
         </p>
       </section>
       <button onClick={startNewGame}>New Game</button>
-      {/* <button onClick={loadGame}>Load Game</button>
-      <button onClick={importSave}>Import Save</button> */}
     </div>
   );
 };

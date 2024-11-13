@@ -69,7 +69,16 @@ body {
   padding: 20px;
 }
 
-.header,
+.header {
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
 .footer {
   background-color: var(--background-color);
   border-bottom: 1px solid var(--border-color);
@@ -77,6 +86,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .header-link {
@@ -156,6 +166,30 @@ button:hover {
     flex-direction: column;
     align-items: center;
   }
+
+  .nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    background-color: var(--background-color);
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
+  }
 }
 
 .main-menu {
@@ -163,7 +197,8 @@ button:hover {
   padding: 20px;
 }
 
-.introduction, .features {
+.introduction,
+.features {
   margin-bottom: 20px;
 }
 
@@ -184,4 +219,18 @@ button:hover {
   position: absolute;
   left: 0;
   font-size: 1.2em;
+}
+
+.hamburger {
+  flex-direction: column;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-color);
+  margin: 4px 0;
+  transition: 0.4s;
 }

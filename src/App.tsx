@@ -1,7 +1,14 @@
+import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import "./App.css";
 
 const App = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <div
       className="app"
@@ -9,12 +16,26 @@ const App = () => {
     >
       <header className="header">
         <Link to="/" className="header-link">
-          <h1>Bondforge Game</h1>
+          <h1>Bondforge</h1>
         </Link>
-        <nav className="nav">
-          <Link to="/about" className="nav-link">About</Link>
-          <Link to="/updates" className="nav-link">Updates</Link>
-          <Link to="/guide" className="nav-link">Game Guide</Link>
+        <div className="hamburger" onClick={toggleMenu}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <nav className={`nav ${menuOpen ? "active" : ""}`}>
+          <Link to="/" className="nav-link" onClick={toggleMenu}>
+            Bondforge
+          </Link>
+          <Link to="/about" className="nav-link" onClick={toggleMenu}>
+            About
+          </Link>
+          <Link to="/updates" className="nav-link" onClick={toggleMenu}>
+            Updates
+          </Link>
+          <Link to="/guide" className="nav-link" onClick={toggleMenu}>
+            Game Guide
+          </Link>
           {/* Add more links as needed */}
         </nav>
       </header>
@@ -24,7 +45,7 @@ const App = () => {
       </main>
       <footer className="footer">
         <p>
-          Welcome to Bondforge Game, an exciting retro RPG where you embark on
+          Welcome to Bondforge, an exciting retro RPG where you embark on
           thrilling adventures, manage your party, and battle formidable foes.
           Explore diverse locations, hone your skills, and forge bonds with
           allies to become the ultimate hero.

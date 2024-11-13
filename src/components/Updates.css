@@ -1,0 +1,53 @@
+.updates-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.updates-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--link-color);
+}
+
+.updates-page h2 {
+  margin-top: 30px;
+  color: var(--link-color);
+}
+
+.updates-page p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.update-section {
+  margin-bottom: 25px;
+}
+
+.update-section h2 {
+  margin-bottom: 10px;
+}
+
+.update-section p {
+  margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+  .updates-page {
+    padding: 10px;
+  }
+
+  .updates-page h1 {
+    font-size: 1.8em;
+  }
+
+  .updates-page h2 {
+    font-size: 1.4em;
+  }
+
+  .update-section p {
+    margin-left: 15px;
+  }
+}
