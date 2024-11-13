@@ -8,7 +8,7 @@ export const skills = {
     SkillType.Attack,
     ElementType.Fire,
     (target: Character, user: Character) => {
-      const damage = user.intelligence * 2;
+      const damage = user.stats.intelligence * 2;
       target.updateCurrentHp(target.currentHp - damage);
       console.log(
         `${user.name} casts Fireball on ${target.name} for ${damage} damage!`
@@ -22,7 +22,7 @@ export const skills = {
     SkillType.Support,
     ElementType.Light,
     (target: Character, user: Character) => {
-      const healing = user.intelligence * 2;
+      const healing = user.stats.intelligence * 2;
       target.updateCurrentHp(target.currentHp + healing);
       console.log(`${user.name} heals ${target.name} for ${healing} HP!`);
     },
@@ -33,7 +33,7 @@ export const skills = {
     SkillType.Attack,
     ElementType.Physical,
     (target: Character, user: Character) => {
-      const damage = user.strength * 1.5;
+      const damage = user.stats.strength * 1.5;
       target.updateCurrentHp(target.currentHp - damage);
       console.log(`${user.name} slashes ${target.name} for ${damage} damage!`);
     },
@@ -54,7 +54,7 @@ export const skills = {
     SkillType.Attack,
     ElementType.Physical,
     (target: Character, user: Character) => {
-      const damage = user.strength * 2;
+      const damage = user.stats.strength * 2;
       target.updateCurrentHp(target.currentHp - damage);
       console.log(
         `${user.name} backstabs ${target.name} for ${damage} damage!`
@@ -77,7 +77,7 @@ export const skills = {
     SkillType.Attack,
     ElementType.Light,
     (target: Character, user: Character) => {
-      const damage = user.intelligence * 1.5;
+      const damage = user.stats.intelligence * 1.5;
       target.updateCurrentHp(target.currentHp - damage);
       console.log(`${user.name} smites ${target.name} for ${damage} damage!`);
     },

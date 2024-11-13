@@ -1,0 +1,68 @@
+.battle {
+  padding: 20px;
+}
+
+.turn-order {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.turn-order-item {
+  margin: 0 10px;
+  transition: transform 0.3s, border 0.3s;
+}
+
+.turn-order-item.active {
+  transform: scale(1.2);
+  border: 2px solid var(--link-color);
+}
+
+.turn-order-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.battle-field {
+  display: flex;
+  justify-content: space-between;
+}
+
+.party-column,
+.enemy-column {
+  width: 45%;
+}
+
+.party-member,
+.enemy-member {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.character-image {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-right: 10px;
+}
+
+.character-stats {
+  color: var(--text-color);
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+.combat-log {
+  margin-top: 20px;
+  background-color: var(--background-color);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+} 

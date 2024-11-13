@@ -11,6 +11,16 @@ import {
   LeatherLeggings,
   LeatherBoots,
 } from "../models/Equipment";
+import "./Battle.css"; // Import the CSS file for styling
+
+// Function to get image paths based on class name
+const getImagePaths = (className: string) => {
+  const basePath = "/public/";
+  return {
+    fullImage: `${basePath}${className}.png`,
+    faceImage: `${basePath}${className}_turn.png`,
+  };
+};
 
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
@@ -49,13 +59,24 @@ const Battle = () => {
 
   const determineMoveOrder = () => {
     const participants = [
-      ...gameState.party.map((member, index) => ({
-        type: "party",
-        index,
-        dexterity: member.stats.dexterity,
-        name: member.name,
-      })),
-      { type: "enemy", dexterity: enemy.stats.dexterity, name: enemy.name },
+      ...gameState.party.map((member, index) => {
+        const { faceImage } = getImagePaths(
+          member.classType.name.toLowerCase()
+        );
+        return {
+          type: "party",
+          index,
+          dexterity: member.stats.dexterity,
+          name: member.name,
+          faceImage,
+        };
+      }),
+      {
+        type: "enemy",
+        dexterity: enemy.stats.dexterity,
+        name: enemy.name,
+        faceImage: getImagePaths(enemy.classType.name.toLowerCase()).faceImage,
+      },
     ];
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
@@ -97,15 +118,10 @@ const Battle = () => {
         1
       );
 
-      console.log(`Attacker: ${attacker.name}, Target: ${target.name}`);
-      console.log(`Calculated Damage: ${damage}`);
-      console.log(`Target HP before: ${target.currentHp}`);
-
       if (target === enemy) {
         setEnemy((prevEnemy) => {
           const updatedEnemy = new Character(prevEnemy);
           updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
-          console.log(`Target HP after: ${updatedEnemy.currentHp}`);
           return updatedEnemy;
         });
       } else {
@@ -155,16 +171,8 @@ const Battle = () => {
         return;
       }
 
-      console.log(
-        `Executing skill: ${selectedSkill} by ${member.name} on ${target.name}`
-      );
-
-      // Assuming SkillManager.executeSkill returns a log message and applies the skill effect
       const logMessage = SkillManager.executeSkill(skill, member, target);
       setCombatLog((prevLog) => [...prevLog, logMessage]);
-
-      // Debugging: Check target's HP after skill execution
-      console.log(`Target HP after skill: ${target.currentHp}`);
     }
 
     setSelectedSkill(null);
@@ -231,43 +239,59 @@ const Battle = () => {
     <div className="battle">
       <h1>Battle: {enemy.name}</h1>
       <div className="turn-order">
-        <h2>Turn Order</h2>
-        <ul>
-          {moveOrder.map((participant, index) => (
-            <li key={index}>
-              {activeParticipantIndex === index ? "-> " : ""}
-              {participant.name}
-            </li>
-          ))}
-        </ul>
+        {moveOrder.map((participant, index) => (
+          <div
+            key={index}
+            className={`turn-order-item ${
+              activeParticipantIndex === index ? "active" : ""
+            }`}
+          >
+            <img
+              src={participant.faceImage}
+              alt={participant.name}
+              className="turn-order-image"
+            />
+          </div>
+        ))}
       </div>
-      <div className="party-stats">
-        <h2>Your Party</h2>
-        {gameState.party.map((member, index) => {
-          const currentParticipant = moveOrder[activeParticipantIndex];
-          const isActive =
-            currentParticipant.type === "party" &&
-            "index" in currentParticipant &&
-            currentParticipant.index === index;
-          return (
-            <div
-              key={index}
-              className={`party-member ${isActive ? "active" : ""}`}
-            >
-              <p>
-                {isActive ? "-> " : ""}
-                {member.name} - Health: {member.currentHp}
-              </p>
+      <div className="battle-field">
+        <div className="party-column">
+          <h2>Your Party</h2>
+          {gameState.party.map((member, index) => {
+            const { fullImage } = getImagePaths(
+              member.classType.name.toLowerCase()
+            );
+            return (
+              <div key={index} className="party-member">
+                <img
+                  src={fullImage}
+                  alt={member.name}
+                  className="character-image"
+                />
+                <div className="character-stats">
+                  <p>{member.name}</p>
+                  <p>HP: {member.currentHp}</p>
+                  <p>MP: {member.mp}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="enemy-column">
+          <h2>Enemy</h2>
+          <div className="enemy-member">
+            <img
+              src={getImagePaths(enemy.classType.name.toLowerCase()).fullImage}
+              alt={enemy.name}
+              className="character-image"
+            />
+            <div className="character-stats">
+              <p>{enemy.name}</p>
+              <p>HP: {enemy.currentHp}</p>
+              <p>MP: {enemy.mp}</p>
             </div>
-          );
-        })}
-      </div>
-      <div className="enemy-stats">
-        <h2>Enemy</h2>
-        <p>
-          {moveOrder[activeParticipantIndex].type === "enemy" ? "-> " : ""}
-          {enemy.name} HP: {enemy.currentHp}
-        </p>
+          </div>
+        </div>
       </div>
       <div className="actions">
         {selectingTarget ? (
