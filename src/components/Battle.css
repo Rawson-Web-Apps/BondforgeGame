@@ -89,3 +89,27 @@
   border-radius: 8px;
   border: 1px solid var(--border-color);
 }
+
+.party-member.selected img,
+.enemy-member.selected img {
+  border: 2px solid #ff0000; /* Red border for selection */
+  transform: scale(1.1); /* Slightly enlarge the image */
+  transition: transform 0.2s, border 0.2s;
+}
+
+.party-member img,
+.enemy-member img {
+  transition: transform 0.2s, border 0.2s;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+}
+
+button.selected {
+  border: 2px solid #ff0000; /* Red border for selection */
+  transform: scale(1.1); /* Slightly enlarge the button */
+  transition: transform 0.2s, border 0.2s;
+}
