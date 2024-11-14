@@ -3,14 +3,7 @@ import { GameContext } from "../context/GameContext";
 import SkillManager from "../managers/SkillManager";
 import { skills } from "../models/skill/Skills";
 import Character from "../models/Character";
-import { GoblinClass } from "../models/class/EnemyClasses";
-import {
-  Dagger,
-  LeatherHelmet,
-  LeatherChestplate,
-  LeatherLeggings,
-  LeatherBoots,
-} from "../models/Equipment";
+import { getRandomEnemy } from "../models/enemies/EnemyFactory";
 import "./Battle.css"; // Import the CSS file for styling
 
 // Function to get image paths based on class name
@@ -39,30 +32,11 @@ const isPartyMember = (
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
 
-  const [enemy, setEnemy] = useState<Character>(
-    new Character({
-      name: "Goblin",
-      level: 1,
-      experience: 0,
-      classType: new GoblinClass(),
-      skills: ["Sneak Attack"],
-      stats: {
-        strength: 8,
-        dexterity: 12,
-        constitution: 10,
-        intelligence: 6,
-        wisdom: 6,
-        charisma: 5,
-      },
-      attack: 10,
-      equipment: {
-        mainHand: new Dagger("Goblin Dagger", 5),
-        head: new LeatherHelmet("Goblin Leather Helmet", 2),
-        chest: new LeatherChestplate("Goblin Leather Chestplate", 3),
-        legs: new LeatherLeggings("Goblin Leather Leggings", 2),
-        boots: new LeatherBoots("Goblin Leather Boots", 1),
-      },
-    })
+  // Calculate character levels
+  const characterLevels = gameState.party.map((member) => member.level);
+
+  const [enemy, setEnemy] = useState<Character>(() =>
+    getRandomEnemy(characterLevels)
   );
 
   const [activeParticipantIndex, setActiveParticipantIndex] = useState(0);

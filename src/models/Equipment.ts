@@ -170,3 +170,15 @@ export class Instrument extends Weapon {
     this.charismaBoost = charismaBoost;
   }
 }
+
+export class Club extends Weapon {
+  constructor(public name: string, public damage: number) {
+    super(name, damage);
+  }
+}
+
+export class Hammer extends Weapon {
+  constructor(public name: string, public damage: number) {
+    super(name, damage);
+  }
+}
