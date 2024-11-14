@@ -16,7 +16,8 @@ import {
   PlateChestplate,
   PlateLeggings,
   PlateBoots,
-  Equipment,
+  Weapon,
+  Armor,
 } from "../Equipment";
 
 export type EnemyConfig = {
@@ -33,11 +34,12 @@ export type EnemyConfig = {
   };
   attack: number;
   equipment: {
-    mainHand: Equipment; // Adjust based on your equipment types
-    head: Equipment;
-    chest: Equipment;
-    legs: Equipment;
-    boots: Equipment;
+    mainHand: Weapon; // Adjust based on your equipment types
+    offHand?: Weapon | Armor;
+    head: Armor;
+    chest: Armor;
+    legs: Armor;
+    boots: Armor;
   };
   levelRange: [number, number]; // Minimum and maximum character levels for selection
 };

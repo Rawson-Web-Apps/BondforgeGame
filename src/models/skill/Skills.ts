@@ -39,16 +39,6 @@ export const skills = {
     },
     3 // Mana cost
   ),
-  shieldBlock: new Skill(
-    "Shield Block",
-    SkillType.Support,
-    ElementType.Physical,
-    (target: Character, user: Character) => {
-      console.log(`${user.name} uses Shield Block on ${target.name}!`);
-      // Implement shield block logic
-    },
-    2 // Mana cost
-  ),
   backstab: new Skill(
     "Backstab",
     SkillType.Attack,

@@ -41,6 +41,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .character-image {
@@ -49,7 +50,6 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  margin-right: 10px;
 }
 
 .character-stats {
@@ -92,8 +92,15 @@
 
 .party-member.selected img,
 .enemy-member.selected img {
-  border: 2px solid #ff0000; /* Red border for selection */
-  transform: scale(1.1); /* Slightly enlarge the image */
+  border: 2px solid #ff0000;
+  transform: scale(1.1);
+  transition: transform 0.2s, border 0.2s;
+}
+
+.party-member.support-selected img,
+.enemy-member.support-selected img {
+  border: 2px solid #00ff00;
+  transform: scale(1.1);
   transition: transform 0.2s, border 0.2s;
 }
 
@@ -102,15 +109,17 @@
   transition: transform 0.2s, border 0.2s;
 }
 
-.action-buttons {
+.action-buttons,
+.skill-selection {
   display: flex;
-  justify-content: center;
-  gap: 10px; /* Space between buttons */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 button.selected {
-  border: 2px solid #ff0000; /* Red border for selection */
-  transform: scale(1.1); /* Slightly enlarge the button */
+  border: 2px solid #ff0000;
+  transform: scale(1.1);
   transition: transform 0.2s, border 0.2s;
 }
 
@@ -152,8 +161,9 @@ button.selected {
   background-size: contain;
   background-repeat: no-repeat;
   animation: swordStab 0.5s forwards;
-  pointer-events: none; /* Ensure it doesn't interfere with clicks */
-  z-index: 1000; /* Ensure it's on top */
+  pointer-events: none;
+  z-index: 1000;
+  transform-origin: center;
 }
 
 .shake {

@@ -28,7 +28,7 @@ const MainMenu = () => {
       name: "Warrior",
       experience: 0,
       classType: new Warrior(),
-      skills: ["Slash", "Shield Block"],
+      skills: ["Slash"],
       stats: {
         strength: 15,
         dexterity: 10,

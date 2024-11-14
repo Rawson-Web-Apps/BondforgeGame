@@ -45,7 +45,7 @@ export class Warrior extends CharacterClass {
     PlateBoots,
     Shield,
   ];
-  skills = ["Slash", "Shield Block"];
+  skills = ["Slash"];
   statBonuses = {
     strength: 2,
     dexterity: 1,

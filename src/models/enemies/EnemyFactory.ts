@@ -1,39 +1,89 @@
-import { enemyConfigs } from "./Enemies";
+import { enemyConfigs, EnemyConfig } from "./Enemies";
 import Character from "../Character";
 
-export const getRandomEnemy = (characterLevels: number[]): Character => {
-  // Calculate average character level
+/**
+ * Generates a random integer between min and max (inclusive).
+ * @param min - Minimum number
+ * @param max - Maximum number
+ * @returns Random integer between min and max
+ */
+const getRandomInt = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
+ * Creates a new enemy instance based on the provided configuration.
+ * @param config - Enemy configuration
+ * @param characterLevels - Array of party member levels
+ * @returns A new Character instance representing the enemy
+ */
+const createEnemy = (
+  config: EnemyConfig,
+  characterLevels: number[]
+): Character => {
   const avgLevel =
     characterLevels.reduce((acc, level) => acc + level, 0) /
     characterLevels.length;
 
-  // Filter enemies within the level range
-  const suitableEnemies = enemyConfigs.filter(
-    (enemy) =>
-      avgLevel >= enemy.levelRange[0] && avgLevel <= enemy.levelRange[1]
+  // Determine enemy level based on average character level
+  const enemyLevel = Math.min(
+    Math.max(Math.floor(avgLevel * 0.8), config.levelRange[0]),
+    config.levelRange[1]
   );
 
-  // If no enemies match, default to the lowest level enemy
-  const selectedEnemyConfig =
-    suitableEnemies.length > 0
-      ? suitableEnemies[Math.floor(Math.random() * suitableEnemies.length)]
-      : enemyConfigs[0];
+  // Scale stats based on level
+  const scaleFactor = enemyLevel / config.levelRange[0];
+  const scaledStats = {
+    strength: Math.floor(config.stats.strength * scaleFactor),
+    dexterity: Math.floor(config.stats.dexterity * scaleFactor),
+    constitution: Math.floor(config.stats.constitution * scaleFactor),
+    intelligence: Math.floor(config.stats.intelligence * scaleFactor),
+    wisdom: Math.floor(config.stats.wisdom * scaleFactor),
+    charisma: Math.floor(config.stats.charisma * scaleFactor),
+  };
 
-  // Create and return a new Character instance based on the config
   return new Character({
-    name: selectedEnemyConfig.name,
-    level:
-      Math.floor(
-        Math.random() *
-          (selectedEnemyConfig.levelRange[1] -
-            selectedEnemyConfig.levelRange[0] +
-            1)
-      ) + selectedEnemyConfig.levelRange[0],
+    name: config.name,
+    level: enemyLevel,
     experience: 0,
-    classType: selectedEnemyConfig.classType,
-    skills: selectedEnemyConfig.skills,
-    stats: selectedEnemyConfig.stats,
-    attack: selectedEnemyConfig.attack,
-    equipment: selectedEnemyConfig.equipment,
+    classType: config.classType,
+    skills: config.skills,
+    stats: scaledStats,
+    attack: Math.floor(config.attack * scaleFactor),
+    equipment: config.equipment,
   });
+};
+
+/**
+ * Generates a random list of enemies (1-5) based on party levels.
+ * @param characterLevels - Array of party member levels
+ * @returns Array of Character instances representing the enemies
+ */
+export const getRandomEnemies = (characterLevels: number[]): Character[] => {
+  const numberOfEnemies = getRandomInt(1, 5);
+  const enemies: Character[] = [];
+
+  for (let i = 0; i < numberOfEnemies; i++) {
+    // Select a random enemy configuration suitable for the party level
+    const suitableEnemies = enemyConfigs.filter(
+      (enemy) =>
+        characterLevels.reduce((acc, level) => acc + level, 0) /
+          characterLevels.length >=
+          enemy.levelRange[0] &&
+        characterLevels.reduce((acc, level) => acc + level, 0) /
+          characterLevels.length <=
+          enemy.levelRange[1]
+    );
+
+    // If no suitable enemies, default to the first enemy
+    const selectedEnemyConfig =
+      suitableEnemies.length > 0
+        ? suitableEnemies[getRandomInt(0, suitableEnemies.length - 1)]
+        : enemyConfigs[0];
+
+    const enemy = createEnemy(selectedEnemyConfig, characterLevels);
+    enemies.push(enemy);
+  }
+
+  return enemies;
 };

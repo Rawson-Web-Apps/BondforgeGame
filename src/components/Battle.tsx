@@ -3,8 +3,9 @@ import { GameContext } from "../context/GameContext";
 import SkillManager from "../managers/SkillManager";
 import { skills } from "../models/skill/Skills";
 import Character from "../models/Character";
-import { getRandomEnemy } from "../models/enemies/EnemyFactory";
+import { getRandomEnemies } from "../models/enemies/EnemyFactory";
 import "./Battle.css"; // Import the CSS file for styling
+import { SkillType } from "../models/skill/Skill";
 
 // Function to get image paths based on class name
 const getImagePaths = (className: string) => {
@@ -35,8 +36,9 @@ const Battle = () => {
   // Calculate character levels
   const characterLevels = gameState.party.map((member) => member.level);
 
-  const [enemy, setEnemy] = useState<Character>(() =>
-    getRandomEnemy(characterLevels)
+  // Initialize multiple enemies
+  const [enemies, setEnemies] = useState<Character[]>(() =>
+    getRandomEnemies(characterLevels)
   );
 
   const [activeParticipantIndex, setActiveParticipantIndex] = useState(0);
@@ -58,6 +60,10 @@ const Battle = () => {
     left: number;
   } | null>(null);
 
+  /**
+   * Determines the move order based on dexterity of participants.
+   * Includes all party members and enemies.
+   */
   const determineMoveOrder = useCallback(() => {
     const participants = [
       ...gameState.party.map((member, index) => {
@@ -72,43 +78,61 @@ const Battle = () => {
           faceImage,
         };
       }),
-      {
+      ...enemies.map((enemy, index) => ({
         type: "enemy",
+        index, // Index within the enemies array
         dexterity: enemy.stats.dexterity,
         name: enemy.name,
         faceImage: getImagePaths(enemy.classType.name.toLowerCase()).faceImage,
-      },
+      })),
     ];
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
     return participants;
-  }, [gameState, enemy]);
+  }, [gameState.party, enemies]);
 
   const moveOrder = useMemo(() => determineMoveOrder(), [determineMoveOrder]);
 
   const handleAttack = useCallback(() => {
-    setSelectedSkill(null); // Ensure no skill is selected
     setSelectingTarget(true);
-  }, []);
+    setSelectedTargetIndex(gameState.party.length); // Default to the first enemy
+  }, [gameState.party.length]);
 
   const handleSkillButton = useCallback(() => {
     setSelectingSkill(true);
     setSelectedSkillIndex(0); // Initialize to the first skill
   }, []);
 
-  const handleSkillSelection = useCallback((skillName: string) => {
-    setSelectedSkill(skillName);
-    setSelectingSkill(false);
-    setSelectingTarget(true);
-    setSelectedSkillIndex(null); // Reset skill selection
-  }, []);
+  const handleSkillSelection = useCallback(
+    (skillName: string) => {
+      setSelectedSkill(skillName);
+      setSelectingSkill(false);
+      setSelectingTarget(true);
 
+      // Determine if the skill is an attack or support
+      const skill = skills[skillName.toLowerCase() as keyof typeof skills];
+      if (skill && skill.type === SkillType.Attack) {
+        // Default to the first enemy
+        setSelectedTargetIndex(gameState.party.length); // First enemy index
+      } else {
+        // Default to the first party member
+        setSelectedTargetIndex(0);
+      }
+    },
+    [gameState.party.length]
+  );
+
+  /**
+   * Executes an attack on the selected target.
+   * @param target - The Character being attacked
+   */
   const handleAttackExecution = useCallback(
     (target: Character) => {
-      const targetIndex =
-        target === enemy
-          ? gameState.party.length
-          : gameState.party.indexOf(target);
+      // Determine target index: party members are indexed 0 to N-1, enemies are indexed N to N+M-1
+      const targetIndex = enemies.includes(target)
+        ? gameState.party.length + enemies.indexOf(target)
+        : gameState.party.indexOf(target);
+
       const targetElement = document.querySelector(
         `.character-${targetIndex}`
       ) as HTMLElement;
@@ -136,12 +160,19 @@ const Battle = () => {
             1
           );
 
-          if (target === enemy) {
-            setEnemy((prevEnemy) => {
-              const updatedEnemy = new Character(prevEnemy);
-              updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
-              return updatedEnemy;
+          if (enemies.includes(target)) {
+            const enemyIdx = enemies.indexOf(target);
+            setEnemies((prevEnemies) => {
+              const updatedEnemies = [...prevEnemies];
+              updatedEnemies[enemyIdx].updateCurrentHp(
+                prevEnemies[enemyIdx].currentHp - damage
+              );
+              return updatedEnemies;
             });
+            setCombatLog((prevLog) => [
+              ...prevLog,
+              `${attacker.name} attacks ${target.name} for ${damage} damage!`,
+            ]);
           } else {
             const updatedParty = gameState.party.map((member) => {
               if (member === target) {
@@ -153,18 +184,24 @@ const Battle = () => {
               ...prevState,
               party: updatedParty,
             }));
+            setCombatLog((prevLog) => [
+              ...prevLog,
+              `${attacker.name} attacks ${target.name} for ${damage} damage!`,
+            ]);
           }
-
-          setCombatLog((prevLog) => [
-            ...prevLog,
-            `${attacker.name} attacks ${target.name} for ${damage} damage!`,
-          ]);
 
           if (target.currentHp <= 0) {
             setCombatLog((prevLog) => [
               ...prevLog,
               `${target.name} has been defeated!`,
             ]);
+
+            // Remove the defeated enemy from the enemies array
+            if (enemies.includes(target)) {
+              setEnemies((prevEnemies) =>
+                prevEnemies.filter((enemy) => enemy !== target)
+              );
+            }
           }
         }
 
@@ -178,9 +215,13 @@ const Battle = () => {
         setSwordPosition(null);
       }, 500); // Match the duration of the sword swing animation
     },
-    [activeParticipantIndex, enemy, gameState, moveOrder, setGameState]
+    [activeParticipantIndex, enemies, gameState, moveOrder, setGameState]
   );
 
+  /**
+   * Executes a skill on the selected target.
+   * @param target - The Character being targeted by the skill
+   */
   const handleSkillExecution = useCallback(
     (target: Character) => {
       if (!selectedSkill) return;
@@ -243,34 +284,48 @@ const Battle = () => {
     (event: KeyboardEvent) => {
       if (selectingTarget) {
         const partyLength = gameState.party.length;
+        const enemiesLength = enemies.length;
         let newIndex = selectedTargetIndex ?? 0;
 
         switch (event.key) {
           case "w":
             if (newIndex < partyLength) {
+              // Cycle within party members
               newIndex = (newIndex - 1 + partyLength) % partyLength;
+            } else {
+              // Cycle within enemies
+              newIndex =
+                partyLength +
+                ((newIndex - partyLength - 1 + enemiesLength) % enemiesLength);
             }
             break;
           case "s":
             if (newIndex < partyLength) {
+              // Cycle within party members
               newIndex = (newIndex + 1) % partyLength;
+            } else {
+              // Cycle within enemies
+              newIndex =
+                partyLength + ((newIndex - partyLength + 1) % enemiesLength);
             }
             break;
           case "a":
             if (newIndex >= partyLength) {
-              newIndex = 0; // Switch to the first party member
+              // Switch to the first party member
+              newIndex = 0;
             }
             break;
           case "d":
             if (newIndex < partyLength) {
-              newIndex = partyLength; // Switch to the enemy
+              // Switch to the first enemy
+              newIndex = partyLength;
             }
             break;
           case "Enter":
-            if (newIndex === partyLength) {
-              handleTargetSelection(enemy);
-            } else {
+            if (newIndex < partyLength) {
               handleTargetSelection(gameState.party[newIndex]);
+            } else {
+              handleTargetSelection(enemies[newIndex - partyLength]);
             }
             break;
           default:
@@ -279,48 +334,51 @@ const Battle = () => {
 
         setSelectedTargetIndex(newIndex);
       } else if (selectingSkill) {
+        // Access skills based on the current participant in the moveOrder
         const currentParticipant = moveOrder[activeParticipantIndex];
-        if (isPartyMember(currentParticipant)) {
-          const skills =
-            gameState.party[currentParticipant.index]?.skills || [];
-          const maxSkillIndex = skills.length - 1;
-          let newSkillIndex = selectedSkillIndex ?? 0;
+        let skills: string[] = [];
 
-          switch (event.key) {
-            case "a":
-              newSkillIndex =
-                (newSkillIndex - 1 + maxSkillIndex + 1) % (maxSkillIndex + 1);
-              break;
-            case "d":
-              newSkillIndex = (newSkillIndex + 1) % (maxSkillIndex + 1);
-              break;
-            case "Enter":
-              handleSkillSelection(skills[newSkillIndex]);
-              break;
-            default:
-              return;
-          }
-
-          setSelectedSkillIndex(newSkillIndex);
+        if (
+          currentParticipant.type === "party" &&
+          "index" in currentParticipant
+        ) {
+          skills = gameState.party[currentParticipant.index]?.skills || [];
         }
-      } else {
-        const maxActionIndex = 1; // Assuming two actions: Attack and Skill
-        let newActionIndex = selectedActionIndex ?? 0;
+
+        let newSkillIndex = selectedSkillIndex ?? 0;
 
         switch (event.key) {
-          case "a":
-            newActionIndex =
-              (newActionIndex - 1 + maxActionIndex + 1) % (maxActionIndex + 1);
+          case "w":
+            newSkillIndex = (newSkillIndex - 1 + skills.length) % skills.length;
             break;
-          case "d":
-            newActionIndex = (newActionIndex + 1) % (maxActionIndex + 1);
+          case "s":
+            newSkillIndex = (newSkillIndex + 1) % skills.length;
             break;
           case "Enter":
-            if (newActionIndex === 0) {
-              handleActionSelection("attack");
-            } else if (newActionIndex === 1) {
-              handleActionSelection("skill");
+            if (skills[newSkillIndex]) {
+              handleSkillSelection(skills[newSkillIndex]);
             }
+            break;
+          default:
+            return;
+        }
+
+        setSelectedSkillIndex(newSkillIndex);
+      } else {
+        // Handle action selection
+        const actions = ["attack", "skill"];
+        let newActionIndex = selectedActionIndex;
+
+        switch (event.key) {
+          case "w":
+            newActionIndex =
+              (newActionIndex - 1 + actions.length) % actions.length;
+            break;
+          case "s":
+            newActionIndex = (newActionIndex + 1) % actions.length;
+            break;
+          case "Enter":
+            handleActionSelection(actions[newActionIndex]);
             break;
           default:
             return;
@@ -333,19 +391,23 @@ const Battle = () => {
       selectingTarget,
       selectedTargetIndex,
       selectingSkill,
-      selectedSkillIndex,
+      gameState.party,
+      enemies,
+      handleTargetSelection,
       selectedActionIndex,
-      gameState,
+      handleActionSelection,
+      selectedSkillIndex,
+      handleSkillSelection,
       moveOrder,
       activeParticipantIndex,
-      enemy,
-      handleTargetSelection,
-      handleActionSelection,
-      handleSkillSelection,
     ]
   );
 
+  /**
+   * Handles enemy turns by attacking the party member with the lowest HP.
+   */
   const handleEnemyTurn = useCallback(() => {
+    // Choose the party member with the lowest HP
     const targetIndex = gameState.party.reduce(
       (lowestHpIndex, member, index) => {
         return member.currentHp < gameState.party[lowestHpIndex].currentHp
@@ -355,10 +417,15 @@ const Battle = () => {
       0
     );
 
-    const target = new Character(gameState.party[targetIndex]);
+    const target = gameState.party[targetIndex];
+
+    // Identify which enemy is currently acting
+    const enemyActing = moveOrder[activeParticipantIndex];
+    const enemyIndex = enemyActing.index!; // Safe assertion since type is enemy
+    const enemyCharacter = enemies[enemyIndex];
 
     const damage = Math.max(
-      enemy.calculateDamage() - target.calculateDefense(),
+      enemyCharacter.calculateDamage() - target.calculateDefense(),
       1
     );
 
@@ -376,7 +443,7 @@ const Battle = () => {
 
     setCombatLog((prevLog) => [
       ...prevLog,
-      `${enemy.name} attacks ${target.name} for ${damage} damage!`,
+      `${enemyCharacter.name} attacks ${target.name} for ${damage} damage!`,
     ]);
 
     if (target.currentHp <= 0) {
@@ -389,8 +456,11 @@ const Battle = () => {
     setActiveParticipantIndex(
       (prevIndex) => (prevIndex + 1) % moveOrder.length
     );
-  }, [gameState, enemy, moveOrder, setGameState]);
+  }, [gameState, enemies, moveOrder, setGameState]);
 
+  /**
+   * Handles the progression of turns based on the active participant.
+   */
   useEffect(() => {
     const currentParticipant = moveOrder[activeParticipantIndex];
     if (currentParticipant.type === "enemy") {
@@ -407,7 +477,7 @@ const Battle = () => {
 
   return (
     <div className="battle">
-      <h1>Battle: {enemy.name}</h1>
+      <h1>Battle: {enemies.map((enemy) => enemy.name).join(", ")}</h1>
       <div className="turn-order">
         {moveOrder.map((participant, index) => (
           <div
@@ -436,7 +506,11 @@ const Battle = () => {
                 key={index}
                 className={`party-member character-${index} ${
                   selectingTarget && selectedTargetIndex === index
-                    ? "selected"
+                    ? selectedSkill &&
+                      skills[selectedSkill.toLowerCase() as keyof typeof skills]
+                        .type !== SkillType.Attack
+                      ? "support-selected"
+                      : "selected"
                     : ""
                 } ${targetToShake === index ? "shake" : ""}`}
                 onMouseEnter={() => handleTargetHover(index)}
@@ -461,31 +535,43 @@ const Battle = () => {
           })}
         </div>
         <div className="enemy-column">
-          <h2>Enemy</h2>
-          <div
-            className={`enemy-member character-${gameState.party.length} ${
-              selectingTarget && selectedTargetIndex === gameState.party.length
-                ? "selected"
-                : ""
-            } ${targetToShake === gameState.party.length ? "shake" : ""}`}
-            onMouseEnter={() => handleTargetHover(gameState.party.length)}
-            onClick={() => handleTargetSelection(enemy)}
-          >
-            <img
-              src={getImagePaths(enemy.classType.name.toLowerCase()).fullImage}
-              alt={enemy.name}
-              className="character-image"
-            />
-            <div className="character-stats">
-              <p>{enemy.name}</p>
-              <p>
-                HP: {enemy.currentHp} / {enemy.maxHp}
-              </p>
-              <p>
-                MP: {enemy.currentMp} / {enemy.maxMp}
-              </p>
-            </div>
-          </div>
+          <h2>Enemies</h2>
+          {enemies.map((enemy, index) => {
+            const enemyGlobalIndex = gameState.party.length + index;
+            return (
+              <div
+                key={index}
+                className={`enemy-member character-${enemyGlobalIndex} ${
+                  selectingTarget && selectedTargetIndex === enemyGlobalIndex
+                    ? selectedSkill &&
+                      skills[selectedSkill.toLowerCase() as keyof typeof skills]
+                        .type !== SkillType.Attack
+                      ? "support-selected"
+                      : "selected"
+                    : ""
+                } ${targetToShake === enemyGlobalIndex ? "shake" : ""}`}
+                onMouseEnter={() => handleTargetHover(enemyGlobalIndex)}
+                onClick={() => handleTargetSelection(enemy)}
+              >
+                <img
+                  src={
+                    getImagePaths(enemy.classType.name.toLowerCase()).fullImage
+                  }
+                  alt={enemy.name}
+                  className="character-image"
+                />
+                <div className="character-stats">
+                  <p>{enemy.name}</p>
+                  <p>
+                    HP: {enemy.currentHp} / {enemy.maxHp}
+                  </p>
+                  <p>
+                    MP: {enemy.currentMp} / {enemy.maxMp}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       {isAttacking && swordPosition && (
@@ -525,14 +611,20 @@ const Battle = () => {
                   <button
                     onClick={handleAttack}
                     className={selectedActionIndex === 0 ? "selected" : ""}
-                    disabled={enemy.currentHp === 0}
+                    disabled={
+                      enemies.length === 0 ||
+                      enemies.every((enemy) => enemy.currentHp === 0)
+                    }
                   >
                     Attack
                   </button>
                   <button
                     onClick={handleSkillButton}
                     className={selectedActionIndex === 1 ? "selected" : ""}
-                    disabled={enemy.currentHp === 0}
+                    disabled={
+                      enemies.length === 0 ||
+                      enemies.every((enemy) => enemy.currentHp === 0)
+                    }
                   >
                     Skill
                   </button>
@@ -542,13 +634,19 @@ const Battle = () => {
               <>
                 <button
                   onClick={() => console.log("Item logic here")}
-                  disabled={enemy.currentHp === 0}
+                  disabled={
+                    enemies.length === 0 ||
+                    enemies.every((enemy) => enemy.currentHp === 0)
+                  }
                 >
                   Item
                 </button>
                 <button
                   onClick={() => console.log("Run logic here")}
-                  disabled={enemy.currentHp === 0}
+                  disabled={
+                    enemies.length === 0 ||
+                    enemies.every((enemy) => enemy.currentHp === 0)
+                  }
                 >
                   Run
                 </button>
