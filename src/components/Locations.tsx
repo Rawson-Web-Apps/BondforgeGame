@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { GameContext } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
-import arenaImage from "/public/arena.png";
+import arenaImage from "/arena.png";
 import "./Locations.css";
 
 const Locations = () => {

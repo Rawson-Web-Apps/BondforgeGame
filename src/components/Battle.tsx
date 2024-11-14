@@ -15,11 +15,25 @@ import "./Battle.css"; // Import the CSS file for styling
 
 // Function to get image paths based on class name
 const getImagePaths = (className: string) => {
-  const basePath = "/public/";
+  const basePath = "/";
   return {
     fullImage: `${basePath}${className}.png`,
     faceImage: `${basePath}${className}_turn.png`,
   };
+};
+
+type Participant = {
+  type: string;
+  dexterity: number;
+  name: string;
+  faceImage: string;
+  index?: number; // Make index optional
+};
+
+const isPartyMember = (
+  participant: Participant
+): participant is Participant & { index: number } => {
+  return participant.type === "party" && participant.index !== undefined;
 };
 
 const Battle = () => {
@@ -56,6 +70,13 @@ const Battle = () => {
   const [selectingTarget, setSelectingTarget] = useState(false);
   const [selectingSkill, setSelectingSkill] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [selectedTargetIndex, setSelectedTargetIndex] = useState<number | null>(
+    null
+  );
+  const [selectedActionIndex, setSelectedActionIndex] = useState<number>(0);
+  const [selectedSkillIndex, setSelectedSkillIndex] = useState<number | null>(
+    null
+  );
 
   const determineMoveOrder = useCallback(() => {
     const participants = [
@@ -92,20 +113,14 @@ const Battle = () => {
 
   const handleSkillButton = () => {
     setSelectingSkill(true);
+    setSelectedSkillIndex(0); // Initialize to the first skill
   };
 
   const handleSkillSelection = (skillName: string) => {
     setSelectedSkill(skillName);
     setSelectingSkill(false);
     setSelectingTarget(true);
-  };
-
-  const handleTargetSelection = (target: Character) => {
-    if (selectedSkill) {
-      handleSkillExecution(target);
-    } else {
-      handleAttackExecution(target);
-    }
+    setSelectedSkillIndex(null); // Reset skill selection
   };
 
   const handleAttackExecution = (target: Character) => {
@@ -182,6 +197,139 @@ const Battle = () => {
     );
   };
 
+  const handleTargetSelection = useCallback(
+    (target: Character) => {
+      if (selectedSkill) {
+        handleSkillExecution(target);
+      } else {
+        handleAttackExecution(target);
+      }
+      setSelectedTargetIndex(null); // Reset target selection
+    },
+    [selectedSkill, handleSkillExecution, handleAttackExecution]
+  );
+
+  const handleTargetHover = (index: number) => {
+    setSelectedTargetIndex(index);
+  };
+
+  const handleActionSelection = useCallback(
+    (action: string) => {
+      if (action === "attack") {
+        handleAttack();
+      } else if (action === "skill") {
+        handleSkillButton();
+      }
+      setSelectedActionIndex(0); // Reset action selection
+    },
+    [handleAttack, handleSkillButton]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (selectingTarget) {
+        const partyLength = gameState.party.length;
+        let newIndex = selectedTargetIndex ?? 0;
+
+        switch (event.key) {
+          case "w":
+            if (newIndex < partyLength) {
+              newIndex = (newIndex - 1 + partyLength) % partyLength;
+            }
+            break;
+          case "s":
+            if (newIndex < partyLength) {
+              newIndex = (newIndex + 1) % partyLength;
+            }
+            break;
+          case "a":
+            if (newIndex >= partyLength) {
+              newIndex = 0; // Switch to the first party member
+            }
+            break;
+          case "d":
+            if (newIndex < partyLength) {
+              newIndex = partyLength; // Switch to the enemy
+            }
+            break;
+          case "Enter":
+            if (newIndex === partyLength) {
+              handleTargetSelection(enemy);
+            } else {
+              handleTargetSelection(gameState.party[newIndex]);
+            }
+            break;
+          default:
+            return;
+        }
+
+        setSelectedTargetIndex(newIndex);
+      } else if (selectingSkill) {
+        const currentParticipant = moveOrder[activeParticipantIndex];
+        if (isPartyMember(currentParticipant)) {
+          const skills =
+            gameState.party[currentParticipant.index]?.skills || [];
+          const maxSkillIndex = skills.length - 1;
+          let newSkillIndex = selectedSkillIndex ?? 0;
+
+          switch (event.key) {
+            case "a":
+              newSkillIndex =
+                (newSkillIndex - 1 + maxSkillIndex + 1) % (maxSkillIndex + 1);
+              break;
+            case "d":
+              newSkillIndex = (newSkillIndex + 1) % (maxSkillIndex + 1);
+              break;
+            case "Enter":
+              handleSkillSelection(skills[newSkillIndex]);
+              break;
+            default:
+              return;
+          }
+
+          setSelectedSkillIndex(newSkillIndex);
+        }
+      } else {
+        const maxActionIndex = 1; // Assuming two actions: Attack and Skill
+        let newActionIndex = selectedActionIndex ?? 0;
+
+        switch (event.key) {
+          case "a":
+            newActionIndex =
+              (newActionIndex - 1 + maxActionIndex + 1) % (maxActionIndex + 1);
+            break;
+          case "d":
+            newActionIndex = (newActionIndex + 1) % (maxActionIndex + 1);
+            break;
+          case "Enter":
+            if (newActionIndex === 0) {
+              handleActionSelection("attack");
+            } else if (newActionIndex === 1) {
+              handleActionSelection("skill");
+            }
+            break;
+          default:
+            return;
+        }
+
+        setSelectedActionIndex(newActionIndex);
+      }
+    },
+    [
+      selectingTarget,
+      selectedTargetIndex,
+      selectingSkill,
+      selectedSkillIndex,
+      selectedActionIndex,
+      gameState,
+      moveOrder,
+      activeParticipantIndex,
+      enemy,
+      handleTargetSelection,
+      handleActionSelection,
+    ]
+  );
+
   const handleEnemyTurn = useCallback(() => {
     const targetIndex = gameState.party.reduce(
       (lowestHpIndex, member, index) => {
@@ -235,6 +383,13 @@ const Battle = () => {
     }
   }, [activeParticipantIndex, handleEnemyTurn, moveOrder]);
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div className="battle">
       <h1>Battle: {enemy.name}</h1>
@@ -262,7 +417,16 @@ const Battle = () => {
               member.classType.name.toLowerCase()
             );
             return (
-              <div key={index} className="party-member">
+              <div
+                key={index}
+                className={`party-member ${
+                  selectingTarget && selectedTargetIndex === index
+                    ? "selected"
+                    : ""
+                }`}
+                onMouseEnter={() => handleTargetHover(index)}
+                onClick={() => handleTargetSelection(member)}
+              >
                 <img
                   src={fullImage}
                   alt={member.name}
@@ -279,7 +443,15 @@ const Battle = () => {
         </div>
         <div className="enemy-column">
           <h2>Enemy</h2>
-          <div className="enemy-member">
+          <div
+            className={`enemy-member ${
+              selectingTarget && selectedTargetIndex === gameState.party.length
+                ? "selected"
+                : ""
+            }`}
+            onMouseEnter={() => handleTargetHover(gameState.party.length)}
+            onClick={() => handleTargetSelection(enemy)}
+          >
             <img
               src={getImagePaths(enemy.classType.name.toLowerCase()).fullImage}
               alt={enemy.name}
@@ -297,16 +469,7 @@ const Battle = () => {
         {selectingTarget ? (
           <div className="target-selection">
             <h3>Select a target:</h3>
-            <button onClick={() => handleTargetSelection(enemy)}>Enemy</button>
-            {gameState.party.map((member, index) => (
-              <button
-                key={index}
-                onClick={() => handleTargetSelection(member)}
-                disabled={member.currentHp <= 0}
-              >
-                {member.name}
-              </button>
-            ))}
+            {/* Removed buttons for target selection */}
           </div>
         ) : selectingSkill ? (
           <div className="skill-selection">
@@ -319,24 +482,27 @@ const Battle = () => {
                 <button
                   key={index}
                   onClick={() => handleSkillSelection(skillName)}
+                  className={selectedSkillIndex === index ? "selected" : ""}
                 >
                   {skillName}
                 </button>
               ))}
           </div>
         ) : (
-          <>
+          <div className="action-buttons">
             {moveOrder[activeParticipantIndex].type === "party" &&
               "index" in moveOrder[activeParticipantIndex] && (
                 <>
                   <button
                     onClick={handleAttack}
+                    className={selectedActionIndex === 0 ? "selected" : ""}
                     disabled={enemy.currentHp === 0}
                   >
                     Attack
                   </button>
                   <button
                     onClick={handleSkillButton}
+                    className={selectedActionIndex === 1 ? "selected" : ""}
                     disabled={enemy.currentHp === 0}
                   >
                     Skill
@@ -359,7 +525,7 @@ const Battle = () => {
                 </button>
               </>
             )}
-          </>
+          </div>
         )}
       </div>
       <div className="combat-log">
