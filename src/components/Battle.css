@@ -113,3 +113,49 @@ button.selected {
   transform: scale(1.1); /* Slightly enlarge the button */
   transition: transform 0.2s, border 0.2s;
 }
+
+@keyframes swordStab {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(90deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(0) translateY(-20px) rotate(90deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(-40px) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-10px);
+  }
+  40%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+.sword-swing {
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  background-image: url("/sword.png"); /* Ensure this path is correct */
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: swordStab 0.5s forwards;
+  pointer-events: none; /* Ensure it doesn't interfere with clicks */
+  z-index: 1000; /* Ensure it's on top */
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}

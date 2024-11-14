@@ -30,7 +30,8 @@ export class Character {
   stats: Stats;
   maxHp: number;
   currentHp: number;
-  mp: number;
+  maxMp: number;
+  currentMp: number;
   attack: number;
   equipment: {
     mainHand?: Weapon;
@@ -88,7 +89,8 @@ export class Character {
     this.equipment = equipment;
     this.maxHp = this.calculateHp();
     this.currentHp = this.maxHp; // Initialize currentHp to maxHp
-    this.mp = this.calculateMp();
+    this.maxMp = this.calculateMp();
+    this.currentMp = this.maxMp;
   }
 
   public calculateLevel(): number {
@@ -116,6 +118,10 @@ export class Character {
   // Method to update current hp if needed
   public updateCurrentHp(newHp: number) {
     this.currentHp = Math.max(0, Math.min(newHp, this.maxHp)); // Ensure hp is within bounds
+  }
+
+  public updateCurrentMp(newMp: number) {
+    this.currentMp = Math.max(0, Math.min(newMp, this.maxMp)); // Ensure hp is within bounds
   }
 
   // Method to calculate total damage

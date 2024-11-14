@@ -6,8 +6,8 @@ class SkillManager {
   static executeSkill(skill: Skill, user: Character, target: Character) {
     const cost = skill.cost ?? 0; // Default to 0 if cost is undefined
 
-    if (user.mp >= cost) {
-      user.mp -= cost;
+    if (user.currentMp >= cost) {
+      user.currentMp -= cost;
       const targetInitialHp = target.currentHp;
       skill.effect(target, user);
 
