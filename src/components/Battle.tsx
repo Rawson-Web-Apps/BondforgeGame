@@ -434,8 +434,12 @@ const Battle = () => {
                 />
                 <div className="character-stats">
                   <p>{member.name}</p>
-                  <p>HP: {member.currentHp}</p>
-                  <p>MP: {member.mp}</p>
+                  <p>
+                    HP: {member.currentHp} / {member.maxHp}
+                  </p>
+                  <p>
+                    MP: {member.currentMp} / {member.maxMp}
+                  </p>
                 </div>
               </div>
             );
@@ -459,8 +463,12 @@ const Battle = () => {
             />
             <div className="character-stats">
               <p>{enemy.name}</p>
-              <p>HP: {enemy.currentHp}</p>
-              <p>MP: {enemy.mp}</p>
+              <p>
+                HP: {enemy.currentHp} / {enemy.maxHp}
+              </p>
+              <p>
+                MP: {enemy.currentMp} / {enemy.maxMp}
+              </p>
             </div>
           </div>
         </div>
