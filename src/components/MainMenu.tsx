@@ -119,6 +119,11 @@ const MainMenu = () => {
         {party.map((character, index) => (
           <div key={index} className="character-card">
             <h2>{character.name}</h2>
+            <img
+              src={`/${character.name.toLowerCase()}.png`}
+              alt={`${character.name} class`}
+              className="character-image"
+            />
             <p>Class: {character.classType.name}</p>
             <p>Level: {character.level}</p>
             <p>Experience: {character.experience}</p>

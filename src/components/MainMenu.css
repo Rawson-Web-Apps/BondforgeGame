@@ -20,4 +20,10 @@
 .character-card ul {
   list-style-type: none; /* Remove bullet points */
   padding: 0; /* Remove default padding */
-} 
+}
+
+.character-image-menu {
+  width: 100px; /* Set a fixed width for the images */
+  height: auto; /* Maintain aspect ratio */
+  margin-bottom: 10px; /* Add some space below the image */
+}
