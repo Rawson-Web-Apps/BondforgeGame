@@ -16,20 +16,6 @@ const getImagePaths = (className: string) => {
   };
 };
 
-type Participant = {
-  type: string;
-  dexterity: number;
-  name: string;
-  faceImage: string;
-  index?: number; // Make index optional
-};
-
-const isPartyMember = (
-  participant: Participant
-): participant is Participant & { index: number } => {
-  return participant.type === "party" && participant.index !== undefined;
-};
-
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
 
@@ -122,6 +108,12 @@ const Battle = () => {
     [gameState.party.length]
   );
 
+  const handleTurnEnd = useCallback(() => {
+    setActiveParticipantIndex(
+      (prevIndex) => (prevIndex + 1) % moveOrder.length
+    );
+  }, [moveOrder.length]);
+
   /**
    * Executes an attack on the selected target.
    * @param target - The Character being attacked
@@ -201,21 +193,34 @@ const Battle = () => {
               setEnemies((prevEnemies) =>
                 prevEnemies.filter((enemy) => enemy !== target)
               );
+
+              // Recalculate moveOrder after an enemy is defeated
+              const newMoveOrder = determineMoveOrder();
+              setActiveParticipantIndex(
+                (prevIndex) => prevIndex % newMoveOrder.length
+              );
             }
           }
         }
 
         setSelectingTarget(false);
-        setActiveParticipantIndex(
-          (prevIndex) => (prevIndex + 1) % moveOrder.length
-        );
-
         setIsAttacking(false);
         setTargetToShake(null);
         setSwordPosition(null);
+
+        // End the turn after attack execution
+        handleTurnEnd();
       }, 500); // Match the duration of the sword swing animation
     },
-    [activeParticipantIndex, enemies, gameState, moveOrder, setGameState]
+    [
+      activeParticipantIndex,
+      enemies,
+      gameState,
+      moveOrder,
+      setGameState,
+      handleTurnEnd,
+      determineMoveOrder,
+    ]
   );
 
   /**
@@ -245,11 +250,16 @@ const Battle = () => {
 
       setSelectedSkill(null);
       setSelectingTarget(false);
-      setActiveParticipantIndex(
-        (prevIndex) => (prevIndex + 1) % moveOrder.length
-      );
+      // End the turn after skill execution
+      handleTurnEnd();
     },
-    [selectedSkill, activeParticipantIndex, determineMoveOrder, gameState.party]
+    [
+      selectedSkill,
+      activeParticipantIndex,
+      determineMoveOrder,
+      gameState.party,
+      handleTurnEnd,
+    ]
   );
 
   const handleTargetSelection = useCallback(
@@ -407,6 +417,13 @@ const Battle = () => {
    * Handles enemy turns by attacking the party member with the lowest HP.
    */
   const handleEnemyTurn = useCallback(() => {
+    // Ensure the current participant is an enemy
+    const currentParticipant = moveOrder[activeParticipantIndex];
+    if (currentParticipant.type !== "enemy") {
+      console.error("Current participant is not an enemy");
+      return;
+    }
+
     // Choose the party member with the lowest HP
     const targetIndex = gameState.party.reduce(
       (lowestHpIndex, member, index) => {
@@ -420,9 +437,15 @@ const Battle = () => {
     const target = gameState.party[targetIndex];
 
     // Identify which enemy is currently acting
-    const enemyActing = moveOrder[activeParticipantIndex];
-    const enemyIndex = enemyActing.index!; // Safe assertion since type is enemy
+    const enemyIndex = currentParticipant.index!; // Safe assertion since type is enemy
+
+    // Adjust the index to access the enemies array
     const enemyCharacter = enemies[enemyIndex];
+
+    if (!enemyCharacter) {
+      console.error("Enemy character is undefined");
+      return;
+    }
 
     const damage = Math.max(
       enemyCharacter.calculateDamage() - target.calculateDefense(),
@@ -453,10 +476,16 @@ const Battle = () => {
       ]);
     }
 
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
-  }, [gameState, enemies, moveOrder, setGameState]);
+    // End the turn after enemy action
+    handleTurnEnd();
+  }, [
+    activeParticipantIndex,
+    moveOrder,
+    gameState,
+    enemies,
+    handleTurnEnd,
+    setGameState,
+  ]);
 
   /**
    * Handles the progression of turns based on the active participant.
