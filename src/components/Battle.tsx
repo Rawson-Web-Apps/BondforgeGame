@@ -77,6 +77,12 @@ const Battle = () => {
   const [selectedSkillIndex, setSelectedSkillIndex] = useState<number | null>(
     null
   );
+  const [isAttacking, setIsAttacking] = useState(false);
+  const [targetToShake, setTargetToShake] = useState<number | null>(null);
+  const [swordPosition, setSwordPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const determineMoveOrder = useCallback(() => {
     const participants = [
@@ -106,96 +112,130 @@ const Battle = () => {
 
   const moveOrder = useMemo(() => determineMoveOrder(), [determineMoveOrder]);
 
-  const handleAttack = () => {
+  const handleAttack = useCallback(() => {
     setSelectedSkill(null); // Ensure no skill is selected
     setSelectingTarget(true);
-  };
+  }, []);
 
-  const handleSkillButton = () => {
+  const handleSkillButton = useCallback(() => {
     setSelectingSkill(true);
     setSelectedSkillIndex(0); // Initialize to the first skill
-  };
+  }, []);
 
-  const handleSkillSelection = (skillName: string) => {
+  const handleSkillSelection = useCallback((skillName: string) => {
     setSelectedSkill(skillName);
     setSelectingSkill(false);
     setSelectingTarget(true);
     setSelectedSkillIndex(null); // Reset skill selection
-  };
+  }, []);
 
-  const handleAttackExecution = (target: Character) => {
-    const currentParticipant = moveOrder[activeParticipantIndex];
+  const handleAttackExecution = useCallback(
+    (target: Character) => {
+      const targetIndex =
+        target === enemy
+          ? gameState.party.length
+          : gameState.party.indexOf(target);
+      const targetElement = document.querySelector(
+        `.character-${targetIndex}`
+      ) as HTMLElement;
 
-    if (currentParticipant.type === "party" && "index" in currentParticipant) {
-      const attacker = gameState.party[currentParticipant.index];
-      const damage = Math.max(
-        attacker.calculateDamage() - target.calculateDefense(),
-        1
-      );
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        const centerY = rect.top + rect.height / 2;
+        setSwordPosition({ top: centerY, left: rect.left });
+      }
 
-      if (target === enemy) {
-        setEnemy((prevEnemy) => {
-          const updatedEnemy = new Character(prevEnemy);
-          updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
-          return updatedEnemy;
-        });
-      } else {
-        const updatedParty = gameState.party.map((member) => {
-          if (member === target) {
-            member.updateCurrentHp(member.currentHp - damage);
+      setIsAttacking(true);
+      setTargetToShake(targetIndex);
+
+      setTimeout(() => {
+        // Perform the attack logic after the animation
+        const currentParticipant = moveOrder[activeParticipantIndex];
+
+        if (
+          currentParticipant.type === "party" &&
+          "index" in currentParticipant
+        ) {
+          const attacker = gameState.party[currentParticipant.index];
+          const damage = Math.max(
+            attacker.calculateDamage() - target.calculateDefense(),
+            1
+          );
+
+          if (target === enemy) {
+            setEnemy((prevEnemy) => {
+              const updatedEnemy = new Character(prevEnemy);
+              updatedEnemy.updateCurrentHp(prevEnemy.currentHp - damage);
+              return updatedEnemy;
+            });
+          } else {
+            const updatedParty = gameState.party.map((member) => {
+              if (member === target) {
+                member.updateCurrentHp(member.currentHp - damage);
+              }
+              return member;
+            });
+            setGameState((prevState) => ({
+              ...prevState,
+              party: updatedParty,
+            }));
           }
-          return member;
-        });
-        setGameState((prevState) => ({
-          ...prevState,
-          party: updatedParty,
-        }));
+
+          setCombatLog((prevLog) => [
+            ...prevLog,
+            `${attacker.name} attacks ${target.name} for ${damage} damage!`,
+          ]);
+
+          if (target.currentHp <= 0) {
+            setCombatLog((prevLog) => [
+              ...prevLog,
+              `${target.name} has been defeated!`,
+            ]);
+          }
+        }
+
+        setSelectingTarget(false);
+        setActiveParticipantIndex(
+          (prevIndex) => (prevIndex + 1) % moveOrder.length
+        );
+
+        setIsAttacking(false);
+        setTargetToShake(null);
+        setSwordPosition(null);
+      }, 500); // Match the duration of the sword swing animation
+    },
+    [activeParticipantIndex, enemy, gameState, moveOrder, setGameState]
+  );
+
+  const handleSkillExecution = useCallback(
+    (target: Character) => {
+      if (!selectedSkill) return;
+
+      const moveOrder = determineMoveOrder();
+      const participant = moveOrder[activeParticipantIndex];
+
+      if (participant.type === "party" && "index" in participant) {
+        const member = gameState.party[participant.index];
+        const skill =
+          skills[selectedSkill.toLowerCase() as keyof typeof skills];
+
+        if (!skill) {
+          console.error(`Skill not found: ${selectedSkill}`);
+          return;
+        }
+
+        const logMessage = SkillManager.executeSkill(skill, member, target);
+        setCombatLog((prevLog) => [...prevLog, logMessage]);
       }
 
-      setCombatLog((prevLog) => [
-        ...prevLog,
-        `${attacker.name} attacks ${target.name} for ${damage} damage!`,
-      ]);
-
-      if (target.currentHp <= 0) {
-        setCombatLog((prevLog) => [
-          ...prevLog,
-          `${target.name} has been defeated!`,
-        ]);
-      }
-    }
-
-    setSelectingTarget(false);
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
-  };
-
-  const handleSkillExecution = (target: Character) => {
-    if (!selectedSkill) return;
-
-    const moveOrder = determineMoveOrder();
-    const participant = moveOrder[activeParticipantIndex];
-
-    if (participant.type === "party" && "index" in participant) {
-      const member = gameState.party[participant.index];
-      const skill = skills[selectedSkill.toLowerCase() as keyof typeof skills];
-
-      if (!skill) {
-        console.error(`Skill not found: ${selectedSkill}`);
-        return;
-      }
-
-      const logMessage = SkillManager.executeSkill(skill, member, target);
-      setCombatLog((prevLog) => [...prevLog, logMessage]);
-    }
-
-    setSelectedSkill(null);
-    setSelectingTarget(false);
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
-  };
+      setSelectedSkill(null);
+      setSelectingTarget(false);
+      setActiveParticipantIndex(
+        (prevIndex) => (prevIndex + 1) % moveOrder.length
+      );
+    },
+    [selectedSkill, activeParticipantIndex, determineMoveOrder, gameState.party]
+  );
 
   const handleTargetSelection = useCallback(
     (target: Character) => {
@@ -327,6 +367,7 @@ const Battle = () => {
       enemy,
       handleTargetSelection,
       handleActionSelection,
+      handleSkillSelection,
     ]
   );
 
@@ -419,11 +460,11 @@ const Battle = () => {
             return (
               <div
                 key={index}
-                className={`party-member ${
+                className={`party-member character-${index} ${
                   selectingTarget && selectedTargetIndex === index
                     ? "selected"
                     : ""
-                }`}
+                } ${targetToShake === index ? "shake" : ""}`}
                 onMouseEnter={() => handleTargetHover(index)}
                 onClick={() => handleTargetSelection(member)}
               >
@@ -448,11 +489,11 @@ const Battle = () => {
         <div className="enemy-column">
           <h2>Enemy</h2>
           <div
-            className={`enemy-member ${
+            className={`enemy-member character-${gameState.party.length} ${
               selectingTarget && selectedTargetIndex === gameState.party.length
                 ? "selected"
                 : ""
-            }`}
+            } ${targetToShake === gameState.party.length ? "shake" : ""}`}
             onMouseEnter={() => handleTargetHover(gameState.party.length)}
             onClick={() => handleTargetSelection(enemy)}
           >
@@ -473,6 +514,12 @@ const Battle = () => {
           </div>
         </div>
       </div>
+      {isAttacking && swordPosition && (
+        <div
+          className="sword-swing"
+          style={{ top: swordPosition.top, left: swordPosition.left }}
+        ></div>
+      )}
       <div className="actions">
         {selectingTarget ? (
           <div className="target-selection">
