@@ -16,7 +16,7 @@ import {
   Shield,
 } from "../models/Equipment";
 
-interface GameState {
+export interface GameState {
   playerName: string;
   party: Character[];
   location: string;

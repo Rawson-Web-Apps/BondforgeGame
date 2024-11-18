@@ -120,7 +120,7 @@ const MainMenu = () => {
           <div key={index} className="character-card">
             <h2>{character.name}</h2>
             <img
-              src={`/${character.name.toLowerCase()}.png`}
+              src={`/images/${character.name.toLowerCase()}.png`}
               alt={`${character.name} class`}
               className="character-image"
             />
