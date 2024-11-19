@@ -110,7 +110,7 @@ export const useBattleActions = (
     setActiveParticipantIndex((prevIndex) => {
       if (moveOrder.length === 0) return 0; // Handle empty moveOrder
 
-      let nextIndex = (prevIndex + 1) % moveOrder.length;
+      const nextIndex = (prevIndex + 1) % moveOrder.length;
       return nextIndex;
     });
   }, [moveOrder.length]);
@@ -152,34 +152,43 @@ export const useBattleActions = (
             const enemyIdx = enemies.indexOf(target);
 
             setEnemies((prevEnemies) => {
-              const updatedEnemies = prevEnemies.map((enemy, idx) => {
-                if (idx === enemyIdx) {
-                  const newCurrentHp = enemy.currentHp - damage;
-                  const isAlive = newCurrentHp > 0;
-                  if (!isAlive) {
-                    setCombatLog((prevLog) => [
-                      ...prevLog,
-                      `${target.name} has been defeated!`,
-                    ]);
+              const updatedEnemies = prevEnemies.reduce(
+                (acc: Character[], enemy, idx) => {
+                  if (idx === enemyIdx) {
+                    const newCurrentHp = enemy.currentHp - damage;
+                    const isAlive = newCurrentHp > 0;
+                    if (!isAlive) {
+                      setCombatLog((prevLog) => [
+                        ...prevLog,
+                        `${target.name} has been defeated!`,
+                      ]);
+                      // Enemy is defeated; do not include it in the updated enemies array
+                      return acc;
+                    } else {
+                      // Create a new Character instance with updated HP
+                      const updatedEnemy = new Character({
+                        name: enemy.name,
+                        level: enemy.level,
+                        experience: enemy.experience,
+                        classType: enemy.classType,
+                        skills: enemy.skills,
+                        stats: enemy.stats,
+                        attack: enemy.attack,
+                        equipment: enemy.equipment,
+                      });
+                      updatedEnemy.currentHp = newCurrentHp;
+                      updatedEnemy.currentMp = enemy.currentMp;
+                      updatedEnemy.alive = isAlive;
+                      acc.push(updatedEnemy);
+                      return acc;
+                    }
+                  } else {
+                    acc.push(enemy);
+                    return acc;
                   }
-                  // Create a new Character instance
-                  const updatedEnemy = new Character({
-                    name: enemy.name,
-                    level: enemy.level,
-                    experience: enemy.experience,
-                    classType: enemy.classType,
-                    skills: enemy.skills,
-                    stats: enemy.stats,
-                    attack: enemy.attack,
-                    equipment: enemy.equipment,
-                  });
-                  updatedEnemy.currentHp = newCurrentHp;
-                  updatedEnemy.currentMp = enemy.currentMp;
-                  updatedEnemy.alive = isAlive;
-                  return updatedEnemy;
-                }
-                return enemy;
-              });
+                },
+                []
+              );
 
               return updatedEnemies;
             });
@@ -238,7 +247,14 @@ export const useBattleActions = (
         handleTurnEnd();
       }, 500);
     },
-    [activeParticipantIndex, enemies, gameState.party, handleTurnEnd, moveOrder]
+    [
+      activeParticipantIndex,
+      enemies,
+      gameState.party,
+      handleTurnEnd,
+      moveOrder,
+      setGameState,
+    ]
   );
 
   const handleSkillExecution = useCallback(
@@ -274,26 +290,7 @@ export const useBattleActions = (
 
         if (enemies.includes(target) && target.currentHp <= 0) {
           setEnemies((prevEnemies) =>
-            prevEnemies.map((enemy) => {
-              if (enemy === target) {
-                // Create a new Character instance
-                const updatedEnemy = new Character({
-                  name: enemy.name,
-                  level: enemy.level,
-                  experience: enemy.experience,
-                  classType: enemy.classType,
-                  skills: enemy.skills,
-                  stats: enemy.stats,
-                  attack: enemy.attack,
-                  equipment: enemy.equipment,
-                });
-                updatedEnemy.currentHp = 0;
-                updatedEnemy.currentMp = enemy.currentMp;
-                updatedEnemy.alive = false;
-                return updatedEnemy;
-              }
-              return enemy;
-            })
+            prevEnemies.filter((enemy) => enemy !== target)
           );
           setCombatLog((prevLog) => [
             ...prevLog,
@@ -387,8 +384,9 @@ export const useBattleActions = (
                   handleTargetSelection(target);
                 }
               } else {
-                const target = enemies[newIndex - gameState.party.length];
-                if (target.alive) {
+                const enemyIndex = newIndex - gameState.party.length;
+                if (enemies[enemyIndex]) {
+                  const target = enemies[enemyIndex];
                   handleTargetSelection(target);
                 }
               }
@@ -539,7 +537,14 @@ export const useBattleActions = (
     ]);
 
     handleTurnEnd();
-  }, [activeParticipantIndex, moveOrder, gameState, enemies, handleTurnEnd]);
+  }, [
+    activeParticipantIndex,
+    moveOrder,
+    gameState,
+    enemies,
+    handleTurnEnd,
+    setGameState,
+  ]);
 
   useEffect(() => {
     const currentParticipant = moveOrder[activeParticipantIndex];
