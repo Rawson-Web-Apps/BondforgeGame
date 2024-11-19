@@ -392,7 +392,17 @@ export const useBattleActions = (
               }
             }
             break;
-
+          case "Backspace":
+          case "Escape":
+            setSelectingTarget(false);
+            if (selectedSkill !== null) {
+              // We came from selectingSkill
+              setSelectingSkill(true);
+            } else {
+              // We came from action selection
+              setSelectedActionIndex(0);
+            }
+            break;
           default:
             return;
         }
@@ -423,6 +433,11 @@ export const useBattleActions = (
               handleSkillSelection(skills[newSkillIndex].name);
             }
             break;
+          case "Backspace":
+          case "Escape":
+            setSelectingSkill(false);
+            setSelectedActionIndex(0);
+            break;
           default:
             return;
         }
@@ -443,6 +458,7 @@ export const useBattleActions = (
           case "Enter":
             handleActionSelection(actions[newActionIndex]);
             break;
+          // No back action needed here
           default:
             return;
         }
@@ -463,6 +479,7 @@ export const useBattleActions = (
       handleSkillSelection,
       moveOrder,
       activeParticipantIndex,
+      selectedSkill, // Added to dependency array
     ]
   );
 
