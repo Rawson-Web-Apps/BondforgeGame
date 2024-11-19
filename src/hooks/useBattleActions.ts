@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Character } from "../models/Character";
 import { GameState } from "../context/GameContext";
-import { SkillType } from "../models/skill/Skill";
+import { Skill, SkillType } from "../models/skill/Skill";
 import { skills } from "../models/skill/Skills";
 import SkillManager from "../managers/SkillManager";
 import { getRandomEnemies } from "../models/enemies/EnemyFactory";
@@ -35,27 +35,50 @@ export const useBattleActions = (
 
   const determineMoveOrder = useCallback(() => {
     const participants = [
-      ...gameState.party.map((member, index) => ({
-        type: "party",
-        index,
-        dexterity: member.stats.dexterity,
-        name: member.name,
-        faceImage: `/images/${member.classType.name.toLowerCase()}_turn.png`,
-      })),
-      ...enemies.map((enemy, index) => ({
-        type: "enemy",
-        index,
-        dexterity: enemy.stats.dexterity,
-        name: enemy.name,
-        faceImage: `/images/${enemy.classType.name.toLowerCase()}_turn.png`,
-      })),
-    ];
+      ...gameState.party
+        .map((member, index) =>
+          member.alive
+            ? {
+                type: "party" as const,
+                index,
+                dexterity: member.stats.dexterity,
+                name: member.name,
+                faceImage: `/images/${member.classType.name.toLowerCase()}_turn.png`,
+              }
+            : null
+        )
+        .filter(Boolean),
+      ...enemies
+        .map((enemy, index) =>
+          enemy.alive
+            ? {
+                type: "enemy" as const,
+                index,
+                dexterity: enemy.stats.dexterity,
+                name: enemy.name,
+                faceImage: `/images/${enemy.classType.name.toLowerCase()}_turn.png`,
+              }
+            : null
+        )
+        .filter(Boolean),
+    ] as {
+      type: "party" | "enemy";
+      index: number;
+      dexterity: number;
+      name: string;
+      faceImage: string;
+    }[];
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
     return participants;
   }, [gameState.party, enemies]);
 
-  const moveOrder = useMemo(() => determineMoveOrder(), [determineMoveOrder]);
+  const [moveOrder, setMoveOrder] = useState(determineMoveOrder);
+
+  useEffect(() => {
+    const newMoveOrder = determineMoveOrder();
+    setMoveOrder(newMoveOrder);
+  }, [gameState.party, enemies, determineMoveOrder]);
 
   const handleAttack = useCallback(() => {
     setSelectingTarget(true);
@@ -84,9 +107,12 @@ export const useBattleActions = (
   );
 
   const handleTurnEnd = useCallback(() => {
-    setActiveParticipantIndex(
-      (prevIndex) => (prevIndex + 1) % moveOrder.length
-    );
+    setActiveParticipantIndex((prevIndex) => {
+      if (moveOrder.length === 0) return 0; // Handle empty moveOrder
+
+      let nextIndex = (prevIndex + 1) % moveOrder.length;
+      return nextIndex;
+    });
   }, [moveOrder.length]);
 
   const handleAttackExecution = useCallback(
@@ -112,6 +138,7 @@ export const useBattleActions = (
         const currentParticipant = moveOrder[activeParticipantIndex];
 
         if (
+          currentParticipant &&
           currentParticipant.type === "party" &&
           "index" in currentParticipant
         ) {
@@ -123,13 +150,40 @@ export const useBattleActions = (
 
           if (enemies.includes(target)) {
             const enemyIdx = enemies.indexOf(target);
+
             setEnemies((prevEnemies) => {
-              const updatedEnemies = [...prevEnemies];
-              updatedEnemies[enemyIdx].updateCurrentHp(
-                prevEnemies[enemyIdx].currentHp - damage
-              );
+              const updatedEnemies = prevEnemies.map((enemy, idx) => {
+                if (idx === enemyIdx) {
+                  const newCurrentHp = enemy.currentHp - damage;
+                  const isAlive = newCurrentHp > 0;
+                  if (!isAlive) {
+                    setCombatLog((prevLog) => [
+                      ...prevLog,
+                      `${target.name} has been defeated!`,
+                    ]);
+                  }
+                  // Create a new Character instance
+                  const updatedEnemy = new Character({
+                    name: enemy.name,
+                    level: enemy.level,
+                    experience: enemy.experience,
+                    classType: enemy.classType,
+                    skills: enemy.skills,
+                    stats: enemy.stats,
+                    attack: enemy.attack,
+                    equipment: enemy.equipment,
+                  });
+                  updatedEnemy.currentHp = newCurrentHp;
+                  updatedEnemy.currentMp = enemy.currentMp;
+                  updatedEnemy.alive = isAlive;
+                  return updatedEnemy;
+                }
+                return enemy;
+              });
+
               return updatedEnemies;
             });
+
             setCombatLog((prevLog) => [
               ...prevLog,
               `${attacker.name} attacks ${target.name} for ${damage} damage!`,
@@ -137,36 +191,42 @@ export const useBattleActions = (
           } else {
             const updatedParty = gameState.party.map((member) => {
               if (member === target) {
-                member.updateCurrentHp(member.currentHp - damage);
+                const newCurrentHp = Math.max(member.currentHp - damage, 0);
+                const isAlive = newCurrentHp > 0;
+                if (!isAlive) {
+                  setCombatLog((prevLog) => [
+                    ...prevLog,
+                    `${target.name} has been defeated!`,
+                  ]);
+                }
+                // Create a new Character instance
+                const updatedMember = new Character({
+                  name: member.name,
+                  level: member.level,
+                  experience: member.experience,
+                  classType: member.classType,
+                  skills: member.skills,
+                  stats: member.stats,
+                  attack: member.attack,
+                  equipment: member.equipment,
+                });
+                updatedMember.currentHp = newCurrentHp;
+                updatedMember.currentMp = member.currentMp;
+                updatedMember.alive = isAlive;
+                return updatedMember;
               }
               return member;
             });
+
             setGameState((prevState) => ({
               ...prevState,
               party: updatedParty,
             }));
+
             setCombatLog((prevLog) => [
               ...prevLog,
               `${attacker.name} attacks ${target.name} for ${damage} damage!`,
             ]);
-          }
-
-          if (target.currentHp <= 0) {
-            setCombatLog((prevLog) => [
-              ...prevLog,
-              `${target.name} has been defeated!`,
-            ]);
-
-            if (enemies.includes(target)) {
-              setEnemies((prevEnemies) =>
-                prevEnemies.filter((enemy) => enemy !== target)
-              );
-
-              const newMoveOrder = determineMoveOrder();
-              setActiveParticipantIndex(
-                (prevIndex) => prevIndex % newMoveOrder.length
-              );
-            }
           }
         }
 
@@ -178,15 +238,7 @@ export const useBattleActions = (
         handleTurnEnd();
       }, 500);
     },
-    [
-      activeParticipantIndex,
-      enemies,
-      gameState,
-      moveOrder,
-      setGameState,
-      handleTurnEnd,
-      determineMoveOrder,
-    ]
+    [activeParticipantIndex, enemies, gameState.party, handleTurnEnd, moveOrder]
   );
 
   const handleSkillExecution = useCallback(
@@ -195,6 +247,17 @@ export const useBattleActions = (
 
       const moveOrder = determineMoveOrder();
       const participant = moveOrder[activeParticipantIndex];
+
+      // Check if the participant is still alive
+      if (
+        !participant ||
+        (participant.type === "party" &&
+          !gameState.party[participant.index]?.alive) ||
+        (participant.type === "enemy" && !enemies[participant.index]?.alive)
+      ) {
+        console.error("Attempting to execute skill with a dead participant");
+        return;
+      }
 
       if (participant.type === "party" && "index" in participant) {
         const member = gameState.party[participant.index];
@@ -208,6 +271,35 @@ export const useBattleActions = (
 
         const logMessage = SkillManager.executeSkill(skill, member, target);
         setCombatLog((prevLog) => [...prevLog, logMessage]);
+
+        if (enemies.includes(target) && target.currentHp <= 0) {
+          setEnemies((prevEnemies) =>
+            prevEnemies.map((enemy) => {
+              if (enemy === target) {
+                // Create a new Character instance
+                const updatedEnemy = new Character({
+                  name: enemy.name,
+                  level: enemy.level,
+                  experience: enemy.experience,
+                  classType: enemy.classType,
+                  skills: enemy.skills,
+                  stats: enemy.stats,
+                  attack: enemy.attack,
+                  equipment: enemy.equipment,
+                });
+                updatedEnemy.currentHp = 0;
+                updatedEnemy.currentMp = enemy.currentMp;
+                updatedEnemy.alive = false;
+                return updatedEnemy;
+              }
+              return enemy;
+            })
+          );
+          setCombatLog((prevLog) => [
+            ...prevLog,
+            `${target.name} has been defeated!`,
+          ]);
+        }
       }
 
       setSelectedSkill(null);
@@ -219,6 +311,7 @@ export const useBattleActions = (
       activeParticipantIndex,
       determineMoveOrder,
       gameState.party,
+      enemies,
       handleTurnEnd,
     ]
   );
@@ -287,12 +380,21 @@ export const useBattleActions = (
             }
             break;
           case "Enter":
-            if (newIndex < partyLength) {
-              handleTargetSelection(gameState.party[newIndex]);
-            } else {
-              handleTargetSelection(enemies[newIndex - partyLength]);
+            if (selectingTarget) {
+              if (newIndex < gameState.party.length) {
+                const target = gameState.party[newIndex];
+                if (target.alive) {
+                  handleTargetSelection(target);
+                }
+              } else {
+                const target = enemies[newIndex - gameState.party.length];
+                if (target.alive) {
+                  handleTargetSelection(target);
+                }
+              }
             }
             break;
+
           default:
             return;
         }
@@ -300,7 +402,7 @@ export const useBattleActions = (
         setSelectedTargetIndex(newIndex);
       } else if (selectingSkill) {
         const currentParticipant = moveOrder[activeParticipantIndex];
-        let skills: string[] = [];
+        let skills: Skill[] = [];
 
         if (
           currentParticipant.type === "party" &&
@@ -320,7 +422,7 @@ export const useBattleActions = (
             break;
           case "Enter":
             if (skills[newSkillIndex]) {
-              handleSkillSelection(skills[newSkillIndex]);
+              handleSkillSelection(skills[newSkillIndex].name);
             }
             break;
           default:
@@ -368,18 +470,22 @@ export const useBattleActions = (
 
   const handleEnemyTurn = useCallback(() => {
     const currentParticipant = moveOrder[activeParticipantIndex];
-    if (currentParticipant.type !== "enemy") {
-      console.error("Current participant is not an enemy");
+    if (!currentParticipant || currentParticipant.type !== "enemy") {
+      console.error("Current participant is not an enemy or is undefined");
       return;
     }
 
-    const targetIndex = gameState.party.reduce(
-      (lowestHpIndex, member, index) => {
-        return member.currentHp < gameState.party[lowestHpIndex].currentHp
-          ? index
-          : lowestHpIndex;
-      },
-      0
+    const alivePartyMembers = gameState.party.filter((member) => member.alive);
+    if (alivePartyMembers.length === 0) {
+      console.error("No alive party members to target");
+      return;
+    }
+
+    const targetIndex = gameState.party.findIndex(
+      (member) =>
+        member.alive &&
+        member.currentHp ===
+          Math.min(...alivePartyMembers.map((member) => member.currentHp))
     );
 
     const target = gameState.party[targetIndex];
@@ -398,7 +504,29 @@ export const useBattleActions = (
 
     const updatedParty = gameState.party.map((member, index) => {
       if (index === targetIndex) {
-        member.updateCurrentHp(Math.max(member.currentHp - damage, 0));
+        const newCurrentHp = Math.max(member.currentHp - damage, 0);
+        const isAlive = newCurrentHp > 0;
+        if (!isAlive) {
+          setCombatLog((prevLog) => [
+            ...prevLog,
+            `${target.name} has been defeated!`,
+          ]);
+        }
+        // Create a new Character instance
+        const updatedMember = new Character({
+          name: member.name,
+          level: member.level,
+          experience: member.experience,
+          classType: member.classType,
+          skills: member.skills,
+          stats: member.stats,
+          attack: member.attack,
+          equipment: member.equipment,
+        });
+        updatedMember.currentHp = newCurrentHp;
+        updatedMember.currentMp = member.currentMp;
+        updatedMember.alive = isAlive;
+        return updatedMember;
       }
       return member;
     });
@@ -410,26 +538,12 @@ export const useBattleActions = (
       `${enemyCharacter.name} attacks ${target.name} for ${damage} damage!`,
     ]);
 
-    if (target.currentHp <= 0) {
-      setCombatLog((prevLog) => [
-        ...prevLog,
-        `${target.name} has been defeated!`,
-      ]);
-    }
-
     handleTurnEnd();
-  }, [
-    activeParticipantIndex,
-    moveOrder,
-    gameState,
-    enemies,
-    handleTurnEnd,
-    setGameState,
-  ]);
+  }, [activeParticipantIndex, moveOrder, gameState, enemies, handleTurnEnd]);
 
   useEffect(() => {
     const currentParticipant = moveOrder[activeParticipantIndex];
-    if (currentParticipant.type === "enemy") {
+    if (currentParticipant && currentParticipant.type === "enemy") {
       handleEnemyTurn();
     }
   }, [activeParticipantIndex, handleEnemyTurn, moveOrder]);

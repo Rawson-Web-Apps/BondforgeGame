@@ -155,13 +155,13 @@ const Battle = () => {
               "index" in moveOrder[activeParticipantIndex] &&
               gameState.party[
                 moveOrder[activeParticipantIndex].index
-              ]?.skills.map((skillName: string, index: number) => (
+              ]?.skills.map((skill, index) => (
                 <button
                   key={index}
-                  onClick={() => handleSkillSelection(skillName)}
+                  onClick={() => handleSkillSelection(skill.name)}
                   className={selectedSkillIndex === index ? "selected" : ""}
                 >
-                  {skillName}
+                  {skill.name}
                 </button>
               ))}
           </div>

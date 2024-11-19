@@ -15,6 +15,7 @@ import {
   ClothBoots,
   Shield,
 } from "../models/Equipment";
+import { skills } from "../models/skill/Skills";
 
 export interface GameState {
   playerName: string;
@@ -40,7 +41,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         level: 1,
         experience: 0,
         classType: new Warrior(),
-        skills: ["Slash"],
+        skills: [skills.slash],
         stats: {
           strength: 15,
           dexterity: 10,
@@ -64,7 +65,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         level: 1,
         experience: 0,
         classType: new Rogue(),
-        skills: ["Backstab", "Stealth"],
+        skills: [skills.backstab, skills.stealth],
         stats: {
           strength: 10,
           dexterity: 15,
@@ -87,7 +88,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         level: 1,
         experience: 0,
         classType: new Cleric(),
-        skills: ["Heal", "Smite"],
+        skills: [skills.heal, skills.smite],
         stats: {
           strength: 10,
           dexterity: 8,
