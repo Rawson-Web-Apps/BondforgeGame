@@ -18,6 +18,7 @@ import {
 } from "../models/Equipment";
 import Character from "../models/Character";
 import "./MainMenu.css";
+import { skills } from "../models/skill/Skills";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const MainMenu = () => {
       name: "Warrior",
       experience: 0,
       classType: new Warrior(),
-      skills: ["Slash"],
+      skills: [skills.slash],
       stats: {
         strength: 15,
         dexterity: 10,
@@ -51,7 +52,7 @@ const MainMenu = () => {
       name: "Rogue",
       experience: 0,
       classType: new Rogue(),
-      skills: ["Backstab", "Stealth"],
+      skills: [skills.backstab, skills.stealth],
       stats: {
         strength: 10,
         dexterity: 15,
@@ -73,7 +74,7 @@ const MainMenu = () => {
       name: "Cleric",
       experience: 0,
       classType: new Cleric(),
-      skills: ["Heal", "Smite"],
+      skills: [skills.heal, skills.smite],
       stats: {
         strength: 10,
         dexterity: 8,
@@ -120,7 +121,7 @@ const MainMenu = () => {
           <div key={index} className="character-card">
             <h2>{character.name}</h2>
             <img
-              src={`/${character.name.toLowerCase()}.png`}
+              src={`/images/${character.name.toLowerCase()}.png`}
               alt={`${character.name} class`}
               className="character-image"
             />

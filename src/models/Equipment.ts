@@ -6,6 +6,19 @@ export abstract class Equipment {
   }
 }
 
+export type CharacterEquipment = {
+  mainHand?: Weapon; // E.g., Sword, Bow, Dagger, etc.
+  offHand?: Weapon | Shield; // Could be a second weapon for dual-wielding or a shield
+  head?: ClothHelmet | LeatherHelmet | ChainmailHelmet | PlateHelmet;
+  chest?:
+    | ClothChestplate
+    | LeatherChestplate
+    | ChainmailChestplate
+    | PlateChestplate;
+  legs?: ClothLeggings | LeatherLeggings | ChainmailLeggings | PlateLeggings;
+  boots?: ClothBoots | LeatherBoots | ChainmailBoots | PlateBoots;
+};
+
 // Base classes for Weapon and Armor
 export abstract class Weapon extends Equipment {
   damage: number;

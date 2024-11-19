@@ -157,7 +157,7 @@ button.selected {
   position: absolute;
   width: 10%;
   height: 10%;
-  background-image: url("/sword.png"); /* Ensure this path is correct */
+  background-image: url("/images/sword.png"); /* Ensure this path is correct */
   background-size: contain;
   background-repeat: no-repeat;
   animation: swordStab 0.5s forwards;
