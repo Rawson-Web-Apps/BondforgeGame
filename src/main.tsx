@@ -12,6 +12,8 @@ import Guide from "./bondforge/components/Guide";
 import "./bondforge/Bondforge.css";
 import "./App.css";
 import Home from "./bondforge/components/Home";
+import Reviews from "./reviews/Reviews";
+import ReviewDetail from "./reviews/ReviewDetail";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -27,6 +29,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/bondforge/about" element={<About />} />
             <Route path="/bondforge/updates" element={<Updates />} />
             <Route path="/bondforge/guide" element={<Guide />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/reviews/:id" Component={ReviewDetail} />
             {/* Add other routes here for locations, battle, etc. */}
           </Route>
         </Routes>
