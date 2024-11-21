@@ -10,10 +10,7 @@ const App = () => {
   };
 
   return (
-    <div
-      className="app"
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <div className="app" style={{ display: "flex", flexDirection: "column" }}>
       <header className="header">
         <Link to="/" className="header-link">
           <img

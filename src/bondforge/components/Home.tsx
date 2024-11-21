@@ -3,7 +3,7 @@ import { FaTwitch, FaXTwitter, FaPatreon } from "react-icons/fa6";
 
 const Home = () => {
   return (
-    <div className="about-page">
+    <div className="home-page">
       <div className="button-container"></div>
 
       <h1>TARawson</h1>
