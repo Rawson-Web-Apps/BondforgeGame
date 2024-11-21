@@ -14,12 +14,14 @@ const ReviewDetail = () => {
 
   return (
     <div className="review-detail">
-      <button className="back-button" onClick={() => navigate("/reviews")}>
-        Back to Reviews
-      </button>
-      <h1>{review.title}</h1>
-      <p style={{ textAlign: "center" }}>Score: {review.score}/10</p>
-      <ReactMarkdown>{review.content}</ReactMarkdown>
+      <div className="review-detail-content">
+        <button className="back-button" onClick={() => navigate("/reviews")}>
+          Back to Reviews
+        </button>
+        <h1>{review.title}</h1>
+        <p style={{ textAlign: "center" }}>Score: {review.score}/10</p>
+        <ReactMarkdown>{review.content}</ReactMarkdown>
+      </div>
     </div>
   );
 };

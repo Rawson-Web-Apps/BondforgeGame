@@ -5,6 +5,11 @@
   background-color: var(--background-color);
 }
 
+.reviews-page-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .reviews-page h1 {
   text-align: center;
   margin-bottom: 20px;
@@ -48,6 +53,11 @@
   padding: 20px;
   color: var(--text-color);
   background-color: var(--background-color);
+}
+
+.review-detail-content {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .review-detail h1 {

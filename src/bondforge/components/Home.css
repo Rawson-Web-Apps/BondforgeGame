@@ -9,6 +9,10 @@
   background-color: var(--background-color);
 }
 
+.home-page-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
 .home-page h1 {
   text-align: center;
   margin-bottom: 20px;
