@@ -24,10 +24,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - name: Run loadReviews
-        run: node src/scripts/loadReviews.js
       - name: Install Dependencies
         run: npm install
+      - name: Run loadReviews
+        run: node src/scripts/loadReviews.js
       - name: Build
         run: npm run build
       - name: Setup Pages
