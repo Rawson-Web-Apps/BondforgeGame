@@ -10,7 +10,7 @@ import About from "./bondforge/components/About";
 import Updates from "./bondforge/components/Updates";
 import Guide from "./bondforge/components/Guide";
 import "./bondforge/Bondforge.css";
-import "./App.css";
+import "./app.css";
 import Home from "./bondforge/components/Home";
 import Reviews from "./reviews/Reviews";
 import ReviewDetail from "./reviews/ReviewDetail";
