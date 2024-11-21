@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { GameProvider } from "./bondforge/context/GameContext";
-import App from "./app";
+import App from "./App";
 import MainMenu from "./bondforge/components/MainMenu";
 import Locations from "./bondforge/components/Locations";
 import Battle from "./bondforge/components/Battle";
