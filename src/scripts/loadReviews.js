@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-const reviewsDir = "reviews/md";
+const reviewsDir = "src/reviews/md";
 
 function loadReviews() {
   const files = fs.readdirSync(reviewsDir);
@@ -25,4 +25,7 @@ function loadReviews() {
 }
 
 const reviews = loadReviews();
-fs.writeFileSync("reviews/reviewsData.json", JSON.stringify(reviews, null, 2));
+fs.writeFileSync(
+  "src/reviews/reviewsData.json",
+  JSON.stringify(reviews, null, 2)
+);
