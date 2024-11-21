@@ -100,11 +100,27 @@ const MainMenu = () => {
       party,
       location: "locations",
     });
-    navigate("/locations");
+    navigate("/bondforge/locations");
+  };
+
+  const about = () => {
+    navigate("/bondforge/about");
+  };
+
+  const updates = () => {
+    navigate("/bondforge/updates");
+  };
+
+  const guide = () => {
+    navigate("/bondforge/guide");
   };
 
   return (
     <div className="main-menu">
+      <button onClick={startNewGame}>New Game</button>
+      <button onClick={about}>About</button>
+      <button onClick={updates}>Updates</button>
+      <button onClick={guide}>Guide</button>
       <h1>Bondforge RPG</h1>
       <section className="introduction">
         <p>
@@ -151,7 +167,6 @@ const MainMenu = () => {
           </div>
         ))}
       </section>
-      <button onClick={startNewGame}>New Game</button>
     </div>
   );
 };

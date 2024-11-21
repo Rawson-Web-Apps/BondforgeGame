@@ -78,18 +78,6 @@ body {
   position: relative;
 }
 
-.footer {
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px 0;
-  display: flex;
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  position: relative;
-  text-align: center;
-  margin-top: 10px;
-}
-
 .header-link {
   color: var(--link-color);
   font-size: 1.5em;
@@ -138,20 +126,16 @@ a:hover {
 }
 
 button {
-  background-color: var(--background-color);
+  background-color: #1e1e1e;
   color: var(--button-text-color);
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1em;
-  margin: 10px;
-  transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
-  background-color: var(--background-color);
-  transform: scale(1.05);
+  background-color: #357ab8;
 }
 
 .navbar {
@@ -238,14 +222,4 @@ button:hover {
   background-color: var(--text-color);
   margin: 4px 0;
   transition: 0.4s;
-}
-
-.button-container {
-  text-align: center;
-}
-
-.header-logo {
-  height: 100px;
-  width: auto;
-  margin-left: 20px;
 }

@@ -1,8 +1,32 @@
 import "./Guide.css"; // Import the Guide.css file
+import { useNavigate } from "react-router-dom";
 
 const Guide = () => {
+  const navigate = useNavigate();
+
+  const main_menu = () => {
+    navigate("/bondforge");
+  };
+
+  const about = () => {
+    navigate("/bondforge/about");
+  };
+
+  const updates = () => {
+    navigate("/bondforge/updates");
+  };
+
+  const guide = () => {
+    navigate("/bondforge/guide");
+  };
   return (
     <div className="guide-page">
+      <div className="button-container">
+        <button onClick={main_menu}>Main Menu</button>
+        <button onClick={about}>About</button>
+        <button onClick={updates}>Updates</button>
+        <button onClick={guide}>Guide</button>
+      </div>
       <h1>Game Guide</h1>
       <p>
         Welcome to the <strong>Bondforge</strong> Game Guide! Whether you're a

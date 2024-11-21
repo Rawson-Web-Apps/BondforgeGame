@@ -1,8 +1,33 @@
 import "./Updates.css"; // Import the Updates.css file
+import { useNavigate } from "react-router-dom";
 
 const Updates = () => {
+  const navigate = useNavigate();
+
+  const main_menu = () => {
+    navigate("/bondforge");
+  };
+
+  const about = () => {
+    navigate("/bondforge/about");
+  };
+
+  const updates = () => {
+    navigate("/bondforge/updates");
+  };
+
+  const guide = () => {
+    navigate("/bondforge/guide");
+  };
+
   return (
     <div className="updates-page">
+      <div className="button-container">
+        <button onClick={main_menu}>Main Menu</button>
+        <button onClick={about}>About</button>
+        <button onClick={updates}>Updates</button>
+        <button onClick={guide}>Guide</button>
+      </div>
       <h1>Future Updates</h1>
       <p>
         We're continuously working to improve <strong>Bondforge</strong> and

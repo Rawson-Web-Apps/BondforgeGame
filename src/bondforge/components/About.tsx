@@ -1,8 +1,33 @@
 import "./About.css";
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+  const navigate = useNavigate();
+
+  const main_menu = () => {
+    navigate("/bondforge");
+  };
+
+  const about = () => {
+    navigate("/bondforge/about");
+  };
+
+  const updates = () => {
+    navigate("/bondforge/updates");
+  };
+
+  const guide = () => {
+    navigate("/bondforge/guide");
+  };
+
   return (
     <div className="about-page">
+      <div className="button-container">
+        <button onClick={main_menu}>Main Menu</button>
+        <button onClick={about}>About</button>
+        <button onClick={updates}>Updates</button>
+        <button onClick={guide}>Guide</button>
+      </div>
       <h1>About Bondforge</h1>
       <p>
         Welcome to <strong>Bondforge</strong>, an exciting turn-based RPG that
@@ -107,39 +132,6 @@ const About = () => {
         strategy and deep RPG mechanics. Join us on this new adventure and forge
         your own legend in the world of Bondforge.
       </p>
-
-      <h2>About the Developer</h2>
-      <p>
-        Hello! I'm <strong>TARawson</strong>, a new indie game developer with a background in computer science and experience in developing cloud applications. Growing up, I was deeply inspired by JRPGs like <em>Final Fantasy</em>, <em>Zelda</em>, <em>Kingdom Hearts</em>, and <em>Pokemon</em>, which ignited my passion for game development.
-      </p>
-      <p>
-        I'm thrilled to be bringing <strong>Bondforge Arena</strong> to life and will be live-streaming its development on Twitch. Follow along as I work on creating an engaging and strategic turn-based RPG experience.
-      </p>
-      <p>
-        Connect with me and stay updated on the latest developments:
-      </p>
-      <ul className="developer-links">
-        <li>
-          <a href="https://www.twitch.tv/tarawson" target="_blank" rel="noopener noreferrer">
-            Twitch: tarawson
-          </a>
-        </li>
-        <li>
-          <a href="https://x.com/TARawson" target="_blank" rel="noopener noreferrer">
-            Twitter: TARawson
-          </a>
-        </li>
-        <li>
-          <a href="https://x.com/bondforgearena" target="_blank" rel="noopener noreferrer">
-            Bondforge Arena Twitter
-          </a>
-        </li>
-        <li>
-          <a href="https://www.patreon.com/c/bondforgearena" target="_blank" rel="noopener noreferrer">
-            Patreon: Bondforge Arena
-          </a>
-        </li>
-      </ul>
     </div>
   );
 };

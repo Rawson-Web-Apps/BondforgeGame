@@ -14,7 +14,7 @@ const Locations = () => {
       location: location, // Update the player's current location
     }));
     if (location === "arena") {
-      navigate("/battle"); // For example, navigate to battle when arena is chosen
+      navigate("/bondforge/battle"); // For example, navigate to battle when arena is chosen
     }
     // Add more logic for other locations if needed
   };

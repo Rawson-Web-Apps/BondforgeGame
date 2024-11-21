@@ -1,0 +1,30 @@
+.about-page h3 {
+  margin-top: 30px;
+  font-size: 1.5em;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.developer-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Space between icons */
+  margin-bottom: 20px;
+}
+
+.developer-links li {
+  margin: 0;
+}
+
+.developer-links a {
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 2em; /* Adjust size as needed */
+  transition: color 0.3s;
+}
+
+.developer-links a:hover {
+  color: var(--link-hover-color);
+}
