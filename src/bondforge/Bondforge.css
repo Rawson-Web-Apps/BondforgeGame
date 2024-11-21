@@ -78,16 +78,6 @@ body {
   position: relative;
 }
 
-.footer {
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
 .header-link {
   color: var(--link-color);
   font-size: 1.5em;
@@ -136,7 +126,7 @@ a:hover {
 }
 
 button {
-  background-color: var(--button-bg-color);
+  background-color: #1e1e1e;
   color: var(--button-text-color);
   border: none;
   padding: 10px 20px;
@@ -233,4 +223,3 @@ button:hover {
   margin: 4px 0;
   transition: 0.4s;
 }
-

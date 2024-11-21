@@ -18,6 +18,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Run loadReviews
+        run: node src/scripts/loadReviews.js
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node.js
