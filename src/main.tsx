@@ -14,6 +14,8 @@ import "./Tarawson.css";
 import Home from "./bondforge/components/Home";
 import Reviews from "./reviews/Reviews";
 import ReviewDetail from "./reviews/ReviewDetail";
+import MonthlyGames from "./top_games/components/MonthlyGames";
+import TopGamesList from "./top_games/components/TopGamesList";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -31,6 +33,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/bondforge/guide" element={<Guide />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/reviews/:id" Component={ReviewDetail} />
+            <Route path="/top-games" element={<TopGamesList />} />
+            <Route path="/top-games/:year/:month" element={<MonthlyGames />} />
             {/* Add other routes here for locations, battle, etc. */}
           </Route>
         </Routes>

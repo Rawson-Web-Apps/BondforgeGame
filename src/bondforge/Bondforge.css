@@ -1,11 +1,13 @@
 :root {
   --background-color: #1e1e1e;
   --text-color: #e0e0e0;
-  --link-color: #58a6ff;
-  --link-hover-color: #82cfff;
-  --border-color: #444c56;
-  --button-bg-color: #4a90e2;
+  --link-color: #0047ba;
+  --link-hover-color: #1a4b8c;
+  --border-color: #002e5d;
+  --button-bg-color: #1a4b8c;
   --button-text-color: #ffffff;
+  --box-shadow: 0 4px 6px -1px #27292a, 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --box-shadow-hover: 0 4px 6px -1px #27292a, 0 2px 4px -1px rgba(0, 0, 0, 0.04);
 }
 #root {
   max-width: 1280px;
@@ -24,7 +26,7 @@
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #1a4b8c);
 }
 
 @keyframes logo-spin {
@@ -48,6 +50,12 @@
   border-radius: 6px;
   padding: 20px;
   margin-bottom: 20px;
+  box-shadow: var(--box-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--box-shadow-hover);
 }
 
 .read-the-docs {
@@ -114,6 +122,7 @@ body {
   background-color: #2d2d2d;
   border: 1px solid var(--border-color);
   border-radius: 6px;
+  box-shadow: var(--box-shadow);
 }
 
 a {
@@ -135,7 +144,7 @@ button {
 }
 
 button:hover {
-  background-color: #357ab8;
+  background-color: #1a4b8c;
 }
 
 .navbar {
@@ -222,4 +231,43 @@ button:hover {
   background-color: var(--text-color);
   margin: 4px 0;
   transition: 0.4s;
+}
+
+.monthly-section {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: var(--box-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.monthly-section:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+.year-month-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--box-shadow);
 }
