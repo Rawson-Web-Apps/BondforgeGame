@@ -50,3 +50,30 @@
   background-color: #1a4b8c;
   color: var(--text-color);
 }
+
+@media (max-width: 768px) {
+  .year-month-sidebar {
+    width: auto;
+  }
+
+  .year-section {
+    margin-bottom: 15px;
+  }
+
+  .year-section ul {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .year-section li {
+    margin: 0 5px;
+    flex-shrink: 0;
+  }
+
+  .year-section a {
+    white-space: nowrap;
+    padding: 8px 15px;
+  }
+}

@@ -6,6 +6,36 @@
   margin: 0 auto;
 }
 
+/* Add media query for mobile */
+@media (max-width: 768px) {
+  .top-games-container {
+    flex-direction: column-reverse; /* Move sidebar to bottom */
+  }
+
+  .year-month-sidebar {
+    width: 100%; /* Full width on mobile */
+    margin-top: 30px;
+  }
+
+  .games-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+
+  /* Adjust padding for smaller screens */
+  .monthly-section {
+    padding: 15px;
+  }
+
+  .game-content {
+    padding: 12px;
+  }
+
+  /* Make sure text doesn't overflow */
+  .description {
+    word-break: break-word;
+  }
+}
+
 .year-month-sidebar {
   width: 200px;
   flex-shrink: 0;

@@ -40,7 +40,7 @@ const YearMonthSidebar: React.FC = () => {
         .map(([year, months]) => (
           <div key={year} className="year-section">
             <h4>{year}</h4>
-            <ul>
+            <ul className="months-list">
               {months.map((month) => (
                 <li key={`${year}-${month}`}>
                   <Link
