@@ -4,12 +4,16 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Add media query for mobile */
 @media (max-width: 768px) {
   .top-games-container {
     flex-direction: column-reverse; /* Move sidebar to bottom */
+    padding: 10px;
+    width: 100%;
   }
 
   .year-month-sidebar {
@@ -19,11 +23,16 @@
 
   .games-grid {
     grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 15px; /* Reduce gap on mobile */
+    width: 100%;
   }
 
   /* Adjust padding for smaller screens */
   .monthly-section {
     padding: 15px;
+    margin: 0 0 20px 0; /* Adjust margins */
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .game-content {
@@ -33,6 +42,39 @@
   /* Make sure text doesn't overflow */
   .description {
     word-break: break-word;
+  }
+
+  .months-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .months-list li {
+    flex: 0 1 auto;
+  }
+
+  .months-list a {
+    display: block;
+    padding: 8px 12px;
+    white-space: nowrap;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+  }
+
+  .year-month-sidebar {
+    width: 100%;
+    margin-top: 30px;
+    overflow: hidden; /* Ensure no horizontal scroll */
+  }
+
+  .year-section {
+    margin-bottom: 20px;
+    overflow: hidden; /* Ensure no horizontal scroll */
   }
 }
 
@@ -47,6 +89,8 @@
 
 .top-games-content {
   flex-grow: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 .games-grid {
@@ -63,6 +107,8 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .game-image-link {
@@ -158,4 +204,45 @@
 
 .month-header a:hover {
   color: var(--link-color);
+}
+
+/* Update mobile styles */
+@media (max-width: 768px) {
+  .top-games-container {
+    flex-direction: column;
+    padding: 10px; /* Reduce padding on mobile */
+  }
+
+  .games-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 15px; /* Reduce gap on mobile */
+  }
+
+  .monthly-section {
+    padding: 15px;
+    margin: 0 0 20px 0; /* Adjust margins */
+  }
+
+  .game-card {
+    max-width: 100%; /* Ensure card doesn't overflow */
+  }
+
+  .game-content {
+    padding: 12px;
+  }
+
+  .description {
+    word-break: break-word;
+    font-size: 0.95em; /* Slightly smaller text on mobile */
+  }
+
+  /* Adjust header sizes for mobile */
+  h1 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+  .month-header a {
+    font-size: 1.3em;
+  }
 }
