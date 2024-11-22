@@ -18,4 +18,6 @@ Description: A classic JRPG that thrusts players into the role of an evolving dy
 
 Rank: 3
 Platform: PC
+Image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1790600/header.jpg?t=1730214507
+Website: https://store.steampowered.com/app/1790600/DRAGON_BALL_Sparking_ZERO/
 Description: The latest entry in the Budokai Tenkaichi series, featuring over 180 characters, explosive 3D battles, and iconic moments from Dragon Ball Z, Super, and GT in stunning detail.
