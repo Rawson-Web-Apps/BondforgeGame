@@ -117,14 +117,6 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.main-content {
-  padding: 20px;
-  background-color: #2d2d2d;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  box-shadow: var(--box-shadow);
-}
-
 a {
   color: var(--link-color);
   text-decoration: none;
