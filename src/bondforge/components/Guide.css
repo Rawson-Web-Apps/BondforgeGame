@@ -1,6 +1,6 @@
 .guide-page {
   padding: 20px;
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto;
   text-align: left;
   color: var(--text-color);
@@ -66,4 +66,4 @@
   .stats-table td {
     padding: 8px;
   }
-} 
+}
