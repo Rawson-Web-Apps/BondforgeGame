@@ -4,10 +4,16 @@ import { FaTwitch, FaXTwitter, FaPatreon } from "react-icons/fa6";
 const Home = () => {
   return (
     <div className="home-page">
+      <div className="banner-container">
+        <img
+          src="/images/TAR/TARawson.png"
+          alt="TARawson Banner"
+          className="banner-image"
+        />
+      </div>
       <div className="home-page-content">
         <div className="button-container"></div>
 
-        <h1>TARawson</h1>
         <h2>About Me</h2>
         <p>
           Hello! I'm <strong>TARawson</strong>, an indie developer working on an{" "}

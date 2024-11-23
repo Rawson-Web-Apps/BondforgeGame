@@ -11,7 +11,7 @@ import Updates from "./bondforge/components/Updates";
 import Guide from "./bondforge/components/Guide";
 import "./bondforge/Bondforge.css";
 import "./Tarawson.css";
-import Home from "./bondforge/components/Home";
+import Home from "./home/Home";
 import Reviews from "./reviews/Reviews";
 import ReviewDetail from "./reviews/ReviewDetail";
 import MonthlyGames from "./top_games/components/MonthlyGames";
