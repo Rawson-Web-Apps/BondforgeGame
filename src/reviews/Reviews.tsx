@@ -6,18 +6,24 @@ import { Helmet } from "react-helmet-async";
 const slugify = (text: string) => {
   return text
     .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
 };
 
 const Reviews = () => {
   return (
     <>
       <Helmet>
-        <title>Game Reviews | Your Site Name</title>
-        <meta name="description" content="Collection of detailed video game reviews, featuring scores, analysis, and insights across various gaming platforms." />
-        <meta property="og:title" content="Game Reviews | Your Site Name" />
-        <meta property="og:description" content="Collection of detailed video game reviews, featuring scores, analysis, and insights across various gaming platforms." />
+        <title>Game Reviews | TARawson</title>
+        <meta
+          name="description"
+          content="Collection of detailed video game reviews, featuring scores, analysis, and insights across various gaming platforms."
+        />
+        <meta property="og:title" content="Game Reviews | TARawson" />
+        <meta
+          property="og:description"
+          content="Collection of detailed video game reviews, featuring scores, analysis, and insights across various gaming platforms."
+        />
         <link rel="canonical" href="/reviews" />
       </Helmet>
       <div className="reviews-page">

@@ -7,17 +7,15 @@ import { Helmet } from "react-helmet-async";
 const slugify = (text: string) => {
   return text
     .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
 };
 
 const ReviewDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  
-  const review = reviewsData.find(
-    (r) => slugify(r.title) === slug
-  );
+
+  const review = reviewsData.find((r) => slugify(r.title) === slug);
 
   if (!review) {
     return <p>Review not found.</p>;
@@ -26,10 +24,19 @@ const ReviewDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{`${review.title} Review (${review.score}/10) | Your Site Name`}</title>
-        <meta name="description" content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`} />
-        <meta property="og:title" content={`${review.title} Review | Your Site Name`} />
-        <meta property="og:description" content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`} />
+        <title>{`${review.title} Review (${review.score}/10) | TARawson`}</title>
+        <meta
+          name="description"
+          content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`}
+        />
+        <meta
+          property="og:title"
+          content={`${review.title} Review | TARawson`}
+        />
+        <meta
+          property="og:description"
+          content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`}
+        />
         <link rel="canonical" href={`/reviews/${slugify(review.title)}`} />
       </Helmet>
       <div className="review-detail">
