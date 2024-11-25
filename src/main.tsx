@@ -16,29 +16,35 @@ import Reviews from "./reviews/Reviews";
 import ReviewDetail from "./reviews/ReviewDetail";
 import MonthlyGames from "./top_games/components/MonthlyGames";
 import TopGamesList from "./top_games/components/TopGamesList";
+import { HelmetProvider } from "react-helmet-async";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <GameProvider>
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<App />}>
-            {/* <Route index element={<Bondforge />} /> */}
-            <Route path="/" element={<Home />} />
-            <Route path="/bondforge" element={<MainMenu />} />
-            <Route path="/bondforge/locations" element={<Locations />} />
-            <Route path="/bondforge/battle" element={<Battle />} />
-            <Route path="/bondforge/about" element={<About />} />
-            <Route path="/bondforge/updates" element={<Updates />} />
-            <Route path="/bondforge/guide" element={<Guide />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/reviews/:id" Component={ReviewDetail} />
-            <Route path="/top-games" element={<TopGamesList />} />
-            <Route path="/top-games/:year/:month" element={<MonthlyGames />} />
-            {/* Add other routes here for locations, battle, etc. */}
-          </Route>
-        </Routes>
-      </HashRouter>
-    </GameProvider>
+    <HelmetProvider>
+      <GameProvider>
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<App />}>
+              {/* <Route index element={<Bondforge />} /> */}
+              <Route path="/" element={<Home />} />
+              <Route path="/bondforge" element={<MainMenu />} />
+              <Route path="/bondforge/locations" element={<Locations />} />
+              <Route path="/bondforge/battle" element={<Battle />} />
+              <Route path="/bondforge/about" element={<About />} />
+              <Route path="/bondforge/updates" element={<Updates />} />
+              <Route path="/bondforge/guide" element={<Guide />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/reviews/:slug" element={<ReviewDetail />} />
+              <Route path="/top-games" element={<TopGamesList />} />
+              <Route
+                path="/top-games/:year/:month"
+                element={<MonthlyGames />}
+              />
+              {/* Add other routes here for locations, battle, etc. */}
+            </Route>
+          </Routes>
+        </HashRouter>
+      </GameProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );
