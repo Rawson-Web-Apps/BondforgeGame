@@ -1,5 +1,7 @@
 ---
 title: "Dragon Quest III HD-2D Remake"
+release_date: "2024-11-14"
+platform: "PC"
 score: 9
 ---
 

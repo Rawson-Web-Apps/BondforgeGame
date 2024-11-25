@@ -19,7 +19,15 @@ const ReviewDetail = () => {
           Back to Reviews
         </button>
         <h1>{review.title}</h1>
-        <p style={{ textAlign: "center" }}>Score: {review.score}/10</p>
+        <div className="review-detail-meta">
+          <span>{review.platform}</span>
+          <span>•</span>
+          <span>{review.release_date}</span>
+        </div>
+        <div className="review-detail-score">
+          <span>{review.score}</span>
+          <small>/10</small>
+        </div>
         <ReactMarkdown>{review.content}</ReactMarkdown>
       </div>
     </div>
