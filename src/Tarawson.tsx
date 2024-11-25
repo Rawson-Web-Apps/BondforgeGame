@@ -14,7 +14,7 @@ const App = () => {
       <header className="header">
         <Link to="/" className="header-link">
           <img
-            src="/images/tar.png"
+            src="/images/TAR/logo/tt.png"
             alt="TARawson Logo"
             className="header-logo"
           />
