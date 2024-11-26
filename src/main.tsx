@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import {
   Routes,
   Route,
-  BrowserRouter as Router,
+  HashRouter as Router,
   Navigate,
 } from "react-router-dom";
 import { GameProvider } from "./bondforge/context/GameContext";
@@ -53,7 +53,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route
-                path="/privacy-policy"
+                path="/policy/PrivacyPolicy.html"
                 element={<Navigate to="/policy/PrivacyPolicy.html" replace />}
               />
             </Route>
