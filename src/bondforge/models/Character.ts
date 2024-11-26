@@ -1,13 +1,13 @@
-import { CharacterClass } from "./class/CharacterClass";
+import { SpecializationClass } from "./class/SpecializationClass";
 import { Armor, CharacterEquipment, Shield, Weapon } from "./Equipment";
-import { Stats, createDefaultStats } from "./Stats";
+import { Stats } from "./Stats";
 import { Skill } from "./skill/Skill";
 
 export class Character {
   name: string;
   level: number;
   experience: number;
-  classType: CharacterClass;
+  classType: SpecializationClass;
   skills: Skill[];
   stats: Stats;
   maxHp: number;
@@ -22,17 +22,14 @@ export class Character {
     name,
     experience,
     classType,
-    skills,
-    stats = createDefaultStats(),
     attack,
     equipment = {},
   }: {
     name: string;
     level?: number;
     experience: number;
-    classType: CharacterClass;
+    classType: SpecializationClass;
     skills: Skill[];
-    stats?: Stats;
     attack: number;
     alive?: boolean;
     equipment?: CharacterEquipment; // Optional equipment, defaults to an empty object
@@ -41,10 +38,40 @@ export class Character {
     this.experience = experience;
     this.level = this.calculateLevel();
     this.classType = classType;
-    this.skills = skills;
-    this.stats = stats;
+    this.skills = classType.skills;
+    this.stats = classType.stats;
     this.attack = attack;
     this.equipment = equipment;
+    if (
+      this.equipment.mainHand?.type &&
+      !this.classType.allowedWeapons.includes(this.equipment.mainHand.type)
+    ) {
+      this.equipment.mainHand = undefined;
+    }
+    if (
+      this.equipment.head?.type &&
+      !this.classType.allowedArmor.includes(this.equipment.head.type)
+    ) {
+      this.equipment.head = undefined;
+    }
+    if (
+      this.equipment.chest?.type &&
+      !this.classType.allowedArmor.includes(this.equipment.chest.type)
+    ) {
+      this.equipment.chest = undefined;
+    }
+    if (
+      this.equipment.legs?.type &&
+      !this.classType.allowedArmor.includes(this.equipment.legs.type)
+    ) {
+      this.equipment.legs = undefined;
+    }
+    if (
+      this.equipment.boots?.type &&
+      !this.classType.allowedArmor.includes(this.equipment.boots.type)
+    ) {
+      this.equipment.boots = undefined;
+    }
     this.maxHp = this.calculateHp();
     this.currentHp = this.maxHp; // Initialize currentHp to maxHp
     this.maxMp = this.calculateMp();

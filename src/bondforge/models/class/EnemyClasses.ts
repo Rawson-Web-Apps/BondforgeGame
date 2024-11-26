@@ -1,95 +1,72 @@
-import {
-  // ClothHelmet,
-  LeatherHelmet,
-  ChainmailHelmet,
-  PlateHelmet,
-  // ClothChestplate,
-  LeatherChestplate,
-  ChainmailChestplate,
-  PlateChestplate,
-  // ClothLeggings,
-  LeatherLeggings,
-  ChainmailLeggings,
-  PlateLeggings,
-  // ClothBoots,
-  LeatherBoots,
-  ChainmailBoots,
-  PlateBoots,
-  // OneHandedSword,
-  // TwoHandedSword,
-  Dagger,
-  Club,
-  Hammer,
-  // Bow,
-  // Staff,
-  // Shield,
-  // Instrument,
-} from "../Equipment";
-import { CharacterClass } from "./CharacterClass";
+import { ArmorType, WeaponType } from "../Equipment";
+import { ElementType } from "../skill/Skill";
+import { skills } from "../skill/Skills";
+import { SpecializationClass } from "./SpecializationClass";
 
-export class GoblinClass extends CharacterClass {
-  name = "Goblin";
-  allowedWeapons = [Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    LeatherChestplate,
-    LeatherLeggings,
-    LeatherBoots,
-  ];
-  skills = ["Sneak Attack"];
-  statBonuses = {
-    strength: 1,
-    dexterity: 2,
-    constitution: 1,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 0,
-  };
-
+export class GoblinClass extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Goblin",
+      allowedWeapons: [WeaponType.Dagger, WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth, ArmorType.Leather],
+      skills: [skills.sneakAttack],
+      stats: {
+        strength: 8,
+        dexterity: 12,
+        constitution: 10,
+        intelligence: 6,
+        wisdom: 6,
+        charisma: 5,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class OrcClass extends CharacterClass {
-  name = "Orc";
-  allowedWeapons = [Club];
-  allowedArmor = [
-    ChainmailHelmet,
-    ChainmailChestplate,
-    ChainmailLeggings,
-    ChainmailBoots,
-  ];
-  skills = ["Sneak Attack"];
-  statBonuses = {
-    strength: 2,
-    dexterity: 1,
-    constitution: 3,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 0,
-  };
-
+export class OrcClass extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Orc",
+      allowedWeapons: [WeaponType.Club],
+      allowedArmor: [ArmorType.Cloth, ArmorType.Leather, ArmorType.Chainmail],
+      skills: [skills.sneakAttack],
+      stats: {
+        strength: 14,
+        dexterity: 10,
+        constitution: 12,
+        intelligence: 5,
+        wisdom: 5,
+        charisma: 6,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class TrollClass extends CharacterClass {
-  name = "Troll";
-  allowedWeapons = [Hammer];
-  allowedArmor = [PlateHelmet, PlateChestplate, PlateLeggings, PlateBoots];
-  skills = ["Sneak Attack"];
-  statBonuses = {
-    strength: 8,
-    dexterity: 1,
-    constitution: 8,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 0,
-  };
-
+export class TrollClass extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Troll",
+      allowedWeapons: [WeaponType.Hammer],
+      allowedArmor: [
+        ArmorType.Cloth,
+        ArmorType.Leather,
+        ArmorType.Chainmail,
+        ArmorType.Plate,
+      ],
+      skills: [skills.sneakAttack],
+      stats: {
+        strength: 18,
+        dexterity: 8,
+        constitution: 16,
+        intelligence: 4,
+        wisdom: 4,
+        charisma: 3,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }

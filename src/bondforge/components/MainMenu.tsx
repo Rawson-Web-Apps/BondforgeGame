@@ -1,20 +1,17 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { GameContext } from "../context/GameContext";
+import { GameContext } from "../context/ContextExport";
 import { Warrior, Rogue, Cleric } from "../models/class/HeroClasses";
 import {
-  OneHandedSword,
   Dagger,
   Staff,
-  LeatherHelmet,
-  LeatherChestplate,
-  LeatherLeggings,
-  LeatherBoots,
-  ClothHelmet,
-  ClothChestplate,
-  ClothLeggings,
-  ClothBoots,
   Shield,
+  Helmet,
+  Leggings,
+  ArmorType,
+  Chestplate,
+  Boots,
+  OneHandedSword,
 } from "../models/Equipment";
 import Character from "../models/Character";
 import "./MainMenu.css";
@@ -30,22 +27,14 @@ const MainMenu = () => {
       experience: 0,
       classType: new Warrior(),
       skills: [skills.slash],
-      stats: {
-        strength: 15,
-        dexterity: 10,
-        constitution: 14,
-        intelligence: 8,
-        wisdom: 8,
-        charisma: 10,
-      },
       attack: 15,
       equipment: {
         mainHand: new OneHandedSword("Basic Sword", 10),
         offHand: new Shield("Basic Shield", 5),
-        head: new LeatherHelmet("Leather Helmet", 2),
-        chest: new LeatherChestplate("Leather Chestplate", 5),
-        legs: new LeatherLeggings("Leather Leggings", 3),
-        boots: new LeatherBoots("Leather Boots", 2),
+        head: new Helmet("Leather Helmet", 2, ArmorType.Leather),
+        chest: new Chestplate("Leather Chestplate", 5, ArmorType.Leather),
+        legs: new Leggings("Leather Leggings", 3, ArmorType.Leather),
+        boots: new Boots("Leather Boots", 2, ArmorType.Leather),
       },
     }),
     new Character({
@@ -53,21 +42,13 @@ const MainMenu = () => {
       experience: 0,
       classType: new Rogue(),
       skills: [skills.backstab, skills.stealth],
-      stats: {
-        strength: 10,
-        dexterity: 15,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 8,
-        charisma: 12,
-      },
       attack: 20,
       equipment: {
         mainHand: new Dagger("Basic Dagger", 8),
-        head: new LeatherHelmet("Leather Hood", 1),
-        chest: new LeatherChestplate("Leather Vest", 4),
-        legs: new LeatherLeggings("Leather Pants", 2),
-        boots: new LeatherBoots("Leather Shoes", 1),
+        head: new Helmet("Leather Hood", 1, ArmorType.Leather),
+        chest: new Chestplate("Leather Vest", 4, ArmorType.Leather),
+        legs: new Leggings("Leather Pants", 2, ArmorType.Leather),
+        boots: new Boots("Leather Shoes", 1, ArmorType.Leather),
       },
     }),
     new Character({
@@ -75,21 +56,13 @@ const MainMenu = () => {
       experience: 0,
       classType: new Cleric(),
       skills: [skills.heal, skills.smite],
-      stats: {
-        strength: 10,
-        dexterity: 8,
-        constitution: 12,
-        intelligence: 10,
-        wisdom: 15,
-        charisma: 10,
-      },
       attack: 10,
       equipment: {
         mainHand: new Staff("Basic Staff", 5),
-        head: new ClothHelmet("Cloth Cap", 1),
-        chest: new ClothChestplate("Cloth Robe", 3),
-        legs: new ClothLeggings("Cloth Pants", 2),
-        boots: new ClothBoots("Cloth Shoes", 1),
+        head: new Helmet("Cloth Cap", 1, ArmorType.Cloth),
+        chest: new Chestplate("Cloth Robe", 3, ArmorType.Cloth),
+        legs: new Leggings("Cloth Pants", 2, ArmorType.Cloth),
+        boots: new Boots("Cloth Shoes", 1, ArmorType.Cloth),
       },
     }),
   ];
@@ -99,6 +72,7 @@ const MainMenu = () => {
       playerName: "Hero",
       party,
       location: "locations",
+      enemies: [],
     });
     navigate("/bondforge/locations");
   };

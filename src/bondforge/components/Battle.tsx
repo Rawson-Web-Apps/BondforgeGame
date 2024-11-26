@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GameContext } from "../context/GameContext";
+import { GameContext } from "../context/ContextExport";
 import { SkillType } from "../models/skill/Skill";
 import { skills } from "../models/skill/Skills";
 import { useBattleActions } from "../hooks/useBattleActions";
@@ -16,6 +16,7 @@ const getImagePaths = (className: string) => {
 
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
+
   const {
     enemies,
     combatLog,

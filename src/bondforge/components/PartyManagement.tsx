@@ -1,16 +1,9 @@
 import { useContext } from "react";
-import { GameContext } from "../context/GameContext";
-import {
-  Warrior,
-  Mage,
-  Knight,
-  Sorcerer,
-  Paladin,
-  Archmage,
-  Champion,
-  GrandSorcerer,
-} from "../models/class/HeroClasses";
-import { CharacterClass } from "../models/class/CharacterClass";
+import { GameContext } from "../context/ContextExport";
+import { Warrior, Mage } from "../models/class/HeroClasses";
+import { SpecializationClass } from "../models/class/SpecializationClass";
+import Character from "../models/Character";
+import { GameState } from "../context/GameContextTypes";
 
 const PartyManagement = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
@@ -19,30 +12,33 @@ const PartyManagement = () => {
     const updatedParty = [...gameState.party];
     updatedParty[index].classType = new newClass();
 
-    setGameState((prevState) => ({
+    setGameState((prevState: GameState) => ({
       ...prevState,
       party: updatedParty,
     }));
   };
 
-  const getAvailableClasses = (level: number): (typeof CharacterClass)[] => {
+  const getAvailableClasses = (
+    level: number
+  ): (typeof SpecializationClass)[] => {
     const classes = [Warrior, Mage];
-    if (level >= 20) {
-      classes.push(Knight, Sorcerer);
-    }
-    if (level >= 40) {
-      classes.push(Paladin, Archmage);
-    }
-    if (level >= 60) {
-      classes.push(Champion, GrandSorcerer);
-    }
+    console.log(level);
+    // if (level >= 20) {
+    //   classes.push(Knight, Sorcerer);
+    // }
+    // if (level >= 40) {
+    //   classes.push(Paladin, Archmage);
+    // }
+    // if (level >= 60) {
+    //   classes.push(Champion, GrandSorcerer);
+    // }
     return classes;
   };
 
   return (
     <div className="party-management">
       <h1>Manage Your Party</h1>
-      {gameState.party.map((member, index) => (
+      {gameState.party.map((member: Character, index: number) => (
         <div key={index}>
           <h2>
             {member.name} - Level: {member.level} - Class:{" "}

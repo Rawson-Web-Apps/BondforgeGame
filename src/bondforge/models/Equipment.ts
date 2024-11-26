@@ -7,25 +7,47 @@ export abstract class Equipment {
 }
 
 export type CharacterEquipment = {
-  mainHand?: Weapon; // E.g., Sword, Bow, Dagger, etc.
-  offHand?: Weapon | Shield; // Could be a second weapon for dual-wielding or a shield
-  head?: ClothHelmet | LeatherHelmet | ChainmailHelmet | PlateHelmet;
-  chest?:
-    | ClothChestplate
-    | LeatherChestplate
-    | ChainmailChestplate
-    | PlateChestplate;
-  legs?: ClothLeggings | LeatherLeggings | ChainmailLeggings | PlateLeggings;
-  boots?: ClothBoots | LeatherBoots | ChainmailBoots | PlateBoots;
+  mainHand?: Weapon;
+  offHand?: OffHandWeapon | Shield;
+  head?: Helmet;
+  chest?: Chestplate;
+  legs?: Leggings;
+  boots?: Boots;
 };
 
 // Base classes for Weapon and Armor
 export abstract class Weapon extends Equipment {
   damage: number;
+  type: WeaponType;
 
-  constructor(name: string, damage: number) {
+  constructor(name: string, damage: number, type: WeaponType) {
     super(name);
     this.damage = damage;
+    this.type = type;
+  }
+}
+
+export abstract class OneHandWeapon extends Weapon {
+  hands: NumberOfHands;
+  constructor(name: string, damage: number, type: WeaponType) {
+    super(name, damage, type);
+    this.hands = NumberOfHands.One;
+  }
+}
+
+export abstract class TwoHandWeapon extends Weapon {
+  hands: NumberOfHands;
+  constructor(name: string, damage: number, type: WeaponType) {
+    super(name, damage, type);
+    this.hands = NumberOfHands.Two;
+  }
+}
+
+export abstract class OffHandWeapon extends OneHandWeapon {
+  hands: NumberOfHands;
+  constructor(weapon: Weapon) {
+    super(weapon.name, weapon.damage, weapon.type);
+    this.hands = NumberOfHands.One;
   }
 }
 
@@ -38,160 +60,189 @@ export abstract class Armor extends Equipment {
   }
 }
 
+export enum WeaponType {
+  Sword,
+  Axe,
+  Hammer,
+  Club,
+  Dagger,
+  Bow,
+  Staff,
+  Instrument,
+}
+
+export enum NumberOfHands {
+  One,
+  Two,
+}
+
+export enum ArmorType {
+  Cloth,
+  Leather,
+  Chainmail,
+  Plate,
+  Shield,
+}
+
 // Specific Armor Slots and Types
-export class ClothHelmet extends Armor {
-  constructor(name: string, defense: number) {
+export class Helmet extends Armor {
+  type?: ArmorType;
+  constructor(name: string, defense: number, type?: ArmorType) {
     super(name, defense);
+    this.type = type;
   }
 }
 
-export class LeatherHelmet extends Armor {
-  constructor(name: string, defense: number) {
+export class Chestplate extends Armor {
+  type?: ArmorType;
+  constructor(name: string, defense: number, type?: ArmorType) {
     super(name, defense);
+    this.type = type;
   }
 }
 
-export class ChainmailHelmet extends Armor {
-  constructor(name: string, defense: number) {
+export class Leggings extends Armor {
+  type?: ArmorType;
+  constructor(name: string, defense: number, type?: ArmorType) {
     super(name, defense);
+    this.type = type;
   }
 }
 
-export class PlateHelmet extends Armor {
-  constructor(name: string, defense: number) {
+export class Boots extends Armor {
+  type?: ArmorType;
+  constructor(name: string, defense: number, type?: ArmorType) {
     super(name, defense);
-  }
-}
-
-export class ClothChestplate extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class LeatherChestplate extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class ChainmailChestplate extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class PlateChestplate extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class ClothLeggings extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class LeatherLeggings extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class ChainmailLeggings extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class PlateLeggings extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class ClothBoots extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class LeatherBoots extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class ChainmailBoots extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
-  }
-}
-
-export class PlateBoots extends Armor {
-  constructor(name: string, defense: number) {
-    super(name, defense);
+    this.type = type;
   }
 }
 
 // Specific Weapon Types
-export class OneHandedSword extends Weapon {
+export class OneHandedSword extends OneHandWeapon {
   constructor(name: string, damage: number) {
-    super(name, damage);
+    super(name, damage, WeaponType.Sword);
   }
 }
 
-export class TwoHandedSword extends Weapon {
+export class TwoHandedSword extends TwoHandWeapon {
   constructor(name: string, damage: number) {
-    super(name, damage);
+    super(name, damage, WeaponType.Sword);
   }
 }
 
-export class Dagger extends Weapon {
+export class OneHandedAxe extends OneHandWeapon {
   constructor(name: string, damage: number) {
-    super(name, damage);
+    super(name, damage, WeaponType.Axe);
   }
 }
 
-export class Bow extends Weapon {
+export class TwoHandedAxe extends TwoHandWeapon {
   constructor(name: string, damage: number) {
-    super(name, damage);
+    super(name, damage, WeaponType.Axe);
   }
 }
 
-export class Staff extends Weapon {
-  magicDamage: number;
+export class OneHandedHammer extends OneHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Hammer);
+  }
+}
 
-  constructor(name: string, magicDamage: number) {
-    super(name, 0); // Assuming no physical damage
-    this.magicDamage = magicDamage;
+export class TwoHandedHammer extends TwoHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Hammer);
+  }
+}
+
+export class OneHandedClub extends OneHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Club);
+  }
+}
+
+export class TwoHandedClub extends TwoHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Club);
+  }
+}
+
+export class Dagger extends OneHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Dagger);
+  }
+}
+
+export class Bow extends TwoHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Bow);
+  }
+}
+
+export class Staff extends TwoHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Staff);
+  }
+}
+
+export class Instrument extends TwoHandWeapon {
+  constructor(name: string, damage: number) {
+    super(name, damage, WeaponType.Instrument);
   }
 }
 
 export class Shield extends Armor {
+  hands: NumberOfHands;
+  type: ArmorType;
   constructor(name: string, defense: number) {
     super(name, defense);
+    this.hands = NumberOfHands.One;
+    this.type = ArmorType.Shield;
   }
 }
 
-export class Instrument extends Weapon {
-  charismaBoost: number;
+export const weapons = {
+  Dagger: new Dagger("Dagger", 10),
+  Sword: new OneHandedSword("Sword", 10),
+  Axe: new OneHandedAxe("Axe", 10),
+  Club: new OneHandedClub("Club", 10),
+  Hammer: new TwoHandedHammer("Hammer", 10),
+  Bow: new Bow("Bow", 10),
+  Staff: new Staff("Staff", 10),
+};
 
-  constructor(name: string, charismaBoost: number) {
-    super(name, 0); // Assuming no physical damage
-    this.charismaBoost = charismaBoost;
-  }
-}
+export const armor = {
+  // Cloth
+  ClothHelmet: new Helmet("Cloth Helmet", 2, ArmorType.Cloth),
+  ClothChestplate: new Chestplate("Cloth Chestplate", 5, ArmorType.Cloth),
+  ClothLeggings: new Leggings("Cloth Leggings", 5, ArmorType.Cloth),
+  ClothBoots: new Boots("Cloth Boots", 4, ArmorType.Cloth),
 
-export class Club extends Weapon {
-  constructor(public name: string, public damage: number) {
-    super(name, damage);
-  }
-}
+  // Leather
+  LeatherHelmet: new Helmet("Leather Helmet", 3, ArmorType.Leather),
+  LeatherChestplate: new Chestplate("Leather Chestplate", 6, ArmorType.Leather),
+  LeatherLeggings: new Leggings("Leather Leggings", 6, ArmorType.Leather),
+  LeatherBoots: new Boots("Leather Boots", 5, ArmorType.Leather),
 
-export class Hammer extends Weapon {
-  constructor(public name: string, public damage: number) {
-    super(name, damage);
-  }
-}
+  // Chainmail
+  ChainmailHelmet: new Helmet("Chainmail Helmet", 10, ArmorType.Chainmail),
+  ChainmailChestplate: new Chestplate(
+    "Chainmail Chestplate",
+    15,
+    ArmorType.Chainmail
+  ),
+  ChainmailLeggings: new Leggings(
+    "Chainmail Leggings",
+    15,
+    ArmorType.Chainmail
+  ),
+  ChainmailBoots: new Boots("Chainmail Boots", 12, ArmorType.Chainmail),
+
+  // Plate
+  PlateHelmet: new Helmet("Plate Helmet", 20, ArmorType.Plate),
+  PlateChestplate: new Chestplate("Plate Chestplate", 25, ArmorType.Plate),
+  PlateLeggings: new Leggings("Plate Leggings", 25, ArmorType.Plate),
+  PlateBoots: new Boots("Plate Boots", 20, ArmorType.Plate),
+
+  // Shield
+  Shield: new Shield("Shield", 10),
+};

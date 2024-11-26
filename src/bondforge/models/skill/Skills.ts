@@ -10,9 +10,6 @@ export const skills = {
     (target: Character, user: Character) => {
       const damage = user.stats.intelligence * 2;
       target.updateCurrentHp(target.currentHp - damage);
-      console.log(
-        `${user.name} casts Fireball on ${target.name} for ${damage} damage!`
-      );
       // Apply burn effect, if applicable
     },
     10 // Mana cost
@@ -24,7 +21,6 @@ export const skills = {
     (target: Character, user: Character) => {
       const healing = user.stats.intelligence * 2;
       target.updateCurrentHp(target.currentHp + healing);
-      console.log(`${user.name} heals ${target.name} for ${healing} HP!`);
     },
     5 // Mana cost
   ),
@@ -35,7 +31,6 @@ export const skills = {
     (target: Character, user: Character) => {
       const damage = user.stats.strength * 1.5;
       target.updateCurrentHp(target.currentHp - damage);
-      console.log(`${user.name} slashes ${target.name} for ${damage} damage!`);
     },
     3 // Mana cost
   ),
@@ -46,9 +41,6 @@ export const skills = {
     (target: Character, user: Character) => {
       const damage = user.stats.strength * 2;
       target.updateCurrentHp(target.currentHp - damage);
-      console.log(
-        `${user.name} backstabs ${target.name} for ${damage} damage!`
-      );
     },
     7 // Mana cost
   ),
@@ -57,8 +49,8 @@ export const skills = {
     SkillType.Buff,
     ElementType.Physical,
     (target: Character, user: Character) => {
-      console.log(`${user.name} enters stealth mode on ${target.name}!`);
       // Implement stealth logic
+      console.log("target: ", target, "user: ", user);
     }
     // No mana cost
   ),
@@ -69,9 +61,25 @@ export const skills = {
     (target: Character, user: Character) => {
       const damage = user.stats.intelligence * 1.5;
       target.updateCurrentHp(target.currentHp - damage);
-      console.log(`${user.name} smites ${target.name} for ${damage} damage!`);
     },
     8 // Mana cost
+  ),
+  berserk: new Skill(
+    "Berserk",
+    SkillType.Buff,
+    ElementType.Physical,
+    (target: Character, user: Character) => {
+      user.stats.strength += 1;
+      console.log("target: ", target, "user: ", user);
+    }
+  ),
+  sneakAttack: new Skill(
+    "Sneak Attack",
+    SkillType.Attack,
+    ElementType.Physical,
+    (target: Character, user: Character) => {
+      target.updateCurrentHp(target.currentHp - user.stats.dexterity * 2);
+    }
   ),
   // Add more skills as needed
 };

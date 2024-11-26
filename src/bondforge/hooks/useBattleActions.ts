@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Character } from "../models/Character";
-import { GameState } from "../context/GameContext";
+import { GameState } from "../context/GameContextTypes";
 import { Skill, SkillType } from "../models/skill/Skill";
 import { skills } from "../models/skill/Skills";
 import SkillManager from "../managers/SkillManager";
@@ -12,8 +12,18 @@ export const useBattleActions = (
 ) => {
   const characterLevels = gameState.party.map((member) => member.level);
   const [enemies, setEnemies] = useState<Character[]>(() =>
-    getRandomEnemies(characterLevels)
+    gameState.enemies.length > 0
+      ? gameState.enemies
+      : getRandomEnemies(characterLevels)
   );
+
+  useEffect(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      enemies,
+    }));
+  }, [enemies, setGameState]);
+
   const [activeParticipantIndex, setActiveParticipantIndex] = useState(0);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [selectingTarget, setSelectingTarget] = useState(false);
@@ -48,7 +58,7 @@ export const useBattleActions = (
             : null
         )
         .filter(Boolean),
-      ...enemies
+      ...gameState.enemies
         .map((enemy, index) =>
           enemy.alive
             ? {
@@ -70,15 +80,16 @@ export const useBattleActions = (
     }[];
 
     participants.sort((a, b) => b.dexterity - a.dexterity);
+
     return participants;
-  }, [gameState.party, enemies]);
+  }, [gameState.party, gameState.enemies]);
 
   const [moveOrder, setMoveOrder] = useState(determineMoveOrder);
 
   useEffect(() => {
     const newMoveOrder = determineMoveOrder();
     setMoveOrder(newMoveOrder);
-  }, [gameState.party, enemies, determineMoveOrder]);
+  }, [gameState.party, gameState.enemies, determineMoveOrder]);
 
   const handleAttack = useCallback(() => {
     setSelectingTarget(true);
@@ -117,8 +128,8 @@ export const useBattleActions = (
 
   const handleAttackExecution = useCallback(
     (target: Character) => {
-      const targetIndex = enemies.includes(target)
-        ? gameState.party.length + enemies.indexOf(target)
+      const targetIndex = gameState.enemies.includes(target)
+        ? gameState.party.length + gameState.enemies.indexOf(target)
         : gameState.party.indexOf(target);
 
       const targetElement = document.querySelector(
@@ -148,15 +159,17 @@ export const useBattleActions = (
             1
           );
 
-          if (enemies.includes(target)) {
-            const enemyIdx = enemies.indexOf(target);
+          if (gameState.enemies.includes(target)) {
+            const enemyIdx = gameState.enemies.indexOf(target);
 
             setEnemies((prevEnemies) => {
               const updatedEnemies = prevEnemies.reduce(
                 (acc: Character[], enemy, idx) => {
                   if (idx === enemyIdx) {
                     const newCurrentHp = enemy.currentHp - damage;
+                    enemy.updateCurrentHp(newCurrentHp);
                     const isAlive = newCurrentHp > 0;
+                    enemy.alive = isAlive;
                     if (!isAlive) {
                       setCombatLog((prevLog) => [
                         ...prevLog,
@@ -165,21 +178,7 @@ export const useBattleActions = (
                       // Enemy is defeated; do not include it in the updated enemies array
                       return acc;
                     } else {
-                      // Create a new Character instance with updated HP
-                      const updatedEnemy = new Character({
-                        name: enemy.name,
-                        level: enemy.level,
-                        experience: enemy.experience,
-                        classType: enemy.classType,
-                        skills: enemy.skills,
-                        stats: enemy.stats,
-                        attack: enemy.attack,
-                        equipment: enemy.equipment,
-                      });
-                      updatedEnemy.currentHp = newCurrentHp;
-                      updatedEnemy.currentMp = enemy.currentMp;
-                      updatedEnemy.alive = isAlive;
-                      acc.push(updatedEnemy);
+                      acc.push(enemy);
                       return acc;
                     }
                   } else {
@@ -201,28 +200,16 @@ export const useBattleActions = (
             const updatedParty = gameState.party.map((member) => {
               if (member === target) {
                 const newCurrentHp = Math.max(member.currentHp - damage, 0);
+                member.updateCurrentHp(newCurrentHp);
                 const isAlive = newCurrentHp > 0;
+                member.alive = isAlive;
                 if (!isAlive) {
                   setCombatLog((prevLog) => [
                     ...prevLog,
                     `${target.name} has been defeated!`,
                   ]);
                 }
-                // Create a new Character instance
-                const updatedMember = new Character({
-                  name: member.name,
-                  level: member.level,
-                  experience: member.experience,
-                  classType: member.classType,
-                  skills: member.skills,
-                  stats: member.stats,
-                  attack: member.attack,
-                  equipment: member.equipment,
-                });
-                updatedMember.currentHp = newCurrentHp;
-                updatedMember.currentMp = member.currentMp;
-                updatedMember.alive = isAlive;
-                return updatedMember;
+                return member;
               }
               return member;
             });
@@ -249,7 +236,7 @@ export const useBattleActions = (
     },
     [
       activeParticipantIndex,
-      enemies,
+      gameState.enemies,
       gameState.party,
       handleTurnEnd,
       moveOrder,
@@ -269,7 +256,8 @@ export const useBattleActions = (
         !participant ||
         (participant.type === "party" &&
           !gameState.party[participant.index]?.alive) ||
-        (participant.type === "enemy" && !enemies[participant.index]?.alive)
+        (participant.type === "enemy" &&
+          !gameState.enemies[participant.index]?.alive)
       ) {
         console.error("Attempting to execute skill with a dead participant");
         return;
@@ -288,7 +276,7 @@ export const useBattleActions = (
         const logMessage = SkillManager.executeSkill(skill, member, target);
         setCombatLog((prevLog) => [...prevLog, logMessage]);
 
-        if (enemies.includes(target) && target.currentHp <= 0) {
+        if (gameState.enemies.includes(target) && target.currentHp <= 0) {
           setEnemies((prevEnemies) =>
             prevEnemies.filter((enemy) => enemy !== target)
           );
@@ -308,7 +296,7 @@ export const useBattleActions = (
       activeParticipantIndex,
       determineMoveOrder,
       gameState.party,
-      enemies,
+      gameState.enemies,
       handleTurnEnd,
     ]
   );
@@ -345,7 +333,7 @@ export const useBattleActions = (
     (event: KeyboardEvent) => {
       if (selectingTarget) {
         const partyLength = gameState.party.length;
-        const enemiesLength = enemies.length;
+        const enemiesLength = gameState.enemies.length;
         let newIndex = selectedTargetIndex ?? 0;
 
         switch (event.key) {
@@ -385,8 +373,8 @@ export const useBattleActions = (
                 }
               } else {
                 const enemyIndex = newIndex - gameState.party.length;
-                if (enemies[enemyIndex]) {
-                  const target = enemies[enemyIndex];
+                if (gameState.enemies[enemyIndex]) {
+                  const target = gameState.enemies[enemyIndex];
                   handleTargetSelection(target);
                 }
               }
@@ -471,7 +459,7 @@ export const useBattleActions = (
       selectedTargetIndex,
       selectingSkill,
       gameState.party,
-      enemies,
+      gameState.enemies,
       handleTargetSelection,
       selectedActionIndex,
       handleActionSelection,
@@ -505,10 +493,9 @@ export const useBattleActions = (
 
     const target = gameState.party[targetIndex];
     const enemyIndex = currentParticipant.index!;
-    const enemyCharacter = enemies[enemyIndex];
+    const enemyCharacter = gameState.enemies[enemyIndex];
 
     if (!enemyCharacter) {
-      console.error("Enemy character is undefined");
       return;
     }
 
@@ -520,28 +507,16 @@ export const useBattleActions = (
     const updatedParty = gameState.party.map((member, index) => {
       if (index === targetIndex) {
         const newCurrentHp = Math.max(member.currentHp - damage, 0);
+        member.updateCurrentHp(newCurrentHp);
         const isAlive = newCurrentHp > 0;
+        member.alive = isAlive;
         if (!isAlive) {
           setCombatLog((prevLog) => [
             ...prevLog,
             `${target.name} has been defeated!`,
           ]);
         }
-        // Create a new Character instance
-        const updatedMember = new Character({
-          name: member.name,
-          level: member.level,
-          experience: member.experience,
-          classType: member.classType,
-          skills: member.skills,
-          stats: member.stats,
-          attack: member.attack,
-          equipment: member.equipment,
-        });
-        updatedMember.currentHp = newCurrentHp;
-        updatedMember.currentMp = member.currentMp;
-        updatedMember.alive = isAlive;
-        return updatedMember;
+        return member;
       }
       return member;
     });
@@ -558,7 +533,6 @@ export const useBattleActions = (
     activeParticipantIndex,
     moveOrder,
     gameState,
-    enemies,
     handleTurnEnd,
     setGameState,
   ]);

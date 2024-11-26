@@ -1,359 +1,291 @@
-import {
-  ClothHelmet,
-  LeatherHelmet,
-  ChainmailHelmet,
-  PlateHelmet,
-  ClothChestplate,
-  LeatherChestplate,
-  ChainmailChestplate,
-  PlateChestplate,
-  ClothLeggings,
-  LeatherLeggings,
-  ChainmailLeggings,
-  PlateLeggings,
-  ClothBoots,
-  LeatherBoots,
-  ChainmailBoots,
-  PlateBoots,
-  OneHandedSword,
-  TwoHandedSword,
-  Dagger,
-  Bow,
-  Staff,
-  Shield,
-  Instrument,
-} from "../Equipment";
-import { CharacterClass } from "./CharacterClass";
+import { WeaponType, ArmorType } from "../Equipment";
+import { SpecializationClass } from "./SpecializationClass";
 import { ElementType } from "../skill/Skill";
+import { skills } from "../skill/Skills";
 
 // Tier 1 Classes
-export class Warrior extends CharacterClass {
-  name = "Warrior";
-  allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    ChainmailHelmet,
-    PlateHelmet,
-    LeatherChestplate,
-    ChainmailChestplate,
-    PlateChestplate,
-    LeatherLeggings,
-    ChainmailLeggings,
-    PlateLeggings,
-    LeatherBoots,
-    ChainmailBoots,
-    PlateBoots,
-    Shield,
-  ];
-  skills = ["Slash"];
-  statBonuses = {
-    strength: 2,
-    dexterity: 1,
-    constitution: 3,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 1,
-  };
-
-  // Define strengths and weaknesses
-  strengths = [ElementType.Physical];
-  weaknesses = [ElementType.Fire];
-
+export class Warrior extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Warrior",
+      allowedWeapons: [
+        WeaponType.Sword,
+        WeaponType.Axe,
+        WeaponType.Hammer,
+        WeaponType.Club,
+      ],
+      allowedArmor: [
+        ArmorType.Cloth,
+        ArmorType.Leather,
+        ArmorType.Chainmail,
+        ArmorType.Plate,
+        ArmorType.Shield,
+      ],
+      skills: [skills.slash],
+      stats: {
+        strength: 15,
+        dexterity: 10,
+        constitution: 14,
+        intelligence: 8,
+        wisdom: 8,
+        charisma: 10,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class Mage extends CharacterClass {
-  name = "Mage";
-  allowedWeapons = [Staff];
-  allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
-  skills = ["Fireball", "Teleport"];
-  statBonuses = {
-    strength: 0,
-    dexterity: 1,
-    constitution: 1,
-    intelligence: 3,
-    wisdom: 2,
-    charisma: 0,
-  };
-
-  // Define strengths and weaknesses
-  strengths = [ElementType.Fire];
-  weaknesses = [ElementType.Physical];
-
+export class Mage extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Mage",
+      allowedWeapons: [WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth],
+      skills: [skills.fireball],
+      stats: {
+        strength: 8,
+        dexterity: 8,
+        constitution: 10,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      strengths: [ElementType.Fire],
+      weaknesses: [ElementType.Physical],
+    });
   }
 }
 
-export class Rogue extends CharacterClass {
-  name = "Rogue";
-  allowedWeapons = [Dagger, OneHandedSword, Bow];
-  allowedArmor = [
-    LeatherHelmet,
-    LeatherChestplate,
-    LeatherLeggings,
-    LeatherBoots,
-  ];
-  skills = ["Backstab", "Stealth"];
-  statBonuses = {
-    strength: 1,
-    dexterity: 3,
-    constitution: 1,
-    intelligence: 1,
-    wisdom: 0,
-    charisma: 1,
-  };
-
-  // Define strengths and weaknesses
-  strengths = [ElementType.Physical];
-  weaknesses = [ElementType.Light];
-
+export class Rogue extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Rogue",
+      allowedWeapons: [WeaponType.Dagger],
+      allowedArmor: [ArmorType.Cloth, ArmorType.Leather],
+      skills: [skills.backstab, skills.stealth],
+      stats: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 8,
+        charisma: 12,
+      },
+      // Define strengths and weaknesses
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Light],
+    });
   }
 }
 
-export class Cleric extends CharacterClass {
-  name = "Cleric";
-  allowedWeapons = [Staff, OneHandedSword];
-  allowedArmor = [
-    ClothHelmet,
-    LeatherHelmet,
-    ClothChestplate,
-    LeatherChestplate,
-    ClothLeggings,
-    LeatherLeggings,
-    ClothBoots,
-    LeatherBoots,
-  ];
-  skills = ["Heal", "Smite"];
-  statBonuses = {
-    strength: 1,
-    dexterity: 0,
-    constitution: 2,
-    intelligence: 1,
-    wisdom: 3,
-    charisma: 0,
-  };
-
+export class Cleric extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Cleric",
+      allowedWeapons: [WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth],
+      skills: [skills.heal, skills.smite],
+      stats: {
+        strength: 10,
+        dexterity: 8,
+        constitution: 12,
+        intelligence: 10,
+        wisdom: 15,
+        charisma: 10,
+      },
+      strengths: [ElementType.Light],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class Ranger extends CharacterClass {
-  name = "Ranger";
-  allowedWeapons = [Bow, OneHandedSword, Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    ChainmailHelmet,
-    LeatherChestplate,
-    ChainmailChestplate,
-    LeatherLeggings,
-    ChainmailLeggings,
-    LeatherBoots,
-    ChainmailBoots,
-  ];
-  skills = ["Arrow Shot", "Animal Companion"];
-  statBonuses = {
-    strength: 1,
-    dexterity: 2,
-    constitution: 1,
-    intelligence: 1,
-    wisdom: 1,
-    charisma: 0,
-  };
-
+export class Ranger extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Ranger",
+      allowedWeapons: [WeaponType.Bow, WeaponType.Dagger],
+      allowedArmor: [ArmorType.Cloth, ArmorType.Leather],
+      skills: [],
+      stats: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 8,
+        charisma: 12,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Light],
+    });
   }
 }
 
-export class Bard extends CharacterClass {
-  name = "Bard";
-  allowedWeapons = [Instrument, OneHandedSword, Dagger];
-  allowedArmor = [
-    ClothHelmet,
-    LeatherHelmet,
-    ClothChestplate,
-    LeatherChestplate,
-    ClothLeggings,
-    LeatherLeggings,
-    ClothBoots,
-    LeatherBoots,
-  ];
-  skills = ["Inspire", "Charm"];
-  statBonuses = {
-    strength: 0,
-    dexterity: 1,
-    constitution: 1,
-    intelligence: 1,
-    wisdom: 0,
-    charisma: 3,
-  };
-
+export class Bard extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Bard",
+      allowedWeapons: [WeaponType.Instrument, WeaponType.Dagger],
+      allowedArmor: [ArmorType.Cloth, ArmorType.Leather],
+      skills: [],
+      stats: {
+        strength: 8,
+        dexterity: 8,
+        constitution: 10,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      strengths: [ElementType.Light],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
 // Tier 2 Classes
-export class Knight extends CharacterClass {
-  name = "Knight";
-  allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    ChainmailHelmet,
-    PlateHelmet,
-    LeatherChestplate,
-    ChainmailChestplate,
-    PlateChestplate,
-    LeatherLeggings,
-    ChainmailLeggings,
-    PlateLeggings,
-    LeatherBoots,
-    ChainmailBoots,
-    PlateBoots,
-    Shield,
-  ];
-  skills = ["Charge", "Shield Wall"];
-  statBonuses = {
-    strength: 2,
-    dexterity: 1,
-    constitution: 3,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 1,
-  };
-
+export class Knight extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Knight",
+      allowedWeapons: [WeaponType.Dagger],
+      allowedArmor: [
+        ArmorType.Cloth,
+        ArmorType.Leather,
+        ArmorType.Chainmail,
+        ArmorType.Plate,
+        ArmorType.Shield,
+      ],
+      skills: [],
+      stats: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 8,
+        charisma: 12,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class Sorcerer extends CharacterClass {
-  name = "Sorcerer";
-  allowedWeapons = [Staff];
-  allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
-  skills = ["Spell Blast", "Mana Shield"];
-  statBonuses = {
-    strength: 0,
-    dexterity: 1,
-    constitution: 1,
-    intelligence: 3,
-    wisdom: 2,
-    charisma: 0,
-  };
-
+export class Sorcerer extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Sorcerer",
+      allowedWeapons: [WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth],
+      skills: [],
+      stats: {
+        strength: 8,
+        dexterity: 8,
+        constitution: 10,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      strengths: [ElementType.Fire],
+      weaknesses: [ElementType.Physical],
+    });
   }
 }
 
 // Tier 3 Classes
-export class Paladin extends CharacterClass {
-  name = "Paladin";
-  allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    ChainmailHelmet,
-    PlateHelmet,
-    LeatherChestplate,
-    ChainmailChestplate,
-    PlateChestplate,
-    LeatherLeggings,
-    ChainmailLeggings,
-    PlateLeggings,
-    LeatherBoots,
-    ChainmailBoots,
-    PlateBoots,
-    Shield,
-  ];
-  skills = ["Holy Strike", "Divine Shield"];
-  statBonuses = {
-    strength: 2,
-    dexterity: 1,
-    constitution: 3,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 1,
-  };
-
+export class Paladin extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Paladin",
+      allowedWeapons: [WeaponType.Dagger],
+      allowedArmor: [
+        ArmorType.Cloth,
+        ArmorType.Leather,
+        ArmorType.Chainmail,
+        ArmorType.Plate,
+        ArmorType.Shield,
+      ],
+      skills: [],
+      stats: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 8,
+        charisma: 12,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class Archmage extends CharacterClass {
-  name = "Archmage";
-  allowedWeapons = [Staff];
-  allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
-  skills = ["Spell Blast", "Mana Shield"];
-  statBonuses = {
-    strength: 0,
-    dexterity: 1,
-    constitution: 1,
-    intelligence: 3,
-    wisdom: 2,
-    charisma: 0,
-  };
-
+export class Archmage extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Archmage",
+      allowedWeapons: [WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth],
+      skills: [],
+      stats: {
+        strength: 8,
+        dexterity: 8,
+        constitution: 10,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      strengths: [ElementType.Fire],
+      weaknesses: [ElementType.Physical],
+    });
   }
 }
 
 // Tier 4 Classes
-export class Champion extends CharacterClass {
+export class Champion extends SpecializationClass {
   name = "Champion";
-  allowedWeapons = [OneHandedSword, TwoHandedSword, Dagger];
-  allowedArmor = [
-    LeatherHelmet,
-    ChainmailHelmet,
-    PlateHelmet,
-    LeatherChestplate,
-    ChainmailChestplate,
-    PlateChestplate,
-    LeatherLeggings,
-    ChainmailLeggings,
-    PlateLeggings,
-    LeatherBoots,
-    ChainmailBoots,
-    PlateBoots,
-    Shield,
-  ];
-  skills = ["Slam", "Shield Wall"];
-  statBonuses = {
-    strength: 2,
-    dexterity: 1,
-    constitution: 3,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 1,
-  };
-
   constructor() {
-    super();
+    super({
+      name: "Champion",
+      allowedWeapons: [WeaponType.Dagger],
+      allowedArmor: [
+        ArmorType.Cloth,
+        ArmorType.Leather,
+        ArmorType.Chainmail,
+        ArmorType.Plate,
+        ArmorType.Shield,
+      ],
+      skills: [],
+      stats: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 8,
+        charisma: 12,
+      },
+      strengths: [ElementType.Physical],
+      weaknesses: [ElementType.Fire],
+    });
   }
 }
 
-export class GrandSorcerer extends CharacterClass {
-  name = "Grand Sorcerer";
-  allowedWeapons = [Staff];
-  allowedArmor = [ClothHelmet, ClothChestplate, ClothLeggings, ClothBoots];
-  skills = ["Spell Blast", "Mana Shield"];
-  statBonuses = {
-    strength: 0,
-    dexterity: 1,
-    constitution: 1,
-    intelligence: 3,
-    wisdom: 2,
-    charisma: 0,
-  };
-
+export class GrandSorcerer extends SpecializationClass {
   constructor() {
-    super();
+    super({
+      name: "Grand Sorcerer",
+      allowedWeapons: [WeaponType.Staff],
+      allowedArmor: [ArmorType.Cloth],
+      skills: [],
+      stats: {
+        strength: 8,
+        dexterity: 8,
+        constitution: 10,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      strengths: [ElementType.Fire],
+      weaknesses: [ElementType.Physical],
+    });
   }
 }

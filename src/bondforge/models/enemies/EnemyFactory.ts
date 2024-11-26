@@ -33,14 +33,6 @@ const createEnemy = (
 
   // Scale stats based on level
   const scaleFactor = enemyLevel / config.levelRange[0];
-  const scaledStats = {
-    strength: Math.floor(config.stats.strength * scaleFactor),
-    dexterity: Math.floor(config.stats.dexterity * scaleFactor),
-    constitution: Math.floor(config.stats.constitution * scaleFactor),
-    intelligence: Math.floor(config.stats.intelligence * scaleFactor),
-    wisdom: Math.floor(config.stats.wisdom * scaleFactor),
-    charisma: Math.floor(config.stats.charisma * scaleFactor),
-  };
 
   return new Character({
     name: config.name,
@@ -48,7 +40,6 @@ const createEnemy = (
     experience: 0,
     classType: config.classType,
     skills: config.skills,
-    stats: scaledStats,
     attack: Math.floor(config.attack * scaleFactor),
     equipment: config.equipment,
   });

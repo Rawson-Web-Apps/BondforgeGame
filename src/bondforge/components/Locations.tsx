@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GameContext } from "../context/GameContext";
+import { GameContext } from "../context/ContextExport";
 import { useNavigate } from "react-router-dom";
 import arenaImage from "/images/arena.png";
 import "./Locations.css";
