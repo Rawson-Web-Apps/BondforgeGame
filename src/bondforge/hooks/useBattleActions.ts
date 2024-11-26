@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Character } from "../models/Character";
 import { GameState } from "../context/GameContextTypes";
 import { Skill, SkillType } from "../models/skill/Skill";
@@ -13,11 +13,13 @@ export const useBattleActions = (
 ) => {
   const navigate = useNavigate();
   const characterLevels = gameState.party.map((member) => member.level);
-  const [enemies, setEnemies] = useState<Character[]>(() =>
+  const initialEnemies =
     gameState.enemies.length > 0
       ? gameState.enemies
-      : getRandomEnemies(characterLevels)
-  );
+      : getRandomEnemies(characterLevels);
+
+  const [enemies, setEnemies] = useState<Character[]>(initialEnemies);
+  const [originalEnemies] = useState<Character[]>(initialEnemies);
 
   useEffect(() => {
     setGameState((prevState) => ({
@@ -47,32 +49,20 @@ export const useBattleActions = (
 
   const determineMoveOrder = useCallback(() => {
     const participants = [
-      ...gameState.party
-        .map((member, index) =>
-          member.alive
-            ? {
-                type: "party" as const,
-                index,
-                dexterity: member.stats.dexterity,
-                name: member.name,
-                faceImage: `/images/${member.classType.name.toLowerCase()}_turn.png`,
-              }
-            : null
-        )
-        .filter(Boolean),
-      ...gameState.enemies
-        .map((enemy, index) =>
-          enemy.alive
-            ? {
-                type: "enemy" as const,
-                index,
-                dexterity: enemy.stats.dexterity,
-                name: enemy.name,
-                faceImage: `/images/${enemy.classType.name.toLowerCase()}_turn.png`,
-              }
-            : null
-        )
-        .filter(Boolean),
+      ...gameState.party.map((member, index) => ({
+        type: "party" as const,
+        index,
+        dexterity: member.stats.dexterity,
+        name: member.name,
+        faceImage: `/images/${member.classType.name.toLowerCase()}_turn.png`,
+      })),
+      ...gameState.enemies.map((enemy, index) => ({
+        type: "enemy" as const,
+        index,
+        dexterity: enemy.stats.dexterity,
+        name: enemy.name,
+        faceImage: `/images/${enemy.classType.name.toLowerCase()}_turn.png`,
+      })),
     ] as {
       type: "party" | "enemy";
       index: number;
@@ -86,12 +76,11 @@ export const useBattleActions = (
     return participants;
   }, [gameState.party, gameState.enemies]);
 
-  const [moveOrder, setMoveOrder] = useState(determineMoveOrder);
+  const moveOrder = useMemo(() => determineMoveOrder(), [determineMoveOrder]);
 
-  useEffect(() => {
-    const newMoveOrder = determineMoveOrder();
-    setMoveOrder(newMoveOrder);
-  }, [gameState.party, gameState.enemies, determineMoveOrder]);
+  const handleReturnToLocations = useCallback(() => {
+    navigate("/bondforge/locations");
+  }, [navigate]);
 
   const handleAttack = useCallback(() => {
     setSelectingTarget(true);
@@ -123,10 +112,24 @@ export const useBattleActions = (
     setActiveParticipantIndex((prevIndex) => {
       if (moveOrder.length === 0) return 0; // Handle empty moveOrder
 
-      const nextIndex = (prevIndex + 1) % moveOrder.length;
+      let nextIndex = (prevIndex + 1) % moveOrder.length;
+      while (!isParticipantAlive(moveOrder[nextIndex])) {
+        nextIndex = (nextIndex + 1) % moveOrder.length;
+      }
       return nextIndex;
     });
-  }, [moveOrder.length]);
+  }, [moveOrder]);
+
+  const isParticipantAlive = (participant: {
+    type: "party" | "enemy";
+    index: number;
+  }) => {
+    if (participant.type === "party") {
+      return gameState.party[participant.index]?.alive;
+    } else {
+      return gameState.enemies[participant.index]?.alive;
+    }
+  };
 
   const handleAttackExecution = useCallback(
     (target: Character) => {
@@ -561,8 +564,46 @@ export const useBattleActions = (
       location: "locations",
     }));
     setCombatLog((prevLog) => [...prevLog, "You fled the battle!"]);
-    navigate("/bondforge/locations");
-  }, [setGameState]);
+    handleReturnToLocations();
+  }, [setGameState, handleReturnToLocations]);
+
+  const [experienceGained, setExperienceGained] = useState<number | null>(null);
+  const [levelUps, setLevelUps] = useState<string[]>([]);
+
+  const calculateExperience = (enemies: Character[]): number => {
+    return enemies.reduce((totalExp, enemy) => {
+      const enemyExperience = enemy.level * 10; // Example calculation
+      return totalExp + enemyExperience;
+    }, 0);
+  };
+
+  const handleVictory = useCallback(() => {
+    if (experienceGained !== null) return; // Prevent re-execution if already handled
+
+    const experience = calculateExperience(originalEnemies);
+    setExperienceGained(experience);
+
+    const newLevelUps: string[] = [];
+    const updatedParty = gameState.party.map((member) => {
+      const leveledUp = member.gainExperience(experience); // Assume gainExperience returns true if leveled up
+      if (leveledUp) {
+        newLevelUps.push(`${member.name} leveled up!`);
+      }
+      return member;
+    });
+
+    setLevelUps(newLevelUps);
+    setGameState((prevState) => ({
+      ...prevState,
+      party: updatedParty,
+    }));
+  }, [originalEnemies, gameState.party, setGameState, experienceGained]);
+
+  useEffect(() => {
+    if (enemies.length === 0) {
+      handleVictory();
+    }
+  }, [enemies, handleVictory]);
 
   return {
     enemies,
@@ -585,5 +626,8 @@ export const useBattleActions = (
     handleTargetHover,
     handleActionSelection,
     handleRun,
+    experienceGained,
+    levelUps,
+    handleReturnToLocations,
   };
 };

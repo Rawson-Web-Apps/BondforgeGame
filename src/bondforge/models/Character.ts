@@ -79,6 +79,16 @@ export class Character {
     this.alive = true;
   }
 
+  public gainExperience(exp: number): boolean {
+    this.experience += exp;
+    const newLevel = this.calculateLevel();
+    if (newLevel > this.level) {
+      this.levelUp(newLevel);
+      return true;
+    }
+    return false;
+  }
+
   public calculateLevel(): number {
     const maxLevel = 99;
     const baseExp = 0; // Base experience required for level 1
