@@ -45,6 +45,11 @@ const ReviewDetail = () => {
             Back to Reviews
           </button>
           <h1>{review.title}</h1>
+          <img
+            src={review.Image}
+            alt={`${review.title} cover`}
+            className="review-detail-image"
+          />
           <div className="review-detail-meta">
             <span>{review.platform}</span>
             <span>•</span>
@@ -55,6 +60,17 @@ const ReviewDetail = () => {
             <small>/10</small>
           </div>
           <ReactMarkdown>{review.content}</ReactMarkdown>
+          {review.Website && (
+            <p>
+              <a
+                href={review.Website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit Official Website
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </>

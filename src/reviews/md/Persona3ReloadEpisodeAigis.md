@@ -3,6 +3,8 @@ title: "Persona 3 Reload Episode Aigis: The Answer"
 release_date: "2024-09-10"
 platform: "PC"
 score: 10
+Image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2689210/header.jpg?t=1727659985
+Website: https://store.steampowered.com/app/2689210/Persona_3_Reload_Expansion_Pass/
 ---
 
 ## Personal Background

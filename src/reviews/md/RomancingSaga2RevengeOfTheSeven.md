@@ -3,6 +3,8 @@ title: "Romancing Saga 2: Revenge of the Seven"
 release_date: "2024-10-24"
 platform: "PC"
 score: 8.5
+Image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2455640/header.jpg?t=1730131361
+Website: https://store.steampowered.com/app/2455640/Romancing_SaGa_2_Revenge_of_the_Seven/
 ---
 
 ## Personal Background

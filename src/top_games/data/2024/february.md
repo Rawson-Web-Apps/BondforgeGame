@@ -2,7 +2,7 @@
 
 Rank: 1
 Platform: PlayStation 5
-Image: https://image.api.playstation.com/vulcan/ap/rnd/202308/3005/4a13ce96b9aee645c5e513658e93d7a19da511e7ef3501d9.png?w=5000&thumb=false
+Image: https://gmedia.playstation.com/is/image/SIEPDC/final-fantasy-7-rebirth-keyart-01-en-01sep23?$1600px$
 Website: https://store.playstation.com/en-us/concept/10003999
 Description: The second chapter in the reimagined FFVII trilogy, expanding the story beyond Midgar with stunning visuals, refined combat, and a fresh take on beloved characters and iconic moments.
 

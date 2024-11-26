@@ -3,6 +3,8 @@ title: "Final Fantasy VII Rebirth"
 release_date: "2024-02-29"
 platform: "PS5"
 score: 10
+Image: https://gmedia.playstation.com/is/image/SIEPDC/final-fantasy-7-rebirth-keyart-01-en-01sep23?$1600px$
+Website: https://store.playstation.com/en-us/concept/10003999
 ---
 
 ## Personal Background

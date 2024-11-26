@@ -3,6 +3,8 @@ title: "Dragon Quest III HD-2D Remake"
 release_date: "2024-11-14"
 platform: "PC"
 score: 9
+Image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2701660/header.jpg?t=1731682657
+Website: https://store.steampowered.com/app/2701660/DRAGON_QUEST_III_HD2D_Remake/
 ---
 
 ## Personal Background

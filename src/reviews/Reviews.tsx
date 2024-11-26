@@ -39,6 +39,11 @@ const Reviews = () => {
               <li key={index} className="review-item">
                 <Link to={`/reviews/${slugify(review.title)}`}>
                   <div className="review-item-content">
+                    <img
+                      src={review.Image}
+                      alt={`${review.title} cover`}
+                      className="review-item-image"
+                    />
                     <div className="review-item-info">
                       <h2>{review.title}</h2>
                       <div className="review-item-details">
