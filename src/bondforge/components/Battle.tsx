@@ -14,6 +14,31 @@ const getImagePaths = (className: string) => {
   };
 };
 
+const VictoryPopup = ({
+  experienceGained,
+  levelUps,
+  onReturn,
+}: {
+  experienceGained: number | null;
+  levelUps: string[];
+  onReturn: () => void;
+}) => (
+  <div className="victory-popup">
+    <h2>Victory!</h2>
+    {experienceGained !== null && (
+      <p>You gained {experienceGained} experience points!</p>
+    )}
+    {levelUps.length > 0 && (
+      <ul>
+        {levelUps.map((message, index) => (
+          <li key={index}>{message}</li>
+        ))}
+      </ul>
+    )}
+    <button onClick={onReturn}>Return to Locations</button>
+  </div>
+);
+
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
 
@@ -216,20 +241,11 @@ const Battle = () => {
         </ul>
       </div>
       {enemies.length === 0 && (
-        <div className="victory-screen">
-          <h2>Victory!</h2>
-          {experienceGained !== null && (
-            <p>You gained {experienceGained} experience points!</p>
-          )}
-          {levelUps.length > 0 && (
-            <ul>
-              {levelUps.map((message, index) => (
-                <li key={index}>{message}</li>
-              ))}
-            </ul>
-          )}
-          <button onClick={handleReturnToLocations}>Return to Locations</button>
-        </div>
+        <VictoryPopup
+          experienceGained={experienceGained}
+          levelUps={levelUps}
+          onReturn={handleReturnToLocations}
+        />
       )}
     </div>
   );
