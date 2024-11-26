@@ -20,8 +20,8 @@ const PartyManagement = () => {
         <div key={index} className="character-card">
           <h2>{member.name}</h2>
           <img
-            src={`/images/${member.classType.constructor.name.toLowerCase()}.png`}
-            alt={`${member.classType.constructor.name} Image`}
+            src={`/images/${member.classType.name.toLowerCase()}.png`}
+            alt={`${member.classType.name} Image`}
             className="class-image"
           />
           <p>
@@ -44,7 +44,7 @@ const PartyManagement = () => {
           </div>
 
           <p>Level: {member.level}</p>
-          <p>Class: {member.classType.constructor.name}</p>
+          <p>Class: {member.classType.name}</p>
           <p>Experience: {member.experience}</p>
           <p>Attack: {member.calculateDamage()}</p>
           <p>Defense: {member.calculateDefense()}</p>
