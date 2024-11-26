@@ -17,6 +17,7 @@ import ReviewDetail from "./reviews/ReviewDetail";
 import MonthlyGames from "./top_games/components/MonthlyGames";
 import TopGamesList from "./top_games/components/TopGamesList";
 import { HelmetProvider } from "react-helmet-async";
+import PartyManagement from "./bondforge/components/PartyManagement";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -30,6 +31,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/bondforge" element={<MainMenu />} />
               <Route path="/bondforge/locations" element={<Locations />} />
               <Route path="/bondforge/battle" element={<Battle />} />
+              <Route
+                path="/bondforge/party-management"
+                element={<PartyManagement />}
+              />
               <Route path="/bondforge/about" element={<About />} />
               <Route path="/bondforge/updates" element={<Updates />} />
               <Route path="/bondforge/guide" element={<Guide />} />
