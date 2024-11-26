@@ -5,11 +5,13 @@ import { Skill, SkillType } from "../models/skill/Skill";
 import { skills } from "../models/skill/Skills";
 import SkillManager from "../managers/SkillManager";
 import { getRandomEnemies } from "../models/enemies/EnemyFactory";
+import { useNavigate } from "react-router-dom";
 
 export const useBattleActions = (
   gameState: GameState,
   setGameState: React.Dispatch<React.SetStateAction<GameState>>
 ) => {
+  const navigate = useNavigate();
   const characterLevels = gameState.party.map((member) => member.level);
   const [enemies, setEnemies] = useState<Character[]>(() =>
     gameState.enemies.length > 0
@@ -551,6 +553,17 @@ export const useBattleActions = (
     };
   }, [handleKeyDown]);
 
+  const handleRun = useCallback(() => {
+    // Logic to handle running away from battle
+    setGameState((prevState) => ({
+      ...prevState,
+      enemies: [],
+      location: "locations",
+    }));
+    setCombatLog((prevLog) => [...prevLog, "You fled the battle!"]);
+    navigate("/bondforge/locations");
+  }, [setGameState]);
+
   return {
     enemies,
     combatLog,
@@ -571,5 +584,6 @@ export const useBattleActions = (
     handleTargetSelection,
     handleTargetHover,
     handleActionSelection,
+    handleRun,
   };
 };

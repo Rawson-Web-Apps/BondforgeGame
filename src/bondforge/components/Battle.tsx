@@ -36,6 +36,7 @@ const Battle = () => {
     handleSkillSelection,
     handleTargetSelection,
     handleTargetHover,
+    handleRun,
   } = useBattleActions(gameState, setGameState);
 
   return (
@@ -190,6 +191,12 @@ const Battle = () => {
                     }
                   >
                     Skill
+                  </button>
+                  <button
+                    onClick={handleRun}
+                    className={selectedActionIndex === 2 ? "selected" : ""}
+                  >
+                    Run
                   </button>
                 </>
               )}
