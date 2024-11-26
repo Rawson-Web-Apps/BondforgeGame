@@ -14,6 +14,31 @@ const getImagePaths = (className: string) => {
   };
 };
 
+const VictoryPopup = ({
+  experienceGained,
+  levelUps,
+  onReturn,
+}: {
+  experienceGained: number | null;
+  levelUps: string[];
+  onReturn: () => void;
+}) => (
+  <div className="victory-popup">
+    <h2>Victory!</h2>
+    {experienceGained !== null && (
+      <p>You gained {experienceGained} experience points!</p>
+    )}
+    {levelUps.length > 0 && (
+      <ul>
+        {levelUps.map((message, index) => (
+          <li key={index}>{message}</li>
+        ))}
+      </ul>
+    )}
+    <button onClick={onReturn}>Return to Locations</button>
+  </div>
+);
+
 const Battle = () => {
   const { gameState, setGameState } = useContext(GameContext)!;
 
@@ -36,6 +61,10 @@ const Battle = () => {
     handleSkillSelection,
     handleTargetSelection,
     handleTargetHover,
+    handleRun,
+    experienceGained,
+    levelUps,
+    handleReturnToLocations,
   } = useBattleActions(gameState, setGameState);
 
   return (
@@ -147,12 +176,12 @@ const Battle = () => {
         {selectingTarget ? (
           <div className="target-selection">
             <h3>Select a target:</h3>
-            {/* Removed buttons for target selection */}
           </div>
         ) : selectingSkill ? (
           <div className="skill-selection">
             <h3>Select a skill:</h3>
-            {moveOrder[activeParticipantIndex].type === "party" &&
+            {moveOrder[activeParticipantIndex] &&
+              moveOrder[activeParticipantIndex].type === "party" &&
               "index" in moveOrder[activeParticipantIndex] &&
               gameState.party[
                 moveOrder[activeParticipantIndex].index
@@ -168,7 +197,8 @@ const Battle = () => {
           </div>
         ) : (
           <div className="action-buttons">
-            {moveOrder[activeParticipantIndex].type === "party" &&
+            {moveOrder[activeParticipantIndex] &&
+              moveOrder[activeParticipantIndex].type === "party" &&
               "index" in moveOrder[activeParticipantIndex] && (
                 <>
                   <button
@@ -191,30 +221,14 @@ const Battle = () => {
                   >
                     Skill
                   </button>
+                  <button
+                    onClick={handleRun}
+                    className={selectedActionIndex === 2 ? "selected" : ""}
+                  >
+                    Run
+                  </button>
                 </>
               )}
-            {moveOrder[activeParticipantIndex].type === "enemy" && (
-              <>
-                <button
-                  onClick={() => console.log("Item logic here")}
-                  disabled={
-                    enemies.length === 0 ||
-                    enemies.every((enemy) => enemy.currentHp === 0)
-                  }
-                >
-                  Item
-                </button>
-                <button
-                  onClick={() => console.log("Run logic here")}
-                  disabled={
-                    enemies.length === 0 ||
-                    enemies.every((enemy) => enemy.currentHp === 0)
-                  }
-                >
-                  Run
-                </button>
-              </>
-            )}
           </div>
         )}
       </div>
@@ -226,6 +240,13 @@ const Battle = () => {
           ))}
         </ul>
       </div>
+      {enemies.length === 0 && (
+        <VictoryPopup
+          experienceGained={experienceGained}
+          levelUps={levelUps}
+          onReturn={handleReturnToLocations}
+        />
+      )}
     </div>
   );
 };

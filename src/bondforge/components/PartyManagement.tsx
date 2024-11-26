@@ -1,62 +1,155 @@
 import { useContext } from "react";
 import { GameContext } from "../context/ContextExport";
-import { Warrior, Mage } from "../models/class/HeroClasses";
-import { SpecializationClass } from "../models/class/SpecializationClass";
 import Character from "../models/Character";
-import { GameState } from "../context/GameContextTypes";
+import { useNavigate } from "react-router-dom";
+import "./PartyManagement.css";
 
 const PartyManagement = () => {
-  const { gameState, setGameState } = useContext(GameContext)!;
+  const { gameState } = useContext(GameContext)!;
 
-  const changeClass = (index: number, newClass: typeof Warrior) => {
-    const updatedParty = [...gameState.party];
-    updatedParty[index].classType = new newClass();
+  const navigate = useNavigate();
 
-    setGameState((prevState: GameState) => ({
-      ...prevState,
-      party: updatedParty,
-    }));
-  };
-
-  const getAvailableClasses = (
-    level: number
-  ): (typeof SpecializationClass)[] => {
-    const classes = [Warrior, Mage];
-    console.log(level);
-    // if (level >= 20) {
-    //   classes.push(Knight, Sorcerer);
-    // }
-    // if (level >= 40) {
-    //   classes.push(Paladin, Archmage);
-    // }
-    // if (level >= 60) {
-    //   classes.push(Champion, GrandSorcerer);
-    // }
-    return classes;
+  const handleBackToLocations = () => {
+    navigate("/bondforge/locations");
   };
 
   return (
     <div className="party-management">
       <h1>Manage Your Party</h1>
       {gameState.party.map((member: Character, index: number) => (
-        <div key={index}>
-          <h2>
-            {member.name} - Level: {member.level} - Class:{" "}
-            {member.classType.constructor.name}
-          </h2>
-          <label>Change Class:</label>
-          <select
-            value={member.classType.constructor.name}
-            onChange={() => changeClass(index, Warrior)} // Update this to handle multiple classes
-          >
-            {getAvailableClasses(member.level).map((ClassType) => (
-              <option key={ClassType.name} value={ClassType.name}>
-                {ClassType.name}
-              </option>
-            ))}
-          </select>
+        <div key={index} className="character-card">
+          <h2>{member.name}</h2>
+          <img
+            src={`/images/${member.classType.constructor.name.toLowerCase()}.png`}
+            alt={`${member.classType.constructor.name} Image`}
+            className="class-image"
+          />
+          <p>
+            HP: {member.currentHp} / {member.maxHp}
+          </p>
+          <div className="stat-bar">
+            <div
+              className="hp-bar"
+              style={{ width: `${(member.currentHp / member.maxHp) * 100}%` }}
+            ></div>
+          </div>
+          <p>
+            MP: {member.currentMp} / {member.maxMp}
+          </p>
+          <div className="stat-bar">
+            <div
+              className="mp-bar"
+              style={{ width: `${(member.currentMp / member.maxMp) * 100}%` }}
+            ></div>
+          </div>
+
+          <p>Level: {member.level}</p>
+          <p>Class: {member.classType.constructor.name}</p>
+          <p>Experience: {member.experience}</p>
+          <p>Attack: {member.calculateDamage()}</p>
+          <p>Defense: {member.calculateDefense()}</p>
+          <div className="equipment">
+            <h3>Equipment</h3>
+            <div className="equipment-layout">
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.head ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.head?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Head"
+                />
+              </div>
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.chest ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.chest?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Chest"
+                />
+              </div>
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.legs ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.legs?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Legs"
+                />
+              </div>
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.boots ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.boots?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Boots"
+                />
+              </div>
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.mainHand ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.mainHand?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Main Hand"
+                />
+              </div>
+              <div
+                className={`equipment-slot ${
+                  !member.equipment.offHand ? "empty" : ""
+                }`}
+              >
+                <img
+                  src={`/images/equipment/${
+                    member.equipment.offHand?.name
+                      .toLowerCase()
+                      .replace(/ /g, "_") || "transparent"
+                  }.png`}
+                  alt="Off Hand"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="skills">
+            <h3>Skills</h3>
+            <ul>
+              {member.skills.map((skill, skillIndex) => (
+                <li key={skillIndex}>{skill.name}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       ))}
+      <button className="back-button" onClick={handleBackToLocations}>
+        Back to Locations
+      </button>
     </div>
   );
 };

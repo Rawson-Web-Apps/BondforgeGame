@@ -45,6 +45,7 @@ const MainMenu = () => {
       attack: 20,
       equipment: {
         mainHand: new Dagger("Basic Dagger", 8),
+        offHand: new Dagger("Basic Dagger", 8),
         head: new Helmet("Leather Hood", 1, ArmorType.Leather),
         chest: new Chestplate("Leather Vest", 4, ArmorType.Leather),
         legs: new Leggings("Leather Pants", 2, ArmorType.Leather),

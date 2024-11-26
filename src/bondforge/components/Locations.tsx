@@ -11,10 +11,12 @@ const Locations = () => {
   const goToLocation = (location: string) => {
     setGameState((prevState) => ({
       ...prevState,
-      location: location, // Update the player's current location
+      location: location,
     }));
     if (location === "arena") {
-      navigate("/bondforge/battle"); // For example, navigate to battle when arena is chosen
+      navigate("/bondforge/battle");
+    } else if (location === "guildhall") {
+      navigate("/bondforge/party-management");
     }
     // Add more logic for other locations if needed
   };
@@ -26,6 +28,17 @@ const Locations = () => {
         <div className="location-card" onClick={() => goToLocation("arena")}>
           <img src={arenaImage} alt="Arena" className="location-image" />
           <p className="location-text">Arena</p>
+        </div>
+        <div
+          className="location-card"
+          onClick={() => goToLocation("guildhall")}
+        >
+          <img
+            src="/images/guildhall.png"
+            alt="Guild Hall"
+            className="location-image"
+          />
+          <p className="location-text">Guild Hall</p>
         </div>
         {/* Add more location cards as needed */}
       </div>
