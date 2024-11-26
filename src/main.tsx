@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  BrowserRouter as Router,
+  Navigate,
+} from "react-router-dom";
 import { GameProvider } from "./bondforge/context/GameContext";
 import App from "./Tarawson";
 import MainMenu from "./bondforge/components/MainMenu";
@@ -47,6 +52,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 element={<MonthlyGames />}
               />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
+              <Route
+                path="/privacy-policy"
+                element={<Navigate to="/policy/PrivacyPolicy.html" replace />}
+              />
             </Route>
           </Routes>
         </Router>

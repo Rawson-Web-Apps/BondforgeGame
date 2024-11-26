@@ -249,3 +249,13 @@ button:hover {
   width: auto;
   margin-left: 0px;
 }
+
+.footer-link {
+  color: var(--link-color);
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}

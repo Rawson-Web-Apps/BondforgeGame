@@ -51,6 +51,9 @@ const App = () => {
         <Link to="/cookie-policy" className="footer-link">
           Cookie Policy
         </Link>
+        <Link to="/privacy-policy" className="footer-link">
+          Privacy Policy
+        </Link>
       </footer>
     </div>
   );
