@@ -1,0 +1,37 @@
+.cookie-policy {
+  max-width: auto;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  color: #e0e0e0;
+  text-align: left;
+}
+
+.cookie-policy h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cookie-policy h2 {
+  font-size: 1.5em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.cookie-policy p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.cookie-policy ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.cookie-policy li {
+  margin-bottom: 10px;
+}

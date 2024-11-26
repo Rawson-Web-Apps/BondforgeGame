@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { GameProvider } from "./bondforge/context/GameContext";
 import App from "./Tarawson";
 import MainMenu from "./bondforge/components/MainMenu";
@@ -18,12 +18,13 @@ import MonthlyGames from "./top_games/components/MonthlyGames";
 import TopGamesList from "./top_games/components/TopGamesList";
 import { HelmetProvider } from "react-helmet-async";
 import PartyManagement from "./bondforge/components/PartyManagement";
+import CookiePolicy from "./policy/CookiePolicy";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <HelmetProvider>
       <GameProvider>
-        <HashRouter>
+        <Router>
           <Routes>
             <Route path="/" element={<App />}>
               {/* <Route index element={<Bondforge />} /> */}
@@ -45,10 +46,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 path="/top-games/:year/:month"
                 element={<MonthlyGames />}
               />
-              {/* Add other routes here for locations, battle, etc. */}
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
             </Route>
           </Routes>
-        </HashRouter>
+        </Router>
       </GameProvider>
     </HelmetProvider>
   </React.StrictMode>

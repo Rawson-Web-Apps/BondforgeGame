@@ -41,13 +41,16 @@ const App = () => {
         </nav>
       </header>
       <main className="main-content" style={{ flex: 1 }}>
-        <Outlet />{" "}
+        <Outlet />
       </main>
       <footer className="home-footer">
         <p>
           &copy; {new Date().getFullYear()} Rawson Web Apps LLC. All rights
           reserved.
         </p>
+        <Link to="/cookie-policy" className="footer-link">
+          Cookie Policy
+        </Link>
       </footer>
     </div>
   );

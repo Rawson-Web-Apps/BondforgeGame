@@ -108,6 +108,17 @@ export const useBattleActions = (
     [gameState.party.length]
   );
 
+  const isParticipantAlive = useCallback(
+    (participant: { type: "party" | "enemy"; index: number }) => {
+      if (participant.type === "party") {
+        return gameState.party[participant.index]?.alive;
+      } else {
+        return gameState.enemies[participant.index]?.alive;
+      }
+    },
+    [gameState.party, gameState.enemies]
+  );
+
   const handleTurnEnd = useCallback(() => {
     setActiveParticipantIndex((prevIndex) => {
       if (moveOrder.length === 0) return 0; // Handle empty moveOrder
@@ -118,18 +129,7 @@ export const useBattleActions = (
       }
       return nextIndex;
     });
-  }, [moveOrder]);
-
-  const isParticipantAlive = (participant: {
-    type: "party" | "enemy";
-    index: number;
-  }) => {
-    if (participant.type === "party") {
-      return gameState.party[participant.index]?.alive;
-    } else {
-      return gameState.enemies[participant.index]?.alive;
-    }
-  };
+  }, [moveOrder, isParticipantAlive]);
 
   const handleAttackExecution = useCallback(
     (target: Character) => {
