@@ -26,31 +26,21 @@ const CookiePolicy = () => {
       </p>
       <h2>Why do we use cookies?</h2>
       <p>
-        We use first- and third-party cookies for several reasons. Some cookies
-        are required for technical reasons in order for our Website to operate,
-        and we refer to these as "essential" or "strictly necessary" cookies.
-        Other cookies also enable us to track and target the interests of our
-        users to enhance the experience on our Online Properties. Third parties
-        serve cookies through our Website for advertising, analytics, and other
-        purposes.
+        We use cookies primarily for advertising purposes. Third parties, such
+        as Google, may serve cookies on your computer or mobile device to serve
+        advertising through our Website. These companies may use information
+        about your visits to this and other websites in order to provide
+        relevant advertisements about goods and services that you may be
+        interested in.
       </p>
       <h2>How can I control cookies?</h2>
       <p>
         You have the right to decide whether to accept or reject cookies. You
-        can exercise your cookie rights by setting your preferences in the
-        Cookie Consent Manager. The Cookie Consent Manager allows you to select
-        which categories of cookies you accept or reject. Essential cookies
-        cannot be rejected as they are strictly necessary to provide you with
-        services.
+        can exercise your cookie rights by setting your preferences in your web
+        browser. If you choose to reject cookies, you may still use our Website
+        though your access to some functionality and areas of our Website may be
+        restricted.
       </p>
-      <p>
-        The Cookie Consent Manager can be found in the notification banner and
-        on our Website. If you choose to reject cookies, you may still use our
-        Website though your access to some functionality and areas of our
-        Website may be restricted. You may also set or amend your web browser
-        controls to accept or refuse cookies.
-      </p>
-      <h2>How can I control cookies on my browser?</h2>
       <p>
         As the means by which you can refuse cookies through your web browser
         controls vary from browser to browser, you should visit your browser's
