@@ -1,0 +1,39 @@
+.terms-use {
+  max-width: auto;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  color: #e0e0e0;
+  text-align: left;
+}
+
+.terms-use h1,
+.terms-use h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.terms-use ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.terms-use li {
+  margin-bottom: 10px;
+}
+
+.terms-use a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.terms-use a:hover {
+  text-decoration: underline;
+}
+
+html {
+  scroll-behavior: smooth;
+}

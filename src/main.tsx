@@ -24,6 +24,7 @@ import TopGamesList from "./top_games/components/TopGamesList";
 import { HelmetProvider } from "react-helmet-async";
 import PartyManagement from "./bondforge/components/PartyManagement";
 import CookiePolicy from "./policy/CookiePolicy";
+import TermsUse from "./policy/TermsUse";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -56,6 +57,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 path="/policy/PrivacyPolicy.html"
                 element={<Navigate to="/policy/PrivacyPolicy.html" replace />}
               />
+              <Route path="/terms-use" element={<TermsUse />} />
             </Route>
           </Routes>
         </Router>

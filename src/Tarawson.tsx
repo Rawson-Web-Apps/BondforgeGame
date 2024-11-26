@@ -54,6 +54,9 @@ const App = () => {
         <a href="/policy/PrivacyPolicy.html" className="footer-link">
           Privacy Policy
         </a>
+        <Link to="/terms-use" className="footer-link">
+          Terms of Use
+        </Link>
       </footer>
     </div>
   );
