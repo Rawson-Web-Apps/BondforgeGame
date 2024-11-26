@@ -123,7 +123,7 @@ body {
 
 .main-content {
   padding: 5px;
-  background-color: #2d2d2d;
+  background-color: #232323;
   border: 1px solid var(--border-color);
   border-radius: 6px;
 }
@@ -138,20 +138,20 @@ a:hover {
 }
 
 button {
-  background-color: var(--background-color);
+  background-color: #1e1e1e;
   color: var(--button-text-color);
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 12px 24px; /* Increased padding for better appearance */
+  border-radius: 8px; /* Slightly more rounded corners */
   cursor: pointer;
-  font-size: 1em;
-  margin: 10px;
-  transition: background-color 0.3s, transform 0.2s;
+  font-size: 1em; /* Ensure font size is consistent */
+  margin: 10px; /* Add margin for spacing between buttons */
+  transition: background-color 0.3s, transform 0.2s; /* Add transition for smooth hover effect */
 }
 
 button:hover {
   background-color: var(--background-color);
-  transform: scale(1.05);
+  transform: scale(1.05); /* Slightly enlarge button on hover */
 }
 
 .navbar {

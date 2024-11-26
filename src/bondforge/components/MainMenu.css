@@ -27,20 +27,3 @@
   height: auto; /* Maintain aspect ratio */
   margin-bottom: 10px; /* Add some space below the image */
 }
-
-button {
-  background-color: var(--background-color);
-  color: var(--button-text-color);
-  border: none;
-  padding: 12px 24px; /* Increased padding for better appearance */
-  border-radius: 8px; /* Slightly more rounded corners */
-  cursor: pointer;
-  font-size: 1em; /* Ensure font size is consistent */
-  margin: 10px; /* Add margin for spacing between buttons */
-  transition: background-color 0.3s, transform 0.2s; /* Add transition for smooth hover effect */
-}
-
-button:hover {
-  background-color: var(--background-color);
-  transform: scale(1.05); /* Slightly enlarge button on hover */
-}
