@@ -170,18 +170,7 @@ const ReviewDetail = () => {
             <span>{review.score}</span>
             <small>/10</small>
           </div>
-          <ReactMarkdown>{review.content}</ReactMarkdown>
-          {review.website && (
-            <p>
-              <a
-                href={review.website}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit Website
-              </a>
-            </p>
-          )}
+
           <div className="user-rating-section">
             <h2>User Ratings</h2>
             <div className="average-rating-section">
@@ -217,6 +206,20 @@ const ReviewDetail = () => {
               </div>
             )}
           </div>
+          <br></br>
+          <h1>TARawson's Review</h1>
+          <ReactMarkdown>{review.content}</ReactMarkdown>
+          {review.website && (
+            <p>
+              <a
+                href={review.website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit Website
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </>
