@@ -64,7 +64,7 @@ const Reviews = () => {
                 <Link to={`/reviews/${slugify(review.title)}`}>
                   <div className="review-item-content">
                     <img
-                      src={review.Image}
+                      src={review.image}
                       alt={`${review.title} cover`}
                       className="review-item-image"
                     />

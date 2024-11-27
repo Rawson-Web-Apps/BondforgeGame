@@ -157,7 +157,7 @@ const ReviewDetail = () => {
           </button>
           <h1>{review.title}</h1>
           <img
-            src={review.Image}
+            src={review.image}
             alt={`${review.title} cover`}
             className="review-detail-image"
           />
@@ -171,14 +171,14 @@ const ReviewDetail = () => {
             <small>/10</small>
           </div>
           <ReactMarkdown>{review.content}</ReactMarkdown>
-          {review.Website && (
+          {review.website && (
             <p>
               <a
-                href={review.Website}
+                href={review.website}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Visit Official Website
+                Visit Website
               </a>
             </p>
           )}

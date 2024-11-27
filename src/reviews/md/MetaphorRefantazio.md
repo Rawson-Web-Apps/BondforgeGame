@@ -3,8 +3,8 @@ title: "Metaphor ReFantazio"
 release_date: "2024-10-10"
 platform: "PC"
 score: 10
-Image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg?t=1732203844
-Website: https://store.steampowered.com/app/2679460/Metaphor_ReFantazio/
+image: https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg?t=1732203844
+website: https://store.steampowered.com/app/2679460/Metaphor_ReFantazio/
 ---
 
 ## Personal Background
