@@ -51,9 +51,14 @@ const Reviews = () => {
     fetchRatings();
   }, []);
 
-  const filteredReviews = reviewsData.filter((review) =>
-    review.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredReviews = reviewsData.filter((review) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      review.title.toLowerCase().includes(query) ||
+      review.platform.toLowerCase().includes(query) ||
+      review.release_date.toLowerCase().includes(query)
+    );
+  });
 
   const sortedReviews = [...filteredReviews].sort((a, b) => {
     switch (sortCriteria) {
