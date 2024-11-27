@@ -3,7 +3,7 @@ import reviewsData from "./reviewsData.json";
 import { Link } from "react-router-dom";
 import "./Reviews.css";
 import { Helmet } from "react-helmet-async";
-import { fetchUserRatings } from "./api";
+import { fetchRatingsForGames } from "./api";
 
 export interface Rating {
   rating: number; // Rating value (1–10)
@@ -23,13 +23,25 @@ const Reviews = () => {
 
   useEffect(() => {
     const fetchRatings = async () => {
-      const ratings = await Promise.all(
-        reviewsData.map(async (review) => {
-          const { average, count } = await fetchUserRatings(review.title);
-          return { [review.title]: { average, count } };
-        })
+      const gameTitles = reviewsData.map((review) => review.title);
+      const ratingsData = await fetchRatingsForGames(gameTitles);
+
+      const ratings = ratingsData.reduce(
+        (
+          acc: { [key: string]: { average: number | null; count: number } },
+          {
+            gameId,
+            average,
+            count,
+          }: { gameId: string; average: number | null; count: number }
+        ) => {
+          acc[gameId] = { average, count };
+          return acc;
+        },
+        {}
       );
-      setUserRatings(Object.assign({}, ...ratings));
+
+      setUserRatings(ratings);
     };
 
     fetchRatings();
@@ -81,15 +93,27 @@ const Reviews = () => {
                           <span>{review.score}</span>
                           <small>/10</small>
                         </div>
-                        {userRatings[review.title]?.average !== null && (
+                        {userRatings[slugify(review.title)] ? (
                           <div className="user-review-score">
                             <h4>User Review</h4>
-                            <span>{userRatings[review.title]?.average}</span>
+                            <span>
+                              {userRatings[slugify(review.title)].average}
+                            </span>
                             <small>/10</small>
                             <div>
                               <small>
-                                ({userRatings[review.title]?.count} ratings)
+                                ({userRatings[slugify(review.title)].count}{" "}
+                                ratings)
                               </small>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="user-review-score">
+                            <h4>User Review</h4>
+                            <span>N/A</span>
+                            <small>/10</small>
+                            <div>
+                              <small>(No ratings yet)</small>
                             </div>
                           </div>
                         )}

@@ -10,12 +10,15 @@ const slugify = (text: string) => {
     .replace(/ +/g, "-");
 };
 
-export const fetchUserRatings = async (gameId: string) => {
+export const fetchRatingsForGames = async (gameIds: string[]) => {
   try {
-    gameId = slugify(gameId);
+    if (gameIds.length === 0) {
+      return { average: null, count: 0 };
+    }
+    gameIds = gameIds.map((id) => slugify(id));
     const response = await axios.post(API_URL, {
       action: "fetch",
-      gameId,
+      gameIds,
     });
     return response.data;
   } catch (error) {
@@ -25,15 +28,18 @@ export const fetchUserRatings = async (gameId: string) => {
 };
 
 export const submitUserRating = async (
-  gameId: string,
+  gameIds: string,
   rating: number,
   token: string
 ) => {
   try {
-    gameId = slugify(gameId);
+    if (gameIds.length === 0) {
+      return { success: false };
+    }
+    gameIds = slugify(gameIds);
     const response = await axios.post(API_URL, {
       action: "submit",
-      gameId,
+      gameIds,
       rating,
       token,
     });

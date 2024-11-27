@@ -4,7 +4,7 @@ import reviewsData from "./reviewsData.json";
 import "./Reviews.css";
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
-import { fetchUserRatings, submitUserRating } from "./api";
+import { fetchRatingsForGames, submitUserRating } from "./api";
 
 declare global {
   interface Window {
@@ -42,21 +42,27 @@ const ReviewDetail = () => {
 
   // Fetch user ratings on component mount
   useEffect(() => {
-    if (!review) return; // Handle the case where the review is not found
+    if (!review) return;
 
     const fetchRatings = async () => {
       loadRecaptchaScript(SITE_KEY);
-      const { average, count } = await fetchUserRatings(review.title);
-      setAverageUserRating(average);
-      setUserRatingCount(count);
+
+      const ratingsData = await fetchRatingsForGames([review.title]);
+      const ratingInfo = ratingsData.find(
+        (r: { gameId: string }) => r.gameId === slugify(review.title)
+      );
+
+      if (ratingInfo && ratingInfo.count > 0) {
+        setAverageUserRating(ratingInfo.average);
+        setUserRatingCount(ratingInfo.count);
+      } else {
+        setAverageUserRating(null); // No average rating
+        setUserRatingCount(0); // No ratings
+      }
     };
 
     fetchRatings();
   }, [review]);
-
-  if (!review) {
-    return <p>Review not found.</p>;
-  }
 
   // Handle rating submission
   const handleRatingSubmit = async (e: React.FormEvent) => {
@@ -73,12 +79,19 @@ const ReviewDetail = () => {
         action: "submit",
       });
 
-      await submitUserRating(review.title, userRating, token);
-      setHasSubmitted(true);
-      setUserRating(0);
-      const { average, count } = await fetchUserRatings(review.title);
-      setAverageUserRating(average);
-      setUserRatingCount(count);
+      const response = await submitUserRating(review!.title, userRating, token);
+      if (response.success) {
+        setHasSubmitted(true);
+        setUserRating(0);
+        const ratingsData = await fetchRatingsForGames([review!.title]);
+        const ratingInfo = ratingsData.find(
+          (r: { gameId: string }) => r.gameId === slugify(review!.title)
+        );
+        setAverageUserRating(ratingInfo.average);
+        setUserRatingCount(ratingInfo.count);
+      } else {
+        alert("Failed to submit rating. Please try again.");
+      }
     } catch (err) {
       console.error("Error submitting rating:", err);
     } finally {
@@ -135,39 +148,45 @@ const ReviewDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{`${review.title} Review (${review.score}/10) | TARawson`}</title>
+        <title>{`${review!.title} Review (${
+          review!.score
+        }/10) | TARawson`}</title>
         <meta
           name="description"
-          content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`}
+          content={`Review of ${review!.title} (${
+            review!.platform
+          }). Released ${review!.release_date}. Rated ${review!.score}/10.`}
         />
         <meta
           property="og:title"
-          content={`${review.title} Review | TARawson`}
+          content={`${review!.title} Review | TARawson`}
         />
         <meta
           property="og:description"
-          content={`Review of ${review.title} (${review.platform}). Released ${review.release_date}. Rated ${review.score}/10.`}
+          content={`Review of ${review!.title} (${
+            review!.platform
+          }). Released ${review!.release_date}. Rated ${review!.score}/10.`}
         />
-        <link rel="canonical" href={`/reviews/${slugify(review.title)}`} />
+        <link rel="canonical" href={`/reviews/${slugify(review!.title)}`} />
       </Helmet>
       <div className="review-detail">
         <div className="review-detail-content">
           <button className="back-button" onClick={() => navigate("/reviews")}>
             Back to Reviews
           </button>
-          <h1>{review.title}</h1>
+          <h1>{review!.title}</h1>
           <img
-            src={review.image}
-            alt={`${review.title} cover`}
+            src={review!.image}
+            alt={`${review!.title} cover`}
             className="review-detail-image"
           />
           <div className="review-detail-meta">
-            <span>{review.platform}</span>
+            <span>{review!.platform}</span>
             <span>•</span>
-            <span>{review.release_date}</span>
+            <span>{review!.release_date}</span>
           </div>
           <div className="review-detail-score">
-            <span>{review.score}</span>
+            <span>{review!.score}</span>
             <small>/10</small>
           </div>
 
@@ -175,13 +194,13 @@ const ReviewDetail = () => {
             <h2>User Ratings</h2>
             <div className="average-rating-section">
               <h3>Average User Rating</h3>
-              {averageUserRating !== null ? (
+              {userRatingCount > 0 ? (
                 <>
                   <div className="star-rating">
-                    {renderAverageStars(averageUserRating)}
+                    {renderAverageStars(averageUserRating || 0)}
                   </div>
                   <div className="average-rating">
-                    {averageUserRating.toFixed(1)} / 10
+                    {averageUserRating ? averageUserRating : "N/A"} / 10
                   </div>
                   <div className="rating-count">
                     <small>({userRatingCount} ratings)</small>
@@ -191,6 +210,7 @@ const ReviewDetail = () => {
                 <p>No user ratings yet. Be the first to rate!</p>
               )}
             </div>
+
             {hasSubmitted ? (
               <div className="thank-you-message">
                 <h3>Thank you for submitting your rating!</h3>
@@ -208,11 +228,11 @@ const ReviewDetail = () => {
           </div>
           <br></br>
           <h1>TARawson's Review</h1>
-          <ReactMarkdown>{review.content}</ReactMarkdown>
-          {review.website && (
+          <ReactMarkdown>{review!.content}</ReactMarkdown>
+          {review!.website && (
             <p>
               <a
-                href={review.website}
+                href={review!.website}
                 target="_blank"
                 rel="noopener noreferrer"
               >
