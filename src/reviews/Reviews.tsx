@@ -1,7 +1,13 @@
+import { useEffect, useState } from "react";
 import reviewsData from "./reviewsData.json";
 import { Link } from "react-router-dom";
 import "./Reviews.css";
 import { Helmet } from "react-helmet-async";
+import { fetchUserRatings } from "./api";
+
+export interface Rating {
+  rating: number; // Rating value (1–10)
+}
 
 const slugify = (text: string) => {
   return text
@@ -11,6 +17,24 @@ const slugify = (text: string) => {
 };
 
 const Reviews = () => {
+  const [userRatings, setUserRatings] = useState<{
+    [key: string]: { average: number | null; count: number };
+  }>({});
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const ratings = await Promise.all(
+        reviewsData.map(async (review) => {
+          const { average, count } = await fetchUserRatings(review.title);
+          return { [review.title]: { average, count } };
+        })
+      );
+      setUserRatings(Object.assign({}, ...ratings));
+    };
+
+    fetchRatings();
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -51,10 +75,25 @@ const Reviews = () => {
                         <span>•</span>
                         <span>Release Date: {review.release_date}</span>
                       </div>
-                    </div>
-                    <div className="review-item-score">
-                      <span>{review.score}</span>
-                      <small>/10</small>
+                      <div className="review-item-scores">
+                        <div className="tarawson-review-score">
+                          <h4>TARawson Review</h4>
+                          <span>{review.score}</span>
+                          <small>/10</small>
+                        </div>
+                        {userRatings[review.title]?.average !== null && (
+                          <div className="user-review-score">
+                            <h4>User Review</h4>
+                            <span>{userRatings[review.title]?.average}</span>
+                            <small>/10</small>
+                            <div>
+                              <small>
+                                ({userRatings[review.title]?.count} ratings)
+                              </small>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Link>
