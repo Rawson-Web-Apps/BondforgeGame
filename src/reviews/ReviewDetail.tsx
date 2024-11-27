@@ -148,14 +148,16 @@ const ReviewDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{`${review!.title} Review (${
-          review!.score
-        }/10) | TARawson`}</title>
+        <title>{`${review!.title} Review (${review!.score.toFixed(
+          1
+        )}/10) | TARawson`}</title>
         <meta
           name="description"
           content={`Review of ${review!.title} (${
             review!.platform
-          }). Released ${review!.release_date}. Rated ${review!.score}/10.`}
+          }). Released ${review!.release_date}. Rated ${review!.score.toFixed(
+            1
+          )}/10.`}
         />
         <meta
           property="og:title"
@@ -165,7 +167,9 @@ const ReviewDetail = () => {
           property="og:description"
           content={`Review of ${review!.title} (${
             review!.platform
-          }). Released ${review!.release_date}. Rated ${review!.score}/10.`}
+          }). Released ${review!.release_date}. Rated ${review!.score.toFixed(
+            1
+          )}/10.`}
         />
         <link rel="canonical" href={`/reviews/${slugify(review!.title)}`} />
       </Helmet>
@@ -186,7 +190,7 @@ const ReviewDetail = () => {
             <span>{review!.release_date}</span>
           </div>
           <div className="review-detail-score">
-            <span>{review!.score}</span>
+            <span>{review!.score.toFixed(1)}</span>
             <small>/10</small>
           </div>
 
@@ -200,7 +204,8 @@ const ReviewDetail = () => {
                     {renderAverageStars(averageUserRating || 0)}
                   </div>
                   <div className="average-rating">
-                    {averageUserRating ? averageUserRating : "N/A"} / 10
+                    {averageUserRating ? averageUserRating.toFixed(1) : "N/A"} /
+                    10
                   </div>
                   <div className="rating-count">
                     <small>({userRatingCount} ratings)</small>

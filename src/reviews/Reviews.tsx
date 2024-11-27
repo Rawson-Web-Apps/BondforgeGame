@@ -90,14 +90,16 @@ const Reviews = () => {
                       <div className="review-item-scores">
                         <div className="tarawson-review-score">
                           <h4>TARawson Review</h4>
-                          <span>{review.score}</span>
+                          <span>{review.score.toFixed(1)}</span>
                           <small>/10</small>
                         </div>
                         {userRatings[slugify(review.title)] ? (
                           <div className="user-review-score">
                             <h4>User Review</h4>
                             <span>
-                              {userRatings[slugify(review.title)].average}
+                              {userRatings[
+                                slugify(review.title)
+                              ].average!.toFixed(1)}
                             </span>
                             <small>/10</small>
                             <div>
