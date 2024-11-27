@@ -155,24 +155,6 @@
   object-fit: cover;
 }
 
-@media (max-width: 968px) {
-  .review-item-content {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .review-item-image,
-  .review-item-score {
-    width: 100%;
-    height: auto;
-  }
-
-  .review-item-info {
-    white-space: normal;
-    padding-right: 0;
-  }
-}
-
 .star-rating {
   display: flex;
   justify-content: center;
@@ -308,4 +290,26 @@
 .review-page-button.active {
   font-weight: bold;
   border: 1px solid var(--button-bg-color);
+}
+
+@media (max-width: 968px) {
+  .review-item-content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .review-item-image,
+  .review-item-score {
+    width: 100%;
+    height: auto;
+  }
+
+  .review-item-info {
+    white-space: normal;
+    padding-right: 0;
+  }
+
+  .star {
+    font-size: 1em;
+  }
 }
