@@ -62,21 +62,38 @@ const Reviews = () => {
 
   const sortedReviews = [...filteredReviews].sort((a, b) => {
     switch (sortCriteria) {
-      case "platform":
+      case "platform_a_z":
         return a.platform.localeCompare(b.platform);
-      case "release_date":
+      case "platform_z_a":
+        return b.platform.localeCompare(a.platform);
+      case "release_date_newest":
+        return (
+          new Date(b.release_date).getTime() -
+          new Date(a.release_date).getTime()
+        );
+      case "release_date_oldest":
         return (
           new Date(a.release_date).getTime() -
           new Date(b.release_date).getTime()
         );
-      case "tarawson_score":
+      case "tarawson_score_highest":
         return b.score - a.score;
-      case "user_score": {
+      case "tarawson_score_lowest":
+        return a.score - b.score;
+      case "user_score_highest": {
         const aUserScore = userRatings[slugify(a.title)]?.average || 0;
         const bUserScore = userRatings[slugify(b.title)]?.average || 0;
         return bUserScore - aUserScore;
       }
-      case "title":
+      case "user_score_lowest": {
+        const aUserScore = userRatings[slugify(a.title)]?.average || 0;
+        const bUserScore = userRatings[slugify(b.title)]?.average || 0;
+        return aUserScore - bUserScore;
+      }
+      case "title_a_z":
+        return a.title.localeCompare(b.title);
+      case "title_z_a":
+        return b.title.localeCompare(a.title);
       default:
         return a.title.localeCompare(b.title);
     }
@@ -129,11 +146,20 @@ const Reviews = () => {
               value={sortCriteria}
               onChange={(e) => setSortCriteria(e.target.value)}
             >
-              <option value="title">Title</option>
-              <option value="platform">Platform</option>
-              <option value="release_date">Release Date</option>
-              <option value="tarawson_score">TARawson Review Score</option>
-              <option value="user_score">User Score</option>
+              <option value="title_a_z">Title (A-Z)</option>
+              <option value="title_z_a">Title (Z-A)</option>
+              <option value="platform_a_z">Platform (A-Z)</option>
+              <option value="platform_z_a">Platform (Z-A)</option>
+              <option value="release_date_newest">Release Date (Newest)</option>
+              <option value="release_date_oldest">Release Date (Oldest)</option>
+              <option value="tarawson_score_highest">
+                TARawson Review Score (Highest)
+              </option>
+              <option value="tarawson_score_lowest">
+                TARawson Review Score (Lowest)
+              </option>
+              <option value="user_score_highest">User Score (Highest)</option>
+              <option value="user_score_lowest">User Score (Lowest)</option>
             </select>
           </div>
           <ul className="review-list">
