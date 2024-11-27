@@ -20,6 +20,10 @@ const Reviews = () => {
   const [userRatings, setUserRatings] = useState<{
     [key: string]: { average: number | null; count: number };
   }>({});
+  const [sortCriteria, setSortCriteria] = useState<string>("title");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const reviewsPerPage = 5;
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -47,6 +51,45 @@ const Reviews = () => {
     fetchRatings();
   }, []);
 
+  const filteredReviews = reviewsData.filter((review) =>
+    review.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedReviews = [...filteredReviews].sort((a, b) => {
+    switch (sortCriteria) {
+      case "platform":
+        return a.platform.localeCompare(b.platform);
+      case "release_date":
+        return (
+          new Date(a.release_date).getTime() -
+          new Date(b.release_date).getTime()
+        );
+      case "tarawson_score":
+        return b.score - a.score;
+      case "user_score":
+        const aUserScore = userRatings[slugify(a.title)]?.average || 0;
+        const bUserScore = userRatings[slugify(b.title)]?.average || 0;
+        return bUserScore - aUserScore;
+      case "title":
+      default:
+        return a.title.localeCompare(b.title);
+    }
+  });
+
+  // Pagination logic
+  const indexOfLastReview = currentPage * reviewsPerPage;
+  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const currentReviews = sortedReviews.slice(
+    indexOfFirstReview,
+    indexOfLastReview
+  );
+
+  const totalPages = Math.ceil(sortedReviews.length / reviewsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <>
       <Helmet>
@@ -65,13 +108,30 @@ const Reviews = () => {
       <div className="reviews-page">
         <div className="reviews-page-content">
           <h1>Game Reviews</h1>
-          <p>
-            Welcome to my game reviews page! I plan to write about 1-4 reviews
-            each month, with some additional variance depending on my gaming
-            adventures and discoveries.
-          </p>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search reviews..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="sort-options">
+            <label htmlFor="sort">Sort by: </label>
+            <select
+              id="sort"
+              value={sortCriteria}
+              onChange={(e) => setSortCriteria(e.target.value)}
+            >
+              <option value="title">Title</option>
+              <option value="platform">Platform</option>
+              <option value="release_date">Release Date</option>
+              <option value="tarawson_score">TARawson Review Score</option>
+              <option value="user_score">User Score</option>
+            </select>
+          </div>
           <ul className="review-list">
-            {reviewsData.map((review, index) => (
+            {currentReviews.map((review, index) => (
               <li key={index} className="review-item">
                 <Link to={`/reviews/${slugify(review.title)}`}>
                   <div className="review-item-content">
@@ -126,6 +186,19 @@ const Reviews = () => {
               </li>
             ))}
           </ul>
+          <div className="review-pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`review-page-button ${
+                  currentPage === i + 1 ? "active" : ""
+                }`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </>
