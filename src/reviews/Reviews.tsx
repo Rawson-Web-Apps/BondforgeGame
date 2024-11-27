@@ -66,10 +66,11 @@ const Reviews = () => {
         );
       case "tarawson_score":
         return b.score - a.score;
-      case "user_score":
+      case "user_score": {
         const aUserScore = userRatings[slugify(a.title)]?.average || 0;
         const bUserScore = userRatings[slugify(b.title)]?.average || 0;
         return bUserScore - aUserScore;
+      }
       case "title":
       default:
         return a.title.localeCompare(b.title);
