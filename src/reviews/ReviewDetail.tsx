@@ -212,7 +212,7 @@ const ReviewDetail = () => {
                   </div>
                 </>
               ) : (
-                <p>No user ratings yet. Be the first to rate!</p>
+                <div>No user ratings yet. Be the first to rate!</div>
               )}
             </div>
 
