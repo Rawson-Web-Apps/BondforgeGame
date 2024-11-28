@@ -20,7 +20,9 @@ const Reviews = () => {
   const [userRatings, setUserRatings] = useState<{
     [key: string]: { average: number | null; count: number };
   }>({});
-  const [sortCriteria, setSortCriteria] = useState<string>("title");
+  const [sortCriteria, setSortCriteria] = useState<string>(
+    "release_date_newest"
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const reviewsPerPage = 5;
