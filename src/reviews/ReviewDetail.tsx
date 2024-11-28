@@ -80,6 +80,7 @@ const ReviewDetail = () => {
       });
 
       const response = await submitUserRating(review!.title, userRating, token);
+      console.log(response);
       if (response.success) {
         setHasSubmitted(true);
         setUserRating(0);
@@ -90,7 +91,13 @@ const ReviewDetail = () => {
         setAverageUserRating(ratingInfo.average);
         setUserRatingCount(ratingInfo.count);
       } else {
-        alert("Failed to submit rating. Please try again.");
+        if (response.error.response.data.reason) {
+          if (response.error.response.data.reason === "Captcha failed") {
+            alert("Captcha failed. Refresh the page and try again.");
+          } else {
+            alert("Failed to submit rating. Please try again.");
+          }
+        }
       }
     } catch (err) {
       console.error("Error submitting rating:", err);

@@ -46,6 +46,6 @@ export const submitUserRating = async (
     return response.data;
   } catch (error) {
     console.error("Error submitting user rating:", error);
-    return { success: false };
+    return { success: false, error: error };
   }
 };
