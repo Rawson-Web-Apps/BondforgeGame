@@ -16,10 +16,18 @@ export const fetchRatingsForGames = async (gameIds: string[]) => {
       return { average: null, count: 0 };
     }
     gameIds = gameIds.map((id) => slugify(id));
-    const response = await axios.post(API_URL, {
-      action: "fetch",
-      gameIds,
-    });
+    const response = await axios.post(
+      API_URL,
+      {
+        action: "fetch",
+        gameIds,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching user ratings:", error);
@@ -37,12 +45,20 @@ export const submitUserRating = async (
       return { success: false };
     }
     gameIds = slugify(gameIds);
-    const response = await axios.post(API_URL, {
-      action: "submit",
-      gameIds,
-      rating,
-      token,
-    });
+    const response = await axios.post(
+      API_URL,
+      {
+        action: "submit",
+        gameIds,
+        rating,
+        token,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error submitting user rating:", error);
